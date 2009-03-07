@@ -82,4 +82,15 @@ class EateriesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  # GET /eateries/open
+  # GET /eateries/open.xml
+  def open
+    @eatery = Eatery.find(params[:id])
+
+    respond_to do |format|
+      format.html # open.html.erb
+      format.xml  { render :xml => @eatery }
+    end
+  end
 end

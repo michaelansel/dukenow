@@ -5,15 +5,15 @@
 
   <p>
     <%= f.label :eatery %><br />
-    <%= f.text_field :eatery %>
+    <%= f.collection_select :eatery_id, @eateries, :id, :name %>
   </p>
   <p>
     <%= f.label :opensAt %><br />
-    <%= f.datetime_select :opensAt %>
+    <%= f.time_select :opensAt %>
   </p>
   <p>
     <%= f.label :closesAt %><br />
-    <%= f.datetime_select :closesAt %>
+    <%= f.time_select :closesAt %>
   </p>
   <p>
     <%= f.label :daysOfWeek %><br />

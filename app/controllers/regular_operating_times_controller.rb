@@ -25,6 +25,7 @@ class RegularOperatingTimesController < ApplicationController
   # GET /regular_operating_times/new.xml
   def new
     @regular_operating_time = RegularOperatingTime.new
+    @eateries = Eatery.find :all
 
     respond_to do |format|
       format.html # new.html.erb
@@ -35,11 +36,24 @@ class RegularOperatingTimesController < ApplicationController
   # GET /regular_operating_times/1/edit
   def edit
     @regular_operating_time = RegularOperatingTime.find(params[:id])
+    @eateries = Eatery.find :all
   end
 
   # POST /regular_operating_times
   # POST /regular_operating_times.xml
   def create
+    year = params[:regular_operating_time].delete('closesAt(1i)')
+    month = params[:regular_operating_time].delete('closesAt(2i)')
+    day = params[:regular_operating_time].delete('closesAt(3i)')
+    hour = params[:regular_operating_time].delete('closesAt(4i)')
+    minute = params[:regular_operating_time].delete('closesAt(5i)')
+    params[:regular_operating_time]['closesAt'] = Time.local( year, month, day, hour, minute )
+    year = params[:regular_operating_time].delete('opensAt(1i)')
+    month = params[:regular_operating_time].delete('opensAt(2i)')
+    day = params[:regular_operating_time].delete('opensAt(3i)')
+    hour = params[:regular_operating_time].delete('opensAt(4i)')
+    minute = params[:regular_operating_time].delete('opensAt(5i)')
+    params[:regular_operating_time]['opensAt'] = Time.local( year, month, day, hour, minute )
     @regular_operating_time = RegularOperatingTime.new(params[:regular_operating_time])
 
     respond_to do |format|
@@ -58,6 +72,18 @@ class RegularOperatingTimesController < ApplicationController
   # PUT /regular_operating_times/1.xml
   def update
     @regular_operating_time = RegularOperatingTime.find(params[:id])
+    year = params[:regular_operating_time].delete('closesAt(1i)')
+    month = params[:regular_operating_time].delete('closesAt(2i)')
+    day = params[:regular_operating_time].delete('closesAt(3i)')
+    hour = params[:regular_operating_time].delete('closesAt(4i)')
+    minute = params[:regular_operating_time].delete('closesAt(5i)')
+    params[:regular_operating_time]['closesAt'] = Time.local( year, month, day, hour, minute )
+    year = params[:regular_operating_time].delete('opensAt(1i)')
+    month = params[:regular_operating_time].delete('opensAt(2i)')
+    day = params[:regular_operating_time].delete('opensAt(3i)')
+    hour = params[:regular_operating_time].delete('opensAt(4i)')
+    minute = params[:regular_operating_time].delete('opensAt(5i)')
+    params[:regular_operating_time]['opensAt'] = Time.local( year, month, day, hour, minute )
 
     respond_to do |format|
       if @regular_operating_time.update_attributes(params[:regular_operating_time])

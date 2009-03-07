@@ -21,8 +21,8 @@ ActiveRecord::Schema.define(:version => 20090307023220) do
 
   create_table "regular_operating_times", :force => true do |t|
     t.integer  "eatery_id"
-    t.time     "opensAt"
-    t.time     "closesAt"
+    t.integer  "opensAt"
+    t.integer  "closesAt"
     t.integer  "daysOfWeek"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -30,8 +30,8 @@ ActiveRecord::Schema.define(:version => 20090307023220) do
 
   create_table "special_operating_times", :force => true do |t|
     t.integer  "eatery_id"
-    t.time     "opensAt"
-    t.time     "closesAt"
+    t.integer  "opensAt"
+    t.integer  "closesAt"
     t.integer  "daysOfWeek"
     t.date     "start"
     t.date     "end"
