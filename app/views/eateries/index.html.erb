@@ -7,11 +7,18 @@
     <th>Phone</th>
   </tr>
 
+  <style>
+  </style>
+
 <% for eatery in @eateries %>
-  <tr>
-    <td><%=h eatery.name %></td>
-    <td><%=h eatery.location %></td>
-    <td><%=h eatery.phone %></td>
+  <% if eatery.open? %>
+  <tr class="eateryOpen">
+  <% else %>
+  <tr class="eateryClosed">
+  <% end %>
+    <td class="eateryData"><%=h eatery.name %></td>
+    <td class="eateryData"><%=h eatery.location %></td>
+    <td class="eateryData"><%=h eatery.phone %></td>
     <td><%= link_to 'Show', eatery %></td>
     <td><%= link_to 'Edit', edit_eatery_path(eatery) %></td>
     <td><%= link_to 'Destroy', eatery, :confirm => 'Are you sure?', :method => :delete %></td>

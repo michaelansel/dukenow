@@ -3,11 +3,10 @@ module RelativeTimes
     require 'time'
 
     def _relativeTime(offset, baseTime = Time.now)
-      Time.utc(baseTime.year, baseTime.month, baseTime.day) + offset
+      Time.local(baseTime.year, baseTime.month, baseTime.day) + offset
     end
 
     def _getMidnightOffset(time)
-      RAILS_DEFAULT_LOGGER.error time.inspect
       time.hour * 3600 + time.min  * 60 + time.sec 
     end
   end

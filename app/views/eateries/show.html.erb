@@ -13,6 +13,11 @@
   <%=h @eatery.phone %>
 </p>
 
+<p>
+  <b>Open?</b>
+  <%=h (@eatery.open? ? "Yes" : "No") %>
+</p>
+
 
 <%= link_to 'Edit', edit_eatery_path(@eatery) %> |
 <%= link_to 'Back', eateries_path %>
