@@ -1,0 +1,30 @@
+<h1>Listing special_operating_times</h1>
+
+<table>
+  <tr>
+    <th>Eatery</th>
+    <th>Opensat</th>
+    <th>Closesat</th>
+    <th>Daysofweek</th>
+    <th>Start</th>
+    <th>End</th>
+  </tr>
+
+<% for special_operating_time in @special_operating_times %>
+  <tr>
+    <td><%=h special_operating_time.eatery %></td>
+    <td><%=h special_operating_time.opensAt %></td>
+    <td><%=h special_operating_time.closesAt %></td>
+    <td><%=h special_operating_time.daysOfWeek %></td>
+    <td><%=h special_operating_time.start %></td>
+    <td><%=h special_operating_time.end %></td>
+    <td><%= link_to 'Show', special_operating_time %></td>
+    <td><%= link_to 'Edit', edit_special_operating_time_path(special_operating_time) %></td>
+    <td><%= link_to 'Destroy', special_operating_time, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New special_operating_time', new_special_operating_time_path %>

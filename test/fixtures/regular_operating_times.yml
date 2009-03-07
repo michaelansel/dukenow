@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  eatery: 
+  opensAt: 2009-03-06 21:32:01
+  closesAt: 2009-03-06 21:32:01
+  daysOfWeek: 1
+
+two:
+  eatery: 
+  opensAt: 2009-03-06 21:32:01
+  closesAt: 2009-03-06 21:32:01
+  daysOfWeek: 1

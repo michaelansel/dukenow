@@ -1,0 +1,2 @@
+module RegularOperatingTimesHelper
+end

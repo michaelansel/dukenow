@@ -1,0 +1,18 @@
+<p>
+  <b>Name:</b>
+  <%=h @eatery.name %>
+</p>
+
+<p>
+  <b>Location:</b>
+  <%=h @eatery.location %>
+</p>
+
+<p>
+  <b>Phone:</b>
+  <%=h @eatery.phone %>
+</p>
+
+
+<%= link_to 'Edit', edit_eatery_path(@eatery) %> |
+<%= link_to 'Back', eateries_path %>

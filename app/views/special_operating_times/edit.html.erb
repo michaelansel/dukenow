@@ -1,0 +1,36 @@
+<h1>Editing special_operating_time</h1>
+
+<% form_for(@special_operating_time) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :eatery %><br />
+    <%= f.text_field :eatery %>
+  </p>
+  <p>
+    <%= f.label :opensAt %><br />
+    <%= f.datetime_select :opensAt %>
+  </p>
+  <p>
+    <%= f.label :closesAt %><br />
+    <%= f.datetime_select :closesAt %>
+  </p>
+  <p>
+    <%= f.label :daysOfWeek %><br />
+    <%= f.text_field :daysOfWeek %>
+  </p>
+  <p>
+    <%= f.label :start %><br />
+    <%= f.date_select :start %>
+  </p>
+  <p>
+    <%= f.label :end %><br />
+    <%= f.date_select :end %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @special_operating_time %> |
+<%= link_to 'Back', special_operating_times_path %>

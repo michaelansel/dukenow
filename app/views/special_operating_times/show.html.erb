@@ -1,0 +1,33 @@
+<p>
+  <b>Eatery:</b>
+  <%=h @special_operating_time.eatery %>
+</p>
+
+<p>
+  <b>Opensat:</b>
+  <%=h @special_operating_time.opensAt %>
+</p>
+
+<p>
+  <b>Closesat:</b>
+  <%=h @special_operating_time.closesAt %>
+</p>
+
+<p>
+  <b>Daysofweek:</b>
+  <%=h @special_operating_time.daysOfWeek %>
+</p>
+
+<p>
+  <b>Start:</b>
+  <%=h @special_operating_time.start %>
+</p>
+
+<p>
+  <b>End:</b>
+  <%=h @special_operating_time.end %>
+</p>
+
+
+<%= link_to 'Edit', edit_special_operating_time_path(@special_operating_time) %> |
+<%= link_to 'Back', special_operating_times_path %>

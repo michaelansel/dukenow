@@ -1,0 +1,23 @@
+<p>
+  <b>Eatery:</b>
+  <%=h @regular_operating_time.eatery %>
+</p>
+
+<p>
+  <b>Opensat:</b>
+  <%=h @regular_operating_time.opensAt %>
+</p>
+
+<p>
+  <b>Closesat:</b>
+  <%=h @regular_operating_time.closesAt %>
+</p>
+
+<p>
+  <b>Daysofweek:</b>
+  <%=h @regular_operating_time.daysOfWeek %>
+</p>
+
+
+<%= link_to 'Edit', edit_regular_operating_time_path(@regular_operating_time) %> |
+<%= link_to 'Back', regular_operating_times_path %>

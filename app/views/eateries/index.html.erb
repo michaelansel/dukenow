@@ -1,0 +1,24 @@
+<h1>Listing eateries</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Location</th>
+    <th>Phone</th>
+  </tr>
+
+<% for eatery in @eateries %>
+  <tr>
+    <td><%=h eatery.name %></td>
+    <td><%=h eatery.location %></td>
+    <td><%=h eatery.phone %></td>
+    <td><%= link_to 'Show', eatery %></td>
+    <td><%= link_to 'Edit', edit_eatery_path(eatery) %></td>
+    <td><%= link_to 'Destroy', eatery, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New eatery', new_eatery_path %>
