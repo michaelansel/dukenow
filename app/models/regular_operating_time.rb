@@ -2,4 +2,24 @@ class RegularOperatingTime < ActiveRecord::Base
   belongs_to :eatery
   require RAILS_ROOT + '/lib/relative_times.rb'
   include RelativeTimes::InstanceMethods
+
+  def daysOfWeekHash
+    { :sunday    => daysOfWeek &  1,  # Sunday
+      :monday    => daysOfWeek &  2,  # Monday
+      :tuesday   => daysOfWeek &  4,  # Tuesday
+      :wednesday => daysOfWeek &  8,  # Wednesday
+      :thursday  => daysOfWeek & 16,  # Thursday
+      :friday    => daysOfWeek & 32,  # Friday
+      :saturday  => daysOfWeek & 64}  # Saturday
+  end
+
+  def daysOfWeekArray
+    [ daysOfWeek &  1 > 0,  # Sunday
+      daysOfWeek &  2 > 0,  # Monday
+      daysOfWeek &  4 > 0,  # Tuesday
+      daysOfWeek &  8 > 0,  # Wednesday
+      daysOfWeek & 16 > 0,  # Thursday
+      daysOfWeek & 32 > 0,  # Friday
+      daysOfWeek & 64 > 0]  # Saturday
+  end
 end

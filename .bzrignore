@@ -1,3 +1,4 @@
 tmp
 tmp/*
 log/*.log
+db/production.sqlite3

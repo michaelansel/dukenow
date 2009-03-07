@@ -42,19 +42,26 @@ class RegularOperatingTimesController < ApplicationController
   # POST /regular_operating_times
   # POST /regular_operating_times.xml
   def create
+    @regular_operating_time = RegularOperatingTime.find(params[:id])
     year = params[:regular_operating_time].delete('closesAt(1i)')
     month = params[:regular_operating_time].delete('closesAt(2i)')
     day = params[:regular_operating_time].delete('closesAt(3i)')
     hour = params[:regular_operating_time].delete('closesAt(4i)')
     minute = params[:regular_operating_time].delete('closesAt(5i)')
-    params[:regular_operating_time]['closesAt'] = Time.local( year, month, day, hour, minute )
+    params[:regular_operating_time][:closesAt] = Time.local( year, month, day, hour, minute )
+
     year = params[:regular_operating_time].delete('opensAt(1i)')
     month = params[:regular_operating_time].delete('opensAt(2i)')
     day = params[:regular_operating_time].delete('opensAt(3i)')
     hour = params[:regular_operating_time].delete('opensAt(4i)')
     minute = params[:regular_operating_time].delete('opensAt(5i)')
-    params[:regular_operating_time]['opensAt'] = Time.local( year, month, day, hour, minute )
-    @regular_operating_time = RegularOperatingTime.new(params[:regular_operating_time])
+    params[:regular_operating_time][:opensAt] = Time.local( year, month, day, hour, minute )
+
+    params[:regular_operating_time][:daysOfWeek] = 0
+    params[:regular_operating_time]['daysOfWeekHash'].each do |dayOfWeek|
+      params[:regular_operating_time][:daysOfWeek] += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
+    end
+    params[:regular_operating_time].delete('daysOfWeekHash')
 
     respond_to do |format|
       if @regular_operating_time.save
@@ -77,13 +84,20 @@ class RegularOperatingTimesController < ApplicationController
     day = params[:regular_operating_time].delete('closesAt(3i)')
     hour = params[:regular_operating_time].delete('closesAt(4i)')
     minute = params[:regular_operating_time].delete('closesAt(5i)')
-    params[:regular_operating_time]['closesAt'] = Time.local( year, month, day, hour, minute )
+    params[:regular_operating_time][:closesAt] = Time.local( year, month, day, hour, minute )
+
     year = params[:regular_operating_time].delete('opensAt(1i)')
     month = params[:regular_operating_time].delete('opensAt(2i)')
     day = params[:regular_operating_time].delete('opensAt(3i)')
     hour = params[:regular_operating_time].delete('opensAt(4i)')
     minute = params[:regular_operating_time].delete('opensAt(5i)')
-    params[:regular_operating_time]['opensAt'] = Time.local( year, month, day, hour, minute )
+    params[:regular_operating_time][:opensAt] = Time.local( year, month, day, hour, minute )
+
+    params[:regular_operating_time][:daysOfWeek] = 0
+    params[:regular_operating_time]['daysOfWeekHash'].each do |dayOfWeek|
+      params[:regular_operating_time][:daysOfWeek] += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
+    end
+    params[:regular_operating_time].delete('daysOfWeekHash')
 
     respond_to do |format|
       if @regular_operating_time.update_attributes(params[:regular_operating_time])

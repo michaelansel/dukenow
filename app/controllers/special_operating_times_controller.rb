@@ -47,14 +47,21 @@ class SpecialOperatingTimesController < ApplicationController
     day = params[:special_operating_time].delete('closesAt(3i)')
     hour = params[:special_operating_time].delete('closesAt(4i)')
     minute = params[:special_operating_time].delete('closesAt(5i)')
-    params[:special_operating_time]['closesAt'] = Time.local( year, month, day, hour, minute )
+    params[:special_operating_time][:closesAt] = Time.local( year, month, day, hour, minute )
+
     year = params[:special_operating_time].delete('opensAt(1i)')
     month = params[:special_operating_time].delete('opensAt(2i)')
     day = params[:special_operating_time].delete('opensAt(3i)')
     hour = params[:special_operating_time].delete('opensAt(4i)')
     minute = params[:special_operating_time].delete('opensAt(5i)')
-    params[:special_operating_time]['opensAt'] = Time.local( year, month, day, hour, minute )
+    params[:special_operating_time][:opensAt] = Time.local( year, month, day, hour, minute )
     @special_operating_time = SpecialOperatingTime.new(params[:special_operating_time])
+
+    params[:special_operating_time][:daysOfWeek] = 0
+    params[:special_operating_time]['daysOfWeekHash'].each do |dayOfWeek|
+      params[:special_operating_time][:daysOfWeek] += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
+    end
+    params[:special_operating_time].delete('daysOfWeekHash')
 
     respond_to do |format|
       if @special_operating_time.save
@@ -71,19 +78,26 @@ class SpecialOperatingTimesController < ApplicationController
   # PUT /special_operating_times/1
   # PUT /special_operating_times/1.xml
   def update
-    @special_operating_time = SpecialOperatingTime.find(params[:id])
     year = params[:special_operating_time].delete('closesAt(1i)')
     month = params[:special_operating_time].delete('closesAt(2i)')
     day = params[:special_operating_time].delete('closesAt(3i)')
     hour = params[:special_operating_time].delete('closesAt(4i)')
     minute = params[:special_operating_time].delete('closesAt(5i)')
-    params[:special_operating_time]['closesAt'] = Time.local( year, month, day, hour, minute )
+    params[:special_operating_time][:closesAt] = Time.local( year, month, day, hour, minute )
+
     year = params[:special_operating_time].delete('opensAt(1i)')
     month = params[:special_operating_time].delete('opensAt(2i)')
     day = params[:special_operating_time].delete('opensAt(3i)')
     hour = params[:special_operating_time].delete('opensAt(4i)')
     minute = params[:special_operating_time].delete('opensAt(5i)')
-    params[:special_operating_time]['opensAt'] = Time.local( year, month, day, hour, minute )
+    params[:special_operating_time][:opensAt] = Time.local( year, month, day, hour, minute )
+    @special_operating_time = SpecialOperatingTime.new(params[:special_operating_time])
+
+    params[:special_operating_time][:daysOfWeek] = 0
+    params[:special_operating_time]['daysOfWeekHash'].each do |dayOfWeek|
+      params[:special_operating_time][:daysOfWeek] += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
+    end
+    params[:special_operating_time].delete('daysOfWeekHash')
 
     respond_to do |format|
       if @special_operating_time.update_attributes(params[:special_operating_time])

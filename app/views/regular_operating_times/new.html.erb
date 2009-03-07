@@ -17,7 +17,13 @@
   </p>
   <p>
     <%= f.label :daysOfWeek %><br />
-    <%= f.text_field :daysOfWeek %>
+    Sunday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :sunday, @regular_operating_time.daysOfWeekHash[:sunday]  %>
+    Monday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :monday, @regular_operating_time.daysOfWeekHash[:monday]  %>
+    Tuesday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :tuesday, @regular_operating_time.daysOfWeekHash[:tuesday]  %>
+    Wednesday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :wednesday, @regular_operating_time.daysOfWeekHash[:wednesday]  %>
+    Thursday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :thursday, @regular_operating_time.daysOfWeekHash[:thursday]  %>
+    Friday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :friday, @regular_operating_time.daysOfWeekHash[:friday]  %>
+    Saturday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :saturday, @regular_operating_time.daysOfWeekHash[:saturday]  %>
   </p>
   <p>
     <%= f.submit "Create" %>
