@@ -4,7 +4,7 @@ class RegularOperatingTime < ActiveRecord::Base
   include RelativeTimes::InstanceMethods
 
   def daysOfWeekHash
-    daysOfWeek = 0 if daysOfWeek.nil?
+    daysOfWeek = 127 if daysOfWeek.nil?
     { :sunday    => daysOfWeek &  1 > 0,  # Sunday
       :monday    => daysOfWeek &  2 > 0,  # Monday
       :tuesday   => daysOfWeek &  4 > 0,  # Tuesday
@@ -15,7 +15,7 @@ class RegularOperatingTime < ActiveRecord::Base
   end
 
   def daysOfWeekArray
-    daysOfWeek = 0 if daysOfWeek.nil?
+    daysOfWeek = 127 if daysOfWeek.nil?
     [ daysOfWeek &  1 > 0,  # Sunday
       daysOfWeek &  2 > 0,  # Monday
       daysOfWeek &  4 > 0,  # Tuesday
