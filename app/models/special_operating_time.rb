@@ -4,13 +4,13 @@ class SpecialOperatingTime < ActiveRecord::Base
   include RelativeTimes::InstanceMethods
 
   def daysOfWeekHash
-    { :sunday    => daysOfWeek &  1,  # Sunday
-      :monday    => daysOfWeek &  2,  # Monday
-      :tuesday   => daysOfWeek &  4,  # Tuesday
-      :wednesday => daysOfWeek &  8,  # Wednesday
-      :thursday  => daysOfWeek & 16,  # Thursday
-      :friday    => daysOfWeek & 32,  # Friday
-      :saturday  => daysOfWeek & 64}  # Saturday
+    { :sunday    => daysOfWeek &  1 > 0,  # Sunday
+      :monday    => daysOfWeek &  2 > 0,  # Monday
+      :tuesday   => daysOfWeek &  4 > 0,  # Tuesday
+      :wednesday => daysOfWeek &  8 > 0,  # Wednesday
+      :thursday  => daysOfWeek & 16 > 0,  # Thursday
+      :friday    => daysOfWeek & 32 > 0,  # Friday
+      :saturday  => daysOfWeek & 64 > 0}  # Saturday
   end
 
   def daysOfWeekArray
