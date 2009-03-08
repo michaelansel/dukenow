@@ -1,4 +1,7 @@
 class RegularOperatingTimesController < ApplicationController
+  include RelativeTimes::ControllerMethods
+
+
   # GET /regular_operating_times
   # GET /regular_operating_times.xml
   def index
@@ -39,32 +42,10 @@ class RegularOperatingTimesController < ApplicationController
     @eateries = Eatery.find :all
   end
 
-  def formHandler
-    year = params[:regular_operating_time].delete('closesAt(1i)')
-    month = params[:regular_operating_time].delete('closesAt(2i)')
-    day = params[:regular_operating_time].delete('closesAt(3i)')
-    hour = params[:regular_operating_time].delete('closesAt(4i)')
-    minute = params[:regular_operating_time].delete('closesAt(5i)')
-    params[:regular_operating_time][:closesAt] = Time.local( year, month, day, hour, minute )
-
-    year = params[:regular_operating_time].delete('opensAt(1i)')
-    month = params[:regular_operating_time].delete('opensAt(2i)')
-    day = params[:regular_operating_time].delete('opensAt(3i)')
-    hour = params[:regular_operating_time].delete('opensAt(4i)')
-    minute = params[:regular_operating_time].delete('opensAt(5i)')
-    params[:regular_operating_time][:opensAt] = Time.local( year, month, day, hour, minute )
-
-    params[:regular_operating_time][:daysOfWeek] = 0
-    params[:regular_operating_time]['daysOfWeekHash'].each do |dayOfWeek|
-      params[:regular_operating_time][:daysOfWeek] += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
-    end
-    params[:regular_operating_time].delete('daysOfWeekHash')
-  end
-
   # POST /regular_operating_times
   # POST /regular_operating_times.xml
   def create
-    formHandler
+    operatingTimesFormHandler
 
     @regular_operating_time = RegularOperatingTime.new(params[:regular_operating_time])
 
@@ -85,7 +66,7 @@ class RegularOperatingTimesController < ApplicationController
   def update
     @regular_operating_time = RegularOperatingTime.find(params[:id])
 
-    formHandler
+    operatingTimesFormHandler
 
     respond_to do |format|
       if @regular_operating_time.update_attributes(params[:regular_operating_time])

@@ -3,28 +3,8 @@
 <% form_for(@regular_operating_time) do |f| %>
   <%= f.error_messages %>
 
-  <p>
-    <%= f.label :eatery %><br />
-    <%= f.collection_select :eatery_id, @eateries, :id, :name %>
-  </p>
-  <p>
-    <%= f.label :opensAt %><br />
-    <%= f.time_select :opensAt %>
-  </p>
-  <p>
-    <%= f.label :closesAt %><br />
-    <%= f.time_select :closesAt %>
-  </p>
-  <p>
-    <%= f.label :daysOfWeek %><br />
-    Sunday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :sunday, @regular_operating_time.daysOfWeekHash[:sunday]  %>
-    Monday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :monday, @regular_operating_time.daysOfWeekHash[:monday]  %>
-    Tuesday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :tuesday, @regular_operating_time.daysOfWeekHash[:tuesday]  %>
-    Wednesday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :wednesday, @regular_operating_time.daysOfWeekHash[:wednesday]  %>
-    Thursday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :thursday, @regular_operating_time.daysOfWeekHash[:thursday]  %>
-    Friday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :friday, @regular_operating_time.daysOfWeekHash[:friday]  %>
-    Saturday: <%= check_box_tag "regular_operating_time[daysOfWeekHash][]", :saturday, @regular_operating_time.daysOfWeekHash[:saturday]  %>
-  </p>
+  <%= render :partial => 'entryform', :locals => {:f => f} %>
+
   <p>
     <%= f.submit "Update" %>
   </p>

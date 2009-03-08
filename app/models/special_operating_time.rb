@@ -3,6 +3,7 @@ class SpecialOperatingTime < ActiveRecord::Base
   require RAILS_ROOT + '/lib/relative_times.rb'
   include RelativeTimes::InstanceMethods
 
+=begin
   def daysOfWeekHash
     daysOfWeek = 127 if daysOfWeek.nil?
     { :sunday    => daysOfWeek &  1 > 0,  # Sunday
@@ -24,4 +25,5 @@ class SpecialOperatingTime < ActiveRecord::Base
       daysOfWeek & 32 > 0,  # Friday
       daysOfWeek & 64 > 0]  # Saturday
   end
+=end
 end

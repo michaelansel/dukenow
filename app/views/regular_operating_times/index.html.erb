@@ -11,8 +11,8 @@
 <% for regular_operating_time in @regular_operating_times %>
   <tr>
     <td><%=h regular_operating_time.eatery.name %></td>
-    <td><%=h regular_operating_time.opensAt.strftime('%H:%M') %></td>
-    <td><%=h regular_operating_time.closesAt.strftime('%H:%M') %></td>
+    <td><%=h regular_operating_time.opensAt.to_s %></td>
+    <td><%=h regular_operating_time.closesAt.to_s %></td>
     <td><%=h regular_operating_time.daysOfWeek %></td>
     <td><%= link_to 'Show', regular_operating_time %></td>
     <td><%= link_to 'Edit', edit_regular_operating_time_path(regular_operating_time) %></td>
