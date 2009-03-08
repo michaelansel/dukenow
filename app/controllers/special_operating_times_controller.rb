@@ -64,7 +64,7 @@ class SpecialOperatingTimesController < ApplicationController
   # POST /special_operating_times
   # POST /special_operating_times.xml
   def create
-    params = formHandler(params)
+    formHandler
 
 
 
