@@ -17,8 +17,8 @@ class Eatery < ActiveRecord::Base
         RAILS_DEFAULT_LOGGER.info "Special Operating Time Period!"
         open = false if open == nil
 
-        if  operating_time.opensAt(at)  < at and
-            operating_time.closesAt(at) > at  and
+        if  operating_time.opensAt.time(at)  < at and
+            operating_time.closesAt.time(at) > at  and
             (1<<at.wday) & operating_time.daysOfWeek != 0 and
           open = true
         end
@@ -34,10 +34,10 @@ class Eatery < ActiveRecord::Base
 
     regular_operating_times.each do |operating_time|
       RAILS_DEFAULT_LOGGER.debug "Operating Times for #{name}"
-      RAILS_DEFAULT_LOGGER.debug "Opens At: #{operating_time.opensAt(at).to_s}"
-      RAILS_DEFAULT_LOGGER.debug "Closes At: #{operating_time.closesAt(at).to_s}"
-      if  operating_time.opensAt(at)  < at and
-          operating_time.closesAt(at) > at  and
+      RAILS_DEFAULT_LOGGER.debug "Opens At: #{operating_time.opensAt.time(at).to_s}"
+      RAILS_DEFAULT_LOGGER.debug "Closes At: #{operating_time.closesAt.time(at).to_s}"
+      if  operating_time.opensAt.time(at)  < at and
+          operating_time.closesAt.time(at) > at  and
           (1<<at.wday) & operating_time.daysOfWeek != 0
         open = true
       end
