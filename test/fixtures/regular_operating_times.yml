@@ -1,13 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  eatery: 
-  opensAt: 2009-03-06 21:32:01
-  closesAt: 2009-03-06 21:32:01
-  daysOfWeek: 1
+  eatery: loop
+  opensAt: 39600
+  closesAt: 86340
+  daysOfWeek: 127
 
 two:
-  eatery: 
-  opensAt: 2009-03-06 21:32:01
-  closesAt: 2009-03-06 21:32:01
-  daysOfWeek: 1
+  eatery: loop
+  opensAt: 0
+  closesAt: 7200
+  daysOfWeek: 127

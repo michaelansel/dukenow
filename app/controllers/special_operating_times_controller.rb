@@ -44,7 +44,7 @@ class SpecialOperatingTimesController < ApplicationController
   # POST /special_operating_times
   # POST /special_operating_times.xml
   def create
-    operatingTimesFormHandler
+    params[:special_operating_time] = operatingTimesFormHandler(params[:special_operating_time])
     @special_operating_time = SpecialOperatingTime.new(params[:special_operating_time])
 
     respond_to do |format|
@@ -63,7 +63,7 @@ class SpecialOperatingTimesController < ApplicationController
   # PUT /special_operating_times/1.xml
   def update
     @special_operating_time = SpecialOperatingTime.find(params[:id])
-    operatingTimesFormHandler
+    params[:special_operating_time] = operatingTimesFormHandler(params[:special_operating_time])
 
     respond_to do |format|
       if @special_operating_time.update_attributes(params[:special_operating_time])

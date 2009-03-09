@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  name: MyString
-  location: MyString
-  phone: MyString
+loop:
+  name: The Loop
+  location: West Campus
+  phone: 123-4567
 
-two:
-  name: MyString
-  location: MyString
-  phone: MyString
+greathall:
+  name: Great Hall
+  location: West Campus
+  phone: 123-4567

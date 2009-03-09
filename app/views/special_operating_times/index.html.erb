@@ -13,8 +13,8 @@
 <% for special_operating_time in @special_operating_times %>
   <tr>
     <td><%=h special_operating_time.eatery.name %></td>
-    <td><%=h special_operating_time.opensAt.strftime('%H:%M') %></td>
-    <td><%=h special_operating_time.closesAt.strftime('%H:%M') %></td>
+    <td><%=h special_operating_time.opensAt.to_s %></td>
+    <td><%=h special_operating_time.closesAt.to_s %></td>
     <td><%=h special_operating_time.daysOfWeek %></td>
     <td><%=h special_operating_time.start %></td>
     <td><%=h special_operating_time.end %></td>

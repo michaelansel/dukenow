@@ -21,23 +21,23 @@ class EateriesControllerTest < ActionController::TestCase
   end
 
   test "should show eatery" do
-    get :show, :id => eateries(:one).id
+    get :show, :id => eateries(:loop).id
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :id => eateries(:one).id
+    get :edit, :id => eateries(:loop).id
     assert_response :success
   end
 
   test "should update eatery" do
-    put :update, :id => eateries(:one).id, :eatery => { }
+    put :update, :id => eateries(:loop).id, :eatery => { }
     assert_redirected_to eatery_path(assigns(:eatery))
   end
 
   test "should destroy eatery" do
     assert_difference('Eatery.count', -1) do
-      delete :destroy, :id => eateries(:one).id
+      delete :destroy, :id => eateries(:loop).id
     end
 
     assert_redirected_to eateries_path

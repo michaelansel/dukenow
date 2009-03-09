@@ -45,7 +45,7 @@ class RegularOperatingTimesController < ApplicationController
   # POST /regular_operating_times
   # POST /regular_operating_times.xml
   def create
-    operatingTimesFormHandler
+    params[:regular_operating_time] = operatingTimesFormHandler(params[:regular_operating_time])
 
     @regular_operating_time = RegularOperatingTime.new(params[:regular_operating_time])
 
@@ -66,7 +66,7 @@ class RegularOperatingTimesController < ApplicationController
   def update
     @regular_operating_time = RegularOperatingTime.find(params[:id])
 
-    operatingTimesFormHandler
+    params[:regular_operating_time] = operatingTimesFormHandler(params[:regular_operating_time])
 
     respond_to do |format|
       if @regular_operating_time.update_attributes(params[:regular_operating_time])
