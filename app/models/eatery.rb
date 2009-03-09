@@ -2,8 +2,8 @@ class Eatery < ActiveRecord::Base
   has_many :regular_operating_times
   has_many :special_operating_times
 
-  def open?(at = Time.now)
-    open = nil
+  def schedule(at = Time.now)
+    current_schedule = nil
 
     special_operating_times.each do |operating_time|
       # If we are in a time period with special operating times
@@ -12,7 +12,7 @@ class Eatery < ActiveRecord::Base
         RAILS_DEFAULT_LOGGER.debug "Special Operating Time Period!"
         RAILS_DEFAULT_LOGGER.debug "Effective from #{operating_time.start.to_s}"
         RAILS_DEFAULT_LOGGER.debug "           to  #{operating_time.end.to_s}"
-        open = false if open == nil
+        current_schedule = false if current_schedule.nil?
 
         # If the eatery is open right now according to the special operating hours
         if  operating_time.opensAt.time(at)  < at and
@@ -20,18 +20,17 @@ class Eatery < ActiveRecord::Base
             (1<<at.wday) & operating_time.daysOfWeek != 0
           RAILS_DEFAULT_LOGGER.debug "Opens At: #{operating_time.opensAt.time(at).to_s}"
           RAILS_DEFAULT_LOGGER.debug "Closes At: #{operating_time.closesAt.time(at).to_s}"
-          open = true
-          @currentSchedule = operating_time
+          current_schedule = operating_time
         end
       end
 
     end
 
     # If we aren't within a special operating period
-    if open == nil
-      open = false
+    if current_schedule == nil
+      current_schedule = false
     else
-      return open
+      return current_schedule
     end
 
     regular_operating_times.each do |operating_time|
@@ -41,11 +40,15 @@ class Eatery < ActiveRecord::Base
       if  operating_time.opensAt.time(at)  < at and
           operating_time.closesAt.time(at) > at  and
           (1<<at.wday) & operating_time.daysOfWeek != 0
-        open = true
-        @currentSchedule = operating_time
+        current_schedule = operating_time
       end
     end
 
-    return open
+    return current_schedule
+  end
+
+  def open?(at = Time.now)
+    a = schedule(at)
+    return a ? true : false
   end
 end

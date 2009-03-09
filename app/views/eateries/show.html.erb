@@ -18,6 +18,12 @@
   <%=h (@eatery.open? ? "Yes" : "No") %>
 </p>
 
+<p>
+  <b>Current Schedule:</b>
+  <%=h @schedule.class.name.sub(/OperatingTime/,'') %>
+  <%= link_to "#{@schedule.opensAt.to_s} - #{@schedule.closesAt.to_s}", @schedule %>
+</p>
+
 
 <%= link_to 'Edit', edit_eatery_path(@eatery) %> |
 <%= link_to 'Back', eateries_path %>

@@ -14,6 +14,7 @@ class EateriesController < ApplicationController
   # GET /eateries/1.xml
   def show
     @eatery = Eatery.find(params[:id])
+    @schedule = @eatery.schedule
 
     respond_to do |format|
       format.html # show.html.erb
