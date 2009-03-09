@@ -1,28 +1,5 @@
 
-  <p>
-    <%= f.label :eatery %><br />
-    <%= f.collection_select :eatery_id, @eateries, :id, :name %>
-  </p>
-  <p>
-    <%= f.label :opensAtTime %><br />
-    <% f.fields_for :opensAt do |time| %>
-      <%= time.time_select :time, {:ignore_date => true, :minute_step => 15, :default => f.object.send(time.object_name.scan(/\[(.*)\]/)[0][0].to_sym).send(:time)} %>
-    <% end %>
-  </p>
-  <p>
-    <%= f.label :closesAt %><br />
-    <% f.fields_for :closesAt do |time| %>
-      <%= time.time_select :time, {:ignore_date => true, :minute_step => 15, :default => f.object.send(time.object_name.scan(/\[(.*)\]/)[0][0].to_sym).send(:time)} %>
-    <% end %>
-  </p>
-  <p>
-    <%= f.label :daysOfWeek %><br />
-    <% Date::DAYNAMES.each_index do |i| %>
-      <%= Date::DAYNAMES[i].to_s.capitalize %>:
-      <%= check_box_tag "#{f.object_name}[daysOfWeekHash][]", 
-            Date::DAYNAMES[i].downcase.to_sym, f.object.daysOfWeekArray[i]  %>
-    <% end %>
-  </p>
+  <%= render :partial => 'regular_operating_times/entryform', :locals => {:f => f} %>
 
   <p>
     <%= f.label :start %><br />

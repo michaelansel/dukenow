@@ -16,12 +16,23 @@ module RelativeTimes
 
   module InstanceMethods
     def opensAt
-      @relativeOpensAt = RelativeTime.new(self,:opensAtOffset) if @relativeOpensAt.nil?
+      @relativeOpensAt = RelativeTime.new(self,:opensAt) if @relativeOpensAt.nil?
       @relativeOpensAt
     end
+    # Input: params = { :hour => 12, :minute => 45 }
+    def opensAt=(params = {})
+      params[:hour] = 0 if params[:hour].nil?
+      params[:minute] = 0 if params[:minute].nil?
+      opensAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
+    end
+      
+      
     def closesAt
-      @relativeClosesAt = RelativeTime.new(self,:closesAtOffset) if @relativeClosesAt.nil?
+      @relativeClosesAt = RelativeTime.new(self,:closesAt) if @relativeClosesAt.nil?
       @relativeClosesAt
+    end
+    def closesAt=(params = {})
+      closesAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
     end
   end
 
@@ -59,10 +70,10 @@ class RelativeTime
   end
 
   def offset
-    @object.send(@attribute)
+    @object.send(:read_attribute,@attribute)
   end
   def offset=(newOffset)
-    @object.send(@attribute,"=",newOffset)
+    @object.send(:write_attribute,@attribute,newOffset)
   end
 
 
@@ -70,6 +81,7 @@ class RelativeTime
     _relativeTime(offset, baseTime)
   end
   def time=(newTime = Time.now)
+    RAILS_DEFAULT_LOGGER.debug "Updating offset using Time object: #{newTime.inspect} ; offset = #{_getMidnightOffset(newTime)}"
     offset = _getMidnightOffset(newTime)
   end
 

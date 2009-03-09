@@ -2,18 +2,17 @@
     <%= f.label :eatery %><br />
     <%= f.collection_select :eatery_id, @eateries, :id, :name %>
   </p>
+
   <p>
-    <%= f.label :opensAtTime %><br />
-    <% f.fields_for :opensAt do |time| %>
-      <%= time.time_select :time, {:ignore_date => true, :minute_step => 15, :default => f.object.send(time.object_name.scan(/\[(.*)\]/)[0][0].to_sym).send(:time)} %>
-    <% end %>
+    <%= f.label :opensAt %><br />
+    <%= select_time f.object.opensAt.time, :prefix => "#{f.object_name}[opensAt]" %>
   </p>
+
   <p>
     <%= f.label :closesAt %><br />
-    <% f.fields_for :closesAt do |time| %>
-      <%= time.time_select :time, {:ignore_date => true, :minute_step => 15, :default => f.object.send(time.object_name.scan(/\[(.*)\]/)[0][0].to_sym).send(:time)} %>
-    <% end %>
+    <%= select_time f.object.closesAt.time, :prefix => "#{f.object_name}[closesAt]" %>
   </p>
+
   <p>
     <%= f.label :daysOfWeek %><br />
     <% Date::DAYNAMES.each_index do |i| %>
