@@ -3,6 +3,9 @@ class EateriesController < ApplicationController
   # GET /eateries.xml
   def index
     @eateries = Eatery.find(:all)
+    # Merchants On Points
+    # West Campus
+    # East Campus
 
     respond_to do |format|
       format.html # index.html.erb

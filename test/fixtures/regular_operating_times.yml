@@ -1,13 +1,19 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  eatery: loop
-  opensAt: 39600
-  closesAt: 86340
-  daysOfWeek: 127
+open:
+  eatery: greathall
+  opensAt: <%= Time.now - 1.hours %>
+  closesAt: <%= Time.now + 1.hours %>
+  daysOfWeek: <%= Time.now.wday %>
 
-two:
-  eatery: loop
+closed:
+  eatery: greathall
+  opensAt: <%= Time.now - 2.hours %>
+  closesAt: <%= Time.now - 1.hours %>
+  daysOfWeek: <%= Time.now.wday %>
+
+open24hours:
+  eatery: greathall
   opensAt: 0
-  closesAt: 7200
-  daysOfWeek: 127
+  closesAt: <%= 23.hours + 59.minutes %>
+  daysOfWeek: <%= Time.now.wday %>
