@@ -3,6 +3,9 @@ class PlacesController < ApplicationController
   # GET /places.xml
   def index
     @places = Place.find(:all)
+    # Merchants On Points
+    # West Campus
+    # East Campus
 
     respond_to do |format|
       format.html # index.html.erb
@@ -14,6 +17,7 @@ class PlacesController < ApplicationController
   # GET /places/1.xml
   def show
     @place = Place.find(params[:id])
+    @schedule = @place.schedule
 
     respond_to do |format|
       format.html # show.html.erb
@@ -80,6 +84,17 @@ class PlacesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(places_url) }
       format.xml  { head :ok }
+    end
+  end
+
+  # GET /places/open
+  # GET /places/open.xml
+  def open
+    @place = Place.find(params[:id])
+
+    respond_to do |format|
+      format.html # open.html.erb
+      format.xml  { render :xml => @place }
     end
   end
 end

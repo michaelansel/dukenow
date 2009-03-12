@@ -13,6 +13,19 @@
   <%=h @place.phone %>
 </p>
 
+<p>
+  <b>Open?</b>
+  <%=h (@place.open? ? "Yes" : "No") %>
+</p>
+
+<% if @schedule %>
+<p>
+  <b>Current Schedule:</b>
+  <%=h @schedule.class.name.sub(/OperatingTime/,'') %>
+  <%= link_to "#{@schedule.opensAt.to_s} - #{@schedule.closesAt.to_s}", @schedule %>
+</p>
+<% end %>
+
 
 <%= link_to 'Edit', edit_place_path(@place) %> |
 <%= link_to 'Back', places_path %>

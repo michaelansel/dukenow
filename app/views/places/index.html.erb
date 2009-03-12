@@ -5,13 +5,27 @@
     <th>Name</th>
     <th>Location</th>
     <th>Phone</th>
+    <th>Schedule</th>
   </tr>
 
+  <style>
+  </style>
+
 <% for place in @places %>
-  <tr>
-    <td><%=h place.name %></td>
-    <td><%=h place.location %></td>
-    <td><%=h place.phone %></td>
+  <% if (open = place.open?) %>
+  <tr class="placeOpen">
+  <% else %>
+  <tr class="placeClosed">
+  <% end %>
+    <td class="placeData"><%=h place.name %></td>
+    <td class="placeData"><%=h place.location %></td>
+    <td class="placeData"><%=h place.phone %></td>
+    <td class="placeData">
+      <% if open %>
+        <% schedule = place.schedule %>
+        <%= link_to "#{schedule.opensAt.to_s} - #{schedule.closesAt.to_s}", schedule %>
+      <% end %>
+    </td>
     <td><%= link_to 'Show', place %></td>
     <td><%= link_to 'Edit', edit_place_path(place) %></td>
     <td><%= link_to 'Destroy', place, :confirm => 'Are you sure?', :method => :delete %></td>
