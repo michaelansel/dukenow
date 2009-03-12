@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :places
+
   map.resources :special_operating_times
   map.resources :regular_operating_times
   map.resources :eateries
