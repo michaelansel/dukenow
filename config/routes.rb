@@ -7,7 +7,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :regular_operating_times
   map.resources :eateries
 
-  map.root :controller => "eateries"
+  map.root :controller => "places"
 
   # The priority is based upon order of creation: first created -> highest priority.
 
