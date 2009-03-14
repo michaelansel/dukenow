@@ -5,7 +5,7 @@
     <th>Name</th>
     <th>Location</th>
     <th>Phone</th>
-    <th>Schedule</th>
+    <th>Current Schedule</th>
   </tr>
 
   <style>
@@ -13,22 +13,28 @@
 
 <% for place in @places %>
   <% if (open = place.open?) %>
-  <tr class="placeOpen">
+  <tr class="placeOpen" onclick="window.location='<%= url_for place %>'">
   <% else %>
-  <tr class="placeClosed">
+  <tr class="placeClosed" onclick="window.location='<%= url_for place %>'">
   <% end %>
     <td class="placeData"><%=h place.name %></td>
     <td class="placeData"><%=h place.location %></td>
     <td class="placeData"><%=h place.phone %></td>
     <td class="placeData">
       <% if open %>
-        <% schedule = place.schedule %>
+        <% schedule = place.currentSchedule %>
         <%= link_to "#{schedule.opensAt.to_s} - #{schedule.closesAt.to_s}", schedule %>
       <% end %>
     </td>
-    <td><%= link_to 'Show', place %></td>
+    <td><%= link_to 'More Info', place %></td>
+<%
+=begin
+%>
     <td><%= link_to 'Edit', edit_place_path(place) %></td>
     <td><%= link_to 'Destroy', place, :confirm => 'Are you sure?', :method => :delete %></td>
+<%
+=end
+%>
   </tr>
 <% end %>
 </table>

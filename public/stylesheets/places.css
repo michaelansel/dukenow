@@ -1,9 +1,22 @@
+table tr td {
+  padding: 7px;
+}
+
+table {
+  border-collapse: collapse;
+}
 
 tr.placeOpen td.placeData {
-  background: #00FF00;
+  background: #79FC4E;
   color: #000000;
 }
+tr.placeOpen:hover td.placeData{
+  background: #48FB0D;
+}
 tr.placeClosed td.placeData {
-  background: #FF0000;
+  background: #FF7575;
   color: #FFFFFF
+}
+tr.placeClosed:hover td.placeData {
+  background: #FF4848;
 }

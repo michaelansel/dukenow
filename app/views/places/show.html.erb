@@ -18,13 +18,14 @@
   <%=h (@place.open? ? "Yes" : "No") %>
 </p>
 
-<% if @schedule %>
 <p>
-  <b>Current Schedule:</b>
-  <%=h @schedule.class.name.sub(/OperatingTime/,'') %>
-  <%= link_to "#{@schedule.opensAt.to_s} - #{@schedule.closesAt.to_s}", @schedule %>
+  <b>Today's Schedule:</b><br/>
+    <% @place.daySchedule.each do |schedule| %>
+      <%=h schedule.special ? "Special" : "Regular" %>: 
+      <%= link_to "#{schedule.opensAt.to_s} - #{schedule.closesAt.to_s}", schedule %>
+      <br/>
+    <% end %>
 </p>
-<% end %>
 
 
 <%= link_to 'Edit', edit_place_path(@place) %> |

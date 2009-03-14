@@ -17,7 +17,6 @@ class PlacesController < ApplicationController
   # GET /places/1.xml
   def show
     @place = Place.find(params[:id])
-    @schedule = @place.schedule
 
     respond_to do |format|
       format.html # show.html.erb

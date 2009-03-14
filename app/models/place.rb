@@ -9,8 +9,40 @@ class Place < ActiveRecord::Base
     operating_times.collect{|t| t.special ? nil : t }.compact
   end
 
-  def schedule(at = Time.now)
+  def daySchedule(at = Date.today)
+    # Find all operating times for this place that are:
+    # - Special
+    # - Are effective on date "at" (between startDate and endDate)
+    # - Are effective on weekday "at.wday"
+    schedule = OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) > 0 and (flags & ?) > 0 and startDate <= ? and endDate >= ?", id, 1 << at.wday, at.to_s, at.to_s] )
+
+    # If we don't have any special operating times
+    if schedule == []
+    # Find all operating times for this place that are:
+    # - NOT Special
+    # - Are effective on weekday "at.wday"
+    schedule = OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) == 0 and (flags & ?) > 0", id, 1 << at.wday] )
+    end
+
+    schedule.sort{|a,b|a.opensAt.offset <=> b.opensAt.offset}
+  end
+
+  def currentSchedule(at = Time.now)
     current_schedule = nil
+
+    daySchedule.each do |optime|
+      if  optime.opensAt.time(at)  < at and
+          optime.closesAt.time(at) > at
+        #RAILS_DEFAULT_LOGGER.debug "Opens At: #{optime.opensAt.time(at).to_s}"
+        #RAILS_DEFAULT_LOGGER.debug "Closes At: #{optime.closesAt.time(at).to_s}"
+        current_schedule = optime
+      end
+    end
+    
+    current_schedule
+  end
+      
+=begin
 
     self.special_operating_times.each do |optime|
       # If we are in a time period with special operating times
@@ -53,9 +85,10 @@ class Place < ActiveRecord::Base
 
     return current_schedule
   end
+=end
 
   def open?(at = Time.now)
-    a = schedule(at)
+    a = currentSchedule(at)
     return a ? true : false
   end
 end
