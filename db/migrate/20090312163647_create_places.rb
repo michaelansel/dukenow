@@ -7,6 +7,7 @@ class CreatePlaces < ActiveRecord::Migration
 
       t.timestamps
     end
+    execute "insert into places select * from eateries"
   end
 
   def self.down
