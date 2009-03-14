@@ -1,0 +1,40 @@
+<h1>Editing operating_time</h1>
+
+<% form_for(@operating_time) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :place %><br />
+    <%= f.text_field :place %>
+  </p>
+  <p>
+    <%= f.label :opensAt %><br />
+    <%= f.text_field :opensAt %>
+  </p>
+  <p>
+    <%= f.label :closesAt %><br />
+    <%= f.text_field :closesAt %>
+  </p>
+  <p>
+    <%= f.label :details %><br />
+    <%= f.text_area :details %>
+  </p>
+  <p>
+    <%= f.label :flags %><br />
+    <%= f.text_field :flags %>
+  </p>
+  <p>
+    <%= f.label :startDate %><br />
+    <%= f.date_select :startDate %>
+  </p>
+  <p>
+    <%= f.label :endDate %><br />
+    <%= f.date_select :endDate %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @operating_time %> |
+<%= link_to 'Back', operating_times_path %>

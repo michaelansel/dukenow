@@ -1,0 +1,38 @@
+<p>
+  <b>Place:</b>
+  <%=h @operating_time.place %>
+</p>
+
+<p>
+  <b>Opensat:</b>
+  <%=h @operating_time.opensAt %>
+</p>
+
+<p>
+  <b>Closesat:</b>
+  <%=h @operating_time.closesAt %>
+</p>
+
+<p>
+  <b>Details:</b>
+  <%=h @operating_time.details %>
+</p>
+
+<p>
+  <b>Flags:</b>
+  <%=h @operating_time.flags %>
+</p>
+
+<p>
+  <b>Startdate:</b>
+  <%=h @operating_time.startDate %>
+</p>
+
+<p>
+  <b>Enddate:</b>
+  <%=h @operating_time.endDate %>
+</p>
+
+
+<%= link_to 'Edit', edit_operating_time_path(@operating_time) %> |
+<%= link_to 'Back', operating_times_path %>

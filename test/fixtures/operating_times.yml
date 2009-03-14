@@ -1,0 +1,19 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  place: 
+  opensAt: 1
+  closesAt: 1
+  details: MyText
+  flags: 1
+  startDate: 2009-03-13
+  endDate: 2009-03-13
+
+two:
+  place: 
+  opensAt: 1
+  closesAt: 1
+  details: MyText
+  flags: 1
+  startDate: 2009-03-13
+  endDate: 2009-03-13
