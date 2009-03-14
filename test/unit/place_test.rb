@@ -28,4 +28,10 @@ class PlaceTest < ActiveSupport::TestCase
       assert optime.special
     end
   end
+
+  #test "Eatery should be open during the regular operating time" do
+    #regular_operating_time(:open).eatery = eatery(:loop)
+    #assert true, eatery(:loop).open
+  #end
+
 end

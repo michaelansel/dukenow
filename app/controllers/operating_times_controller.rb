@@ -1,4 +1,6 @@
 class OperatingTimesController < ApplicationController
+  include RelativeTimes::ControllerMethods
+
   # GET /operating_times
   # GET /operating_times.xml
   def index
@@ -43,6 +45,8 @@ class OperatingTimesController < ApplicationController
   # POST /operating_times
   # POST /operating_times.xml
   def create
+    params[:operating_time] = operatingTimesFormHandler(params[:operating_time])
+
     @operating_time = OperatingTime.new(params[:operating_time])
 
     respond_to do |format|
@@ -61,6 +65,8 @@ class OperatingTimesController < ApplicationController
   # PUT /operating_times/1.xml
   def update
     @operating_time = OperatingTime.find(params[:id])
+
+    params[:operating_time] = operatingTimesFormHandler(params[:operating_time])
 
     respond_to do |format|
       if @operating_time.update_attributes(params[:operating_time])

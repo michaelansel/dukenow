@@ -38,7 +38,9 @@ module RelativeTimes
 
 
     def daysOfWeekHash
-      daysOfWeek = 127 if daysOfWeek.nil?
+      a=daysOfWeek
+      daysOfWeek = 127 if a.nil?
+      daysOfWeek = a
 
       { :sunday    => (daysOfWeek &  1) > 0,  # Sunday
         :monday    => (daysOfWeek &  2) > 0,  # Monday
@@ -50,7 +52,9 @@ module RelativeTimes
     end
 
     def daysOfWeekArray
-      daysOfWeek = 127 if daysOfWeek.nil?
+      a=daysOfWeek
+      daysOfWeek = 127 if a.nil?
+      daysOfWeek = a
 
       [ daysOfWeek &  1 > 0,  # Sunday
         daysOfWeek &  2 > 0,  # Monday
@@ -75,12 +79,20 @@ module RelativeTimes
 =end
 
       if operatingTimesParams[:daysOfWeekHash] != nil
-        operatingTimesParams[:daysOfWeek] = 0
+        daysOfWeek = 0
+
         operatingTimesParams[:daysOfWeekHash].each do |dayOfWeek|
-          operatingTimesParams[:daysOfWeek] += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
+          daysOfWeek += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
         end
         operatingTimesParams.delete('daysOfWeekHash')
+
+        operatingTimesParams[:flags] = 0 if operatingTimesParams[:flags].nil?
+        operatingTimesParams[:flags] = operatingTimesParams[:flags] & ~OperatingTime::ALLDAYS_FLAG
+        operatingTimesParams[:flags] = operatingTimesParams[:flags] |  daysOfWeek
       end
+
+
+
 
       return operatingTimesParams
     end
