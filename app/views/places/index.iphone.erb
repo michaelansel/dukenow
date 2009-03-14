@@ -1,0 +1,13 @@
+<h2>Listing places</h2>
+
+<ul>
+<% for place in @places %>
+  <% if (open = place.open?) %>
+  <li class="placeOpen">
+  <% else %>
+  <li class="placeClosed">
+  <% end %>
+    <%= link_to place.name, place, :class => "placeData" %></td>
+  </li>
+<% end %>
+</ul>

@@ -4,6 +4,8 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
+  before_filter :change_format_for_iphone
+
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => '13ac5d4b0fad8994b91b9254a0cf7661'
@@ -12,4 +14,9 @@ class ApplicationController < ActionController::Base
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
+
+
+  def change_format_for_iphone
+    request.format = :iphone if ApplicationHelper::iphone_user_agent?(request)
+  end
 end

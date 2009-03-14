@@ -6,17 +6,17 @@ table {
   border-collapse: collapse;
 }
 
-tr.placeOpen td.placeData {
+.placeOpen {
   background: #79FC4E;
   color: #000000;
 }
-tr.placeOpen:hover td.placeData{
+.placeOpen:hover {
   background: #48FB0D;
 }
-tr.placeClosed td.placeData {
+.placeClosed {
   background: #FF7575;
   color: #FFFFFF
 }
-tr.placeClosed:hover td.placeData {
+.placeClosed:hover {
   background: #FF4848;
 }

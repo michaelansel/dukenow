@@ -7,8 +7,21 @@
   <title>DukeFood: Places</title>
   <%= stylesheet_link_tag 'scaffold' %>
   <%= stylesheet_link_tag 'places' %>
+
+  <% if iphone_user_agent? -%>
+    <%= stylesheet_link_tag 'iphone'%>
+    <meta name="viewport" content="width = device-width" />
+  <% end -%>
+
 </head>
 <body>
+
+<% if iphone_user_agent? and request.format != :iphone # Show message for iPhone users -%>
+<div class="message">
+    <p>Using an iPhone? <a href="http://i.dukefood.datadrop.biz/">Use the optimised version</a>.</p>
+</div>
+<% end -%>
+
 
 <h1>DukeFood</h1>
 

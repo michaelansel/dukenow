@@ -2,11 +2,11 @@ class Place < ActiveRecord::Base
   has_many :operating_times
 
   def special_operating_times
-    operating_times.collect{|t| t.special ? t : nil }.compact
+    OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) > 0", id] )
   end
 
   def regular_operating_times
-    operating_times.collect{|t| t.special ? nil : t }.compact
+    OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) == 0", id] )
   end
 
   def daySchedule(at = Date.today)

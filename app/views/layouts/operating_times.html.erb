@@ -6,6 +6,12 @@
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>DukeFood: OperatingTimes</title>
   <%= stylesheet_link_tag 'scaffold' %>
+
+  <% if iphone_user_agent? %>
+    <%= stylesheet_link_tag 'iphone'%>
+    <meta name="viewport" content="width = device-width" />
+  <% end %>
+
 </head>
 <body>
 
