@@ -13,7 +13,7 @@
 
 <% for operating_time in @operating_times %>
   <tr>
-    <td><%=h operating_time.place %></td>
+    <td><%=h operating_time.place.name %></td>
     <td><%=h operating_time.opensAt %></td>
     <td><%=h operating_time.closesAt %></td>
     <td><%=h operating_time.details %></td>

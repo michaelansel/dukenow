@@ -34,6 +34,32 @@ module RelativeTimes
     def closesAt=(params = {})
       closesAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
     end
+
+
+
+    def daysOfWeekHash
+      daysOfWeek = 127 if daysOfWeek.nil?
+
+      { :sunday    => (daysOfWeek &  1) > 0,  # Sunday
+        :monday    => (daysOfWeek &  2) > 0,  # Monday
+        :tuesday   => (daysOfWeek &  4) > 0,  # Tuesday
+        :wednesday => (daysOfWeek &  8) > 0,  # Wednesday
+        :thursday  => (daysOfWeek & 16) > 0,  # Thursday
+        :friday    => (daysOfWeek & 32) > 0,  # Friday
+        :saturday  => (daysOfWeek & 64) > 0}  # Saturday
+    end
+
+    def daysOfWeekArray
+      daysOfWeek = 127 if daysOfWeek.nil?
+
+      [ daysOfWeek &  1 > 0,  # Sunday
+        daysOfWeek &  2 > 0,  # Monday
+        daysOfWeek &  4 > 0,  # Tuesday
+        daysOfWeek &  8 > 0,  # Wednesday
+        daysOfWeek & 16 > 0,  # Thursday
+        daysOfWeek & 32 > 0,  # Friday
+        daysOfWeek & 64 > 0]  # Saturday
+    end
   end
 
   module ControllerMethods

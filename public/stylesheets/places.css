@@ -1,0 +1,9 @@
+
+tr.placeOpen td.placeData {
+  background: #00FF00;
+  color: #000000;
+}
+tr.placeClosed td.placeData {
+  background: #FF0000;
+  color: #FFFFFF
+}

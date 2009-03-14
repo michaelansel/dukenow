@@ -21,23 +21,23 @@ class PlacesControllerTest < ActionController::TestCase
   end
 
   test "should show place" do
-    get :show, :id => places(:one).id
+    get :show, :id => places(:loop).id
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :id => places(:one).id
+    get :edit, :id => places(:loop).id
     assert_response :success
   end
 
   test "should update place" do
-    put :update, :id => places(:one).id, :place => { }
+    put :update, :id => places(:loop).id, :place => { }
     assert_redirected_to place_path(assigns(:place))
   end
 
   test "should destroy place" do
     assert_difference('Place.count', -1) do
-      delete :destroy, :id => places(:one).id
+      delete :destroy, :id => places(:loop).id
     end
 
     assert_redirected_to places_path

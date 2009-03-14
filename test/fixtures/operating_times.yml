@@ -1,19 +1,28 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  place: 
-  opensAt: 1
-  closesAt: 1
-  details: MyText
-  flags: 1
-  startDate: 2009-03-13
-  endDate: 2009-03-13
 
-two:
-  place: 
-  opensAt: 1
-  closesAt: 1
-  details: MyText
-  flags: 1
-  startDate: 2009-03-13
-  endDate: 2009-03-13
+<% nowSeconds = Time.now.hour.hours + Time.now.min.minutes %>
+
+
+openNow:
+  place: greathall
+  opensAt: <%= nowSeconds - 1.hours %>
+  closesAt: <%= nowSeconds + 1.hours %>
+  details: Open right now for dine-in (not special)
+  flags: <%= OperatingTime::ALLDAYS_FLAG | OperatingTime::DINE_IN_FLAG %>
+
+openNowDifferentWeekday:
+  place: greathall
+  opensAt: <%= nowSeconds - 1.hours %>
+  closesAt: <%= nowSeconds + 1.hours %>
+  details: Open right now for dine-in, but on a different day of the week (not special)
+  flags: <%= OperatingTime::DINE_IN_FLAG %>
+
+openNowSpecial:
+  place: greathall
+  opensAt: <%= nowSeconds - 1.hours %>
+  closesAt: <%= nowSeconds + 1.hours %>
+  startDate: <%= Date.today - 1.day %>
+  endDate: <%= Date.today + 1.day %>
+  details: Open right now for dine-in (not special)
+  flags: <%= OperatingTime::ALLDAYS_FLAG | OperatingTime::DINE_IN_FLAG | OperatingTime::SPECIAL_FLAG %>

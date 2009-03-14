@@ -14,6 +14,7 @@ class OperatingTimesController < ApplicationController
   # GET /operating_times/1.xml
   def show
     @operating_time = OperatingTime.find(params[:id])
+    @places = Place.find(:all)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -25,6 +26,7 @@ class OperatingTimesController < ApplicationController
   # GET /operating_times/new.xml
   def new
     @operating_time = OperatingTime.new
+    @places = Place.find(:all)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -35,6 +37,7 @@ class OperatingTimesController < ApplicationController
   # GET /operating_times/1/edit
   def edit
     @operating_time = OperatingTime.find(params[:id])
+    @places = Place.find(:all)
   end
 
   # POST /operating_times

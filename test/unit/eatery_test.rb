@@ -9,8 +9,8 @@ class EateryTest < ActiveSupport::TestCase
     assert Eatery, Eatery.new
   end
 
-  test "Eatery should be open during the regular operating time" do
-    regular_operating_time(:open).eatery = eatery(:loop)
-    assert true, eatery(:loop).open
-  end
+  #test "Eatery should be open during the regular operating time" do
+    #regular_operating_time(:open).eatery = eatery(:loop)
+    #assert true, eatery(:loop).open
+  #end
 end

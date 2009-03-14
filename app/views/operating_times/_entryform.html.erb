@@ -1,6 +1,6 @@
   <p>
-    <%= f.label :eatery %><br />
-    <%= f.collection_select :eatery_id, @eateries, :id, :name %>
+    <%= f.label :place %><br />
+    <%= f.collection_select :place_id, @places, :id, :name %>
   </p>
 
   <p>
@@ -27,6 +27,7 @@
     <% end %>
     </div>
   </p>
+
   <script>
 function toggle(element_id) {
   a=document.getElementById(element_id);
@@ -43,9 +44,9 @@ function toggle(element_id) {
 
   <p>
     <%= f.label :start %><br />
-    <%= f.date_select :start %>
+    <%= f.date_select :startDate %>
   </p>
   <p>
     <%= f.label :end %><br />
-    <%= f.date_select :end %>
+    <%= f.date_select :endDate %>
   </p>

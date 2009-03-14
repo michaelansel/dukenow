@@ -21,23 +21,23 @@ class OperatingTimesControllerTest < ActionController::TestCase
   end
 
   test "should show operating_time" do
-    get :show, :id => operating_times(:one).id
+    get :show, :id => operating_times(:openNow).id
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :id => operating_times(:one).id
+    get :edit, :id => operating_times(:openNow).id
     assert_response :success
   end
 
   test "should update operating_time" do
-    put :update, :id => operating_times(:one).id, :operating_time => { }
+    put :update, :id => operating_times(:openNow).id, :operating_time => { }
     assert_redirected_to operating_time_path(assigns(:operating_time))
   end
 
   test "should destroy operating_time" do
     assert_difference('OperatingTime.count', -1) do
-      delete :destroy, :id => operating_times(:one).id
+      delete :destroy, :id => operating_times(:openNow).id
     end
 
     assert_redirected_to operating_times_path
