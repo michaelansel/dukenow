@@ -1,7 +1,7 @@
 class CreateOperatingTimes < ActiveRecord::Migration
   def self.up
     create_table :operating_times do |t|
-      t.reference :place
+      t.references :place
       t.integer :opensAt
       t.integer :closesAt
       t.text :details

@@ -3,6 +3,12 @@
 <% form_for(@operating_time) do |f| %>
   <%= f.error_messages %>
 
+  <%= render :partial => 'entryform', :locals => {:f => f} %>
+
+
+<%
+=begin
+%>
   <p>
     <%= f.label :place %><br />
     <%= f.text_field :place %>
@@ -31,6 +37,11 @@
     <%= f.label :endDate %><br />
     <%= f.date_select :endDate %>
   </p>
+<%
+=end
+%>
+
+
   <p>
     <%= f.submit "Create" %>
   </p>

@@ -1,0 +1,51 @@
+  <p>
+    <%= f.label :eatery %><br />
+    <%= f.collection_select :eatery_id, @eateries, :id, :name %>
+  </p>
+
+  <p>
+    <%= f.label :opensAt %><br />
+    <%= select_time f.object.opensAt.time, :prefix => "#{f.object_name}[opensAt]" %>
+  </p>
+
+  <p>
+    <%= f.label :closesAt %><br />
+    <%= select_time f.object.closesAt.time, :prefix => "#{f.object_name}[closesAt]" %>
+  </p>
+
+  <p>
+    <%= f.label :daysOfWeek %><br />
+    <div style="height:+2em;">
+    <% Date::DAYNAMES.each_index do |i| %>
+      <span onclick="toggle('daysOfWeek_<%=h Date::DAYNAMES[i].to_s.capitalize %>')">
+      <label id="daysOfWeek_<%=h Date::DAYNAMES[i].to_s.capitalize%>" style="font-weight:<%= f.object.daysOfWeekArray[i] ? "bold" : "normal" %>;font-size:<%= f.object.daysOfWeekArray[i] ? "+2em" : "+1em" %>;">
+      <%=h Date::DAYNAMES[i].to_s.capitalize %>
+      <%= check_box_tag "#{f.object_name}[daysOfWeekHash][]", 
+            Date::DAYNAMES[i].downcase.to_sym, f.object.daysOfWeekArray[i], :style => 'display:none;'  %>
+      </label>
+      </span>
+    <% end %>
+    </div>
+  </p>
+  <script>
+function toggle(element_id) {
+  a=document.getElementById(element_id);
+  b=document.getElementById(element_id).getElementsByTagName('input')[0];
+  if(b.checked) {
+    a.style['fontWeight']='bold';
+    a.style['fontSize']='+2em';
+  } else {
+    a.style['fontWeight']='normal';
+    a.style['fontSize']='+1em';
+  }
+}
+  </script>
+
+  <p>
+    <%= f.label :start %><br />
+    <%= f.date_select :start %>
+  </p>
+  <p>
+    <%= f.label :end %><br />
+    <%= f.date_select :end %>
+  </p>
