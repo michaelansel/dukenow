@@ -6,6 +6,11 @@
     <th>Location</th>
     <th>Phone</th>
     <th>Current Schedule</th>
+    <th class="daygraph"><div>
+      <% 24.times do |hour| -%>
+      <div style="<%= time_label_style(hour) %>"><%= hour.to_s %></div>
+      <% end -%>
+    </div></tr>
   </tr>
 
   <style>
@@ -26,7 +31,11 @@
         <%= link_to "#{schedule.opensAt.to_s} - #{schedule.closesAt.to_s}", schedule %>
       <% end %>
     </td>
-    <td><%= link_to 'More Info', place %></td>
+    <td class="daygraph"><div>
+      <% place.daySchedule.each do |time_block| -%>
+        <div style="<%= time_block_style(time_block) %>"></div>
+      <% end -%>
+    </div></td>
 <%
 =begin
 %>

@@ -6,6 +6,7 @@ class OperatingTimesController < ApplicationController
   def index
     @operating_times = OperatingTime.find(:all)
 
+    request.format = :html if request.format == :iphone
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @operating_times }
@@ -18,6 +19,7 @@ class OperatingTimesController < ApplicationController
     @operating_time = OperatingTime.find(params[:id])
     @places = Place.find(:all)
 
+    request.format = :html if request.format == :iphone
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @operating_time }
@@ -30,6 +32,7 @@ class OperatingTimesController < ApplicationController
     @operating_time = OperatingTime.new
     @places = Place.find(:all)
 
+    request.format = :html if request.format == :iphone
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @operating_time }
@@ -49,6 +52,7 @@ class OperatingTimesController < ApplicationController
 
     @operating_time = OperatingTime.new(params[:operating_time])
 
+    request.format = :html if request.format == :iphone
     respond_to do |format|
       if @operating_time.save
         flash[:notice] = 'OperatingTime was successfully created.'
@@ -68,6 +72,7 @@ class OperatingTimesController < ApplicationController
 
     params[:operating_time] = operatingTimesFormHandler(params[:operating_time])
 
+    request.format = :html if request.format == :iphone
     respond_to do |format|
       if @operating_time.update_attributes(params[:operating_time])
         flash[:notice] = 'OperatingTime was successfully updated.'
@@ -86,6 +91,7 @@ class OperatingTimesController < ApplicationController
     @operating_time = OperatingTime.find(params[:id])
     @operating_time.destroy
 
+    request.format = :html if request.format == :iphone
     respond_to do |format|
       format.html { redirect_to(operating_times_url) }
       format.xml  { head :ok }

@@ -1,9 +1,12 @@
 table tr td {
   padding: 7px;
+  width: 12%
 }
 
 table {
   border-collapse: collapse;
+  position: relative;
+  width: 100%;
 }
 
 .placeOpen {
@@ -15,8 +18,49 @@ table {
 }
 .placeClosed {
   background: #FF7575;
-  color: #FFFFFF
+  color: #000000;
 }
 .placeClosed:hover {
   background: #FF4848;
+}
+
+.daygraph {
+  background-color: #FFFFFF;
+  width: 50%;
+}
+
+.daygraph div {
+  position: relative;
+  height: 18px;
+}
+
+.daygraph div div {
+  position: absolute;
+  height: 18px;
+}
+
+
+.placeOpen div div {
+  background: #79FC4E;
+}
+
+.placeClosed div div {
+  background: #79FC4E;
+}
+
+
+.placeOpen:hover .daygraph div div {
+  background: #48FB0D;
+}
+
+.placeOpen:hover .daygraph {
+  background: #99FD77;
+}
+
+.placeClosed:hover .daygraph div div {
+  background: #FF4848;
+}
+
+.placeClosed:hover .daygraph {
+  background: #FF9797;
 }

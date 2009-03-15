@@ -19,7 +19,6 @@ class PlacesController < ApplicationController
     request.format = :html if request.format == :iphone
     respond_to do |format|
       format.html # show.html.erb
-      format.iphone { render :format => :html } # index.iphone.erb
       format.xml  { render :xml => @place }
     end
   end
