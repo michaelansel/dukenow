@@ -40,13 +40,30 @@ function toggle(element_id) {
     a.style['fontSize']='+1em';
   }
 }
+
+function updateSpecialForm() {
+  if(document.getElementById("operating_time_special").checked) {
+    <%= visual_effect(:appear, "specialForm", :duration => 0) %>
+  } else {
+    <%= visual_effect(:fade, "specialForm", :duration => 0) %>
+  }
+}
   </script>
 
   <p>
-    <%= f.label :start %><br />
-    <%= f.date_select :startDate %>
+  <label>Special?
+      <%= f.check_box :special, {:onchange => 'updateSpecialForm()'}, "true", "false" %>
+  </label>
   </p>
-  <p>
-    <%= f.label :end %><br />
-    <%= f.date_select :endDate %>
-  </p>
+
+
+  <span id="specialForm" style="display:<%= f.object.special ? "" : "none" %>;">
+    <p>
+      <%= f.label :start %><br />
+      <%= f.date_select :startDate %>
+    </p>
+    <p>
+      <%= f.label :end %><br />
+      <%= f.date_select :endDate %>
+    </p>
+  </span>

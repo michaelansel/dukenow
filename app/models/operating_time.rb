@@ -37,9 +37,9 @@ class OperatingTime < ActiveRecord::Base
   end
 
   def special=(isSpecial)
-    if isSpecial
+    if isSpecial == true or isSpecial == "true" or isSpecial == 1
       self.flags = self.flags |  SPECIAL_FLAG
-    else
+    elsif isSpecial == false or isSpecial == "false" or isSpecial == 0
       self.flags = self.flags & ~SPECIAL_FLAG
     end
   end
