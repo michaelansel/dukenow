@@ -15,9 +15,9 @@
 
   <p>
     <%= f.label :daysOfWeek %><br />
-    <div style="height:+2em;">
+    <table style="height:+3em;"><tr>
     <% Date::DAYNAMES.each_index do |i| %>
-      <span onclick="toggle('daysOfWeek_<%=h Date::DAYNAMES[i].to_s.capitalize %>')">
+      <td onclick="toggleCheckbox('daysOfWeek_<%=h Date::DAYNAMES[i].to_s.capitalize %>')">
       <label id="daysOfWeek_<%=h Date::DAYNAMES[i].to_s.capitalize%>" style="font-weight:<%= f.object.daysOfWeekArray[i] ? "bold" : "normal" %>;font-size:<%= f.object.daysOfWeekArray[i] ? "+2em" : "+1em" %>;">
       <%=h Date::DAYNAMES[i].to_s.capitalize %>
       <%= check_box_tag "#{f.object_name}[daysOfWeekHash][]", 
@@ -25,11 +25,11 @@
       </label>
       </span>
     <% end %>
-    </div>
+    </tr></table>
   </p>
 
   <script>
-function toggle(element_id) {
+function toggleCheckbox(element_id) {
   a=document.getElementById(element_id);
   b=document.getElementById(element_id).getElementsByTagName('input')[0];
   if(b.checked) {
