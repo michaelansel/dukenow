@@ -5,7 +5,7 @@ class PlacesController < ApplicationController
     @places = Place.find(:all)
 
     params[:at] = Date.today.to_s if params[:at].nil?
-    @at = Date.parse(params[:at]).to_time
+    @at = Date.parse(params[:at])
 
     respond_to do |format|
       format.html # index.html.erb

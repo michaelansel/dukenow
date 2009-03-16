@@ -25,7 +25,7 @@ class Place < ActiveRecord::Base
     # Find all operating times for this place that are:
     # - NOT Special
     # - Are effective on weekday "at.wday"
-    schedule = OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) == 0 and (flags & ?) > 0", id, 1 << at.wday] )
+      schedule = OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) == 0 and (flags & ?) > 0", id, 1 << at.wday] )
     end
 
     schedule.sort{|a,b|a.opensAt.offset <=> b.opensAt.offset}
