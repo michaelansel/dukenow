@@ -4,6 +4,9 @@ class PlacesController < ApplicationController
   def index
     @places = Place.find(:all)
 
+    params[:at] = Date.today.to_s if params[:at].nil?
+    @at = Date.parse(params[:at]).to_time
+
     respond_to do |format|
       format.html # index.html.erb
       format.iphone { render :layout => "places.html.erb" } # index.iphone.erb

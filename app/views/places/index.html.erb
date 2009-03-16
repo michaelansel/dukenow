@@ -1,5 +1,12 @@
 <h2>Listing places</h2>
 
+
+<div style="position:absolute; right:0; top:0;">
+  <a href="?at=<%= Date.today         %>">Today</a><br/>
+  <a href="?at=<%= Date.today + 1.day %>">Tomorrow</a><br/>
+  <a href="?at=<%= Date.today + 2.day %>"><%= Date::DAYNAMES[(Date.today + 2.day).wday] %></a>
+</div>
+
 <table>
   <tr>
     <th>Name</th>
@@ -10,6 +17,8 @@
       <% 24.times do |hour| -%>
       <div style="<%= time_label_style(hour) %>"><%= hour.to_s %></div>
       <% end -%>
+      <div id="nowIndicator" style="<%= time_label_style(Time.now.hour) %>; width: 2px; background-color: red; z-index: 1;"/>
+      <script>function sizeTime(){document.getElementById('nowIndicator').style.height = document.getElementsByTagName('table')[0].getHeight().toString() + "px";};document.body.setAttribute('onload','sizeTime()');</script>
     </div></tr>
   </tr>
 
@@ -32,7 +41,7 @@
       <% end %>
     </td>
     <td class="daygraph"><div>
-      <% place.daySchedule.each do |time_block| -%>
+      <% place.daySchedule(@at).each do |time_block| -%>
         <div style="<%= time_block_style(time_block) %>"></div>
       <% end -%>
     </div></td>

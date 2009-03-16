@@ -10,17 +10,17 @@ module PlacesHelper
     open = time_block.opensAt.offset
     close = time_block.closesAt.offset
 
-    left = (open - @startTime) * 100 / @length
-    width = (close - open) * 100 / @length
+    left = (open - @startTime) * 100.0 / @length
+    width = (close - open) * 100.0 / @length
 
-    "left: #{left.to_i.to_s}%; width: #{width.to_i.to_s}%;"
+    "left: #{left.to_s}%; width: #{width.to_i.to_s}%;"
   end
 
   def time_label_style(hour)
     settimes
     time = hour.hours
-    left = (time - @startTime) * 100 / @length
+    left = (time - @startTime) * 100.0 / @length
 
-    "left: #{left.to_i.to_s}%;"
+    "left: #{left.to_s}%;"
   end
 end
