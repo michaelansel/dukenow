@@ -17,7 +17,6 @@ class OperatingTimesController < ApplicationController
   # GET /operating_times/1.xml
   def show
     @operating_time = OperatingTime.find(params[:id])
-    @places = Place.find(:all)
 
     request.format = :html if request.format == :iphone
     respond_to do |format|
@@ -30,7 +29,7 @@ class OperatingTimesController < ApplicationController
   # GET /operating_times/new.xml
   def new
     @operating_time = OperatingTime.new
-    @places = Place.find(:all)
+    @places = Place.find(:all, :order => "name ASC")
 
     request.format = :html if request.format == :iphone
     respond_to do |format|
@@ -42,7 +41,7 @@ class OperatingTimesController < ApplicationController
   # GET /operating_times/1/edit
   def edit
     @operating_time = OperatingTime.find(params[:id])
-    @places = Place.find(:all)
+    @places = Place.find(:all, :order => "name ASC")
   end
 
   # POST /operating_times
