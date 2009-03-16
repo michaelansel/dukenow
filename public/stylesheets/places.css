@@ -1,4 +1,4 @@
-table tr td {
+table tr td,th {
   padding: 7px;
   width: 12%
 }

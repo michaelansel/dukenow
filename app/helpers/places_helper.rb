@@ -1,7 +1,7 @@
 module PlacesHelper
   def settimes
     @startTime = 0 # hard coded midnight start time for window (for dev/testing only)
-    @length = 24.hours - 1 # 12 hour window
+    @length = 24.hours - 1 # 24 hour window
     @endTime = @startTime + @length
   end
 
@@ -13,12 +13,18 @@ module PlacesHelper
     left = (open - @startTime) * 100.0 / @length
     width = (close - open) * 100.0 / @length
 
-    "left: #{left.to_s}%; width: #{width.to_i.to_s}%;"
+    "left: #{left.to_s}%; width: #{width.to_s}%;"
   end
 
-  def time_label_style(hour)
+  def time_label_style(at)
     settimes
-    time = hour.hours
+    case at
+      when Time
+        time = at.hour.hours + at.min.minutes
+      when Integer
+        time = at.to_i.hours
+    end
+        
     left = (time - @startTime) * 100.0 / @length
 
     "left: #{left.to_s}%;"
