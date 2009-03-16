@@ -15,7 +15,12 @@
     <th>Current Schedule</th>
     <th class="daygraph"><div>
       <% 24.times do |hour| -%>
-      <div style="<%= time_label_style(hour) %>"><%= hour.to_s %></div>
+        <% if hour % 2 == 0 %>
+          <% colors = "background-color: black; color: white;" %>
+        <% else %>
+          <% colors = "background-color: white; color: black;" %>
+        <% end %>
+      <div style="<%= time_block_style(hour.hours,(hour+1).hours) + colors %> z-index: 2;"><%= hour.to_s %></div>
       <% end -%>
       <div id="nowIndicator" style="<%= time_label_style(Time.now) %>; width: 2px; background-color: red; z-index: 1;"/>
       <script>function sizeTime(){document.getElementById('nowIndicator').style.height = document.getElementsByTagName('table')[0].getHeight().toString() + "px";};document.body.setAttribute('onload','sizeTime()');</script>

@@ -5,10 +5,22 @@ module PlacesHelper
     @endTime = @startTime + @length
   end
 
-  def time_block_style(time_block)
+  def time_block_style(time_block_or_start_offset,end_offset = nil)
     settimes
-    open = time_block.opensAt.offset
-    close = time_block.closesAt.offset
+    if end_offset.nil?
+
+      if time_block_or_start_offset.class == OperatingTime
+        open = time_block_or_start_offset.opensAt.offset
+        close = time_block_or_start_offset.closesAt.offset
+
+      else
+        return time_label_style(time_block_or_start_offset)
+      end
+
+    else
+      open = time_block_or_start_offset
+      close = end_offset
+    end
 
     left = (open - @startTime) * 100.0 / @length
     width = (close - open) * 100.0 / @length
@@ -21,7 +33,7 @@ module PlacesHelper
     case at
       when Time
         time = at.hour.hours + at.min.minutes
-      when Integer
+      when Integer,Fixnum,Float
         time = at.to_i.hours
     end
         
