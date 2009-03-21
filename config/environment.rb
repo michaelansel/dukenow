@@ -55,7 +55,7 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_DukeFood_session',
+    :session_key => '_DukeNow_session',
     :secret      => '8e8355b37da6a989cc5989da3b5bcb79f4b30d3e4b02ecf47ba68d716292194eb939ea71e068c13f3676158f16dd74577017f3838505ef7ed8043f3a65e87741'
   }
 
