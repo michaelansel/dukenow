@@ -42,6 +42,8 @@ class OperatingTimesController < ApplicationController
   def edit
     @operating_time = OperatingTime.find(params[:id])
     @places = Place.find(:all, :order => "name ASC")
+
+    request.format = :html if request.format == :iphone
   end
 
   # POST /operating_times

@@ -41,6 +41,8 @@ class PlacesController < ApplicationController
   # GET /places/1/edit
   def edit
     @place = Place.find(params[:id])
+
+    request.format = :html if request.format == :iphone
   end
 
   # POST /places
