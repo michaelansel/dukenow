@@ -1,5 +1,6 @@
 class Place < ActiveRecord::Base
   has_many :operating_times
+  acts_as_taggable_on :tags
 
   def special_operating_times
     OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) > 0", id] )

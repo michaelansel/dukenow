@@ -3,6 +3,8 @@ class OperatingTime < ActiveRecord::Base
   include RelativeTimes::InstanceMethods
 
   belongs_to :place
+  validates_presence_of :place_id
+  validates_associated :place
 
   # Base flags
   SUNDAY_FLAG     = 0b00000000001
