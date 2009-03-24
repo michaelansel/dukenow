@@ -1,8 +1,14 @@
 class PlacesController < ApplicationController
+  ActionView::Base.send :include, TagsHelper
   # GET /places
   # GET /places.xml
   def index
-    @places = Place.find(:all, :order => "name ASC")
+    if params[:tags]
+      @places = Place.tagged_with(params[:tags], :on => :tags)
+    else
+      @places = Place.find(:all, :order => "name ASC")
+    end
+    @tags = Place.tag_counts_on(:tags)
 
     params[:at] = Date.today.to_s if params[:at].nil?
     @at = Date.parse(params[:at])
@@ -12,6 +18,10 @@ class PlacesController < ApplicationController
       format.iphone { render :layout => "places.html.erb" } # index.iphone.erb
       format.xml  { render :xml => @places }
     end
+  end
+
+  def tag
+    redirect_to :action => :index, :tags => params.delete(:id)
   end
 
   # GET /places/1
@@ -48,6 +58,10 @@ class PlacesController < ApplicationController
   # POST /places
   # POST /places.xml
   def create
+    if params[:place][:tag_list]
+      params[:place][:tag_list].strip!
+      params[:place][:tag_list].gsub!(/( )+/,', ')
+    end
     @place = Place.new(params[:place])
 
     request.format = :html if request.format == :iphone
@@ -67,6 +81,10 @@ class PlacesController < ApplicationController
   # PUT /places/1.xml
   def update
     @place = Place.find(params[:id])
+    if params[:place][:tag_list]
+      params[:place][:tag_list].strip!
+      params[:place][:tag_list].gsub!(/( )+/,', ')
+    end
 
     request.format = :html if request.format == :iphone
     respond_to do |format|
