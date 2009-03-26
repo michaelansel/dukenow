@@ -44,10 +44,12 @@
         <% 24.times do |hour| -%>
         <div class="color<%= hour % 2 + 1 %>" class="timeblock" style="<%= vertical_time_block_style(hour.hours,(hour+1).hours) %> z-index: 2;"><%= hour.to_s %></div>
         <% end -%>
+        <%= now_indicator %>
       </div>
 
     <% 7.times do |i| %>
       <div class="dayColumn">
+        <%= now_indicator if i == 0 %>
       <% @place.daySchedule(Date.today + i.days).each do |schedule| %>
         <div class="timeblock" style="<%= vertical_time_block_style(schedule) %>"></div>
         <% schedule.special ? "Special:" : "Regular:" %> 
@@ -56,7 +58,6 @@
       </div>
     <% end %>
 
-      <div id="nowIndicator" style="top:<%= a=Time.now; (a.hour.hours + a.min.minutes) * 100.0 / 24.hours %>%;"></div>
     </div>
 
   </div>

@@ -65,4 +65,12 @@ module PlacesHelper
 
     "left: #{left.to_s}%;"
   end
+
+  def now_indicator(at=Time.now, opts={})
+    settimes
+
+    start = (at.hour.hours + at.min.minutes) * 100.0 / @length
+    "<div class=\"nowIndicator\" style=\"top:#{start.to_s}%;\"></div>"
+  end
+
 end
