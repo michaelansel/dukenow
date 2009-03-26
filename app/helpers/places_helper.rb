@@ -28,6 +28,30 @@ module PlacesHelper
     "left: #{left.to_s}%; width: #{width.to_s}%;"
   end
 
+  def vertical_time_block_style(time_block_or_start_offset,end_offset = nil)
+    settimes
+
+    if end_offset.nil?
+
+      if time_block_or_start_offset.class == OperatingTime
+        open = time_block_or_start_offset.opensAt.offset
+        close = time_block_or_start_offset.closesAt.offset
+
+      else
+        return time_label_style(time_block_or_start_offset)
+      end
+
+    else
+      open = time_block_or_start_offset
+      close = end_offset
+    end
+    
+    top = (open-@startTime)*100.0/@length
+    height = (close-open)*100.0/@length
+
+    "top: #{top.to_s}%;height: #{height.to_s}%;"
+  end
+
   def time_label_style(at)
     settimes
     case at

@@ -64,3 +64,109 @@ table {
 .placeClosed:hover .daygraph {
   background: #FF9797;
 }
+
+
+
+
+.weekSchedule {
+  position: relative;
+  clear: both;
+  height: 42em; // Header + Data heights
+}
+
+.weekSchedule .header,
+.weekSchedule .header .labelColumn,
+.weekSchedule .header .dayColumn {
+  height: 2em;
+  line-height: 2em;
+}
+
+.weekSchedule .header .labelColumn,
+.weekSchedule .header .dayColumn {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+}
+
+.weekSchedule .header .labelColumn {
+  height: 2em;
+  float: left;
+  background-color: #EEEEEE;
+  padding: 0 1px 1px 0;
+  border-color: black;
+  border-style: solid;
+  border-width: 1px 0 0 1px;
+}
+
+.weekSchedule .data {
+  position: absolute;
+  left:  0;
+  right: 0;
+  width: auto;
+}
+
+.weekSchedule .data .labelColumn {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+}
+.weekSchedule .data .dayColumn {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px 1px 1px 0;
+}
+
+.weekSchedule .data,
+.weekSchedule .labelColumn,
+.weekSchedule .dayColumn {
+  height: 40em;
+}
+
+.weekSchedule .labelColumn,
+.weekSchedule .dayColumn {
+  background-color: #EEEEEE;
+  position: relative;
+  float: left;
+  text-align: center;
+}
+
+.weekSchedule .dayColumn {
+  width: 10%;
+}
+
+.weekSchedule .dayColumn .timeblock {
+  background-color: #79FC4E;
+  position: absolute;
+  width: auto;
+  left: 10%;
+  right: 10%;
+}
+
+.weekSchedule .labelColumn {
+  width: 20px;
+  z-index: 2;
+}
+
+.weekSchedule .header .dayColumn {
+  font-size: 1em;
+  font-weight: bold;
+  border-right: 1px solid black;
+}
+
+.weekSchedule .labelColumn .color1 {
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.weekSchedule .labelColumn .color2 {
+  background-color: #EEEEEE;
+  color: #000000;
+}
+
+.weekSchedule #nowIndicator {
+  position: absolute;
+  background-color: red;
+  height:2px;
+  width:100%;
+  z-index: 1;
+}

@@ -1,5 +1,13 @@
 class PlacesController < ApplicationController
   ActionView::Base.send :include, TagsHelper
+
+  before_filter :get_at_date
+
+  def get_at_date
+    params[:at] = Date.today.to_s if params[:at].nil?
+    @at = Date.parse(params[:at])
+  end
+
   # GET /places
   # GET /places.xml
   def index
@@ -9,9 +17,6 @@ class PlacesController < ApplicationController
       @places = Place.find(:all, :order => "name ASC")
     end
     @tags = Place.tag_counts_on(:tags)
-
-    params[:at] = Date.today.to_s if params[:at].nil?
-    @at = Date.parse(params[:at])
 
     respond_to do |format|
       format.html # index.html.erb
