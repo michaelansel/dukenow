@@ -166,7 +166,7 @@ table {
   color: #000000;
 }
 
-.weekSchedule #nowIndicator {
+.weekSchedule .nowIndicator {
   position: absolute;
   background-color: red;
   height:2px;
