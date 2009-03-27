@@ -11,11 +11,18 @@ class PlacesController < ApplicationController
   # GET /places
   # GET /places.xml
   def index
+    @places = Place.find(:all, :order => "name ASC")
+
+    # Restrict to specific tags
     if params[:tags]
-      @places = Place.tagged_with(params[:tags], :on => :tags)
-    else
-      @places = Place.find(:all, :order => "name ASC")
+
+      params[:tags].split(/[,+ ][ ]*/).each do |tag|
+        RAILS_DEFAULT_LOGGER.debug "Restricting by tag: #{tag}"
+        @places = @places & Place.tagged_with(tag, :on => :tags)
+      end
+
     end
+
     @tags = Place.tag_counts_on(:tags)
 
     respond_to do |format|

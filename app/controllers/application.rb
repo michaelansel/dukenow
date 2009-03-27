@@ -22,7 +22,8 @@ class ApplicationController < ActionController::Base
   end
 
   def compress
-    if  self.request.env['HTTP_ACCEPT_ENCODING'].match(/gzip/) and
+    if  self.request.env['HTTP_ACCEPT_ENCODING'] and
+        self.request.env['HTTP_ACCEPT_ENCODING'].match(/gzip/) and
         self.response.headers["Content-Transfer-Encoding"] != 'binary'
 
       self.response.body = ActiveSupport::Gzip.compress(self.response.body)
