@@ -3,12 +3,13 @@
 <table>
   <tr>
     <th>Place</th>
-    <th>Opensat</th>
-    <th>Closesat</th>
+    <th>Opens At</th>
+    <th>Closes At</th>
     <th>Details</th>
+    <th>Days Of Week</th>
     <th>Flags</th>
-    <th>Startdate</th>
-    <th>Enddate</th>
+    <th>Start Date</th>
+    <th>End Date</th>
   </tr>
 
 <% for operating_time in @operating_times %>
@@ -17,6 +18,7 @@
     <td><%=h operating_time.opensAt %></td>
     <td><%=h operating_time.closesAt %></td>
     <td><%=h operating_time.details %></td>
+    <td><%=h operating_time.daysOfWeekString %></td>
     <td><%=h operating_time.flags %></td>
     <td><%=h operating_time.startDate %></td>
     <td><%=h operating_time.endDate %></td>

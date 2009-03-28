@@ -55,4 +55,18 @@ class OperatingTime < ActiveRecord::Base
     sum
   end
 
+  def daysOfWeekString
+    str = ""
+
+    str += "Su" if flags & SUNDAY_FLAG > 0
+    str += "M" if flags & MONDAY_FLAG > 0
+    str += "Tu" if flags & TUESDAY_FLAG > 0
+    str += "W" if flags & WEDNESDAY_FLAG > 0
+    str += "Th" if flags & THURSDAY_FLAG > 0
+    str += "F" if flags & FRIDAY_FLAG > 0
+    str += "Sa" if flags & SATURDAY_FLAG > 0
+
+    str
+  end
+
 end
