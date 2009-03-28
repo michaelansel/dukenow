@@ -4,6 +4,11 @@
   </p>
 
   <p>
+    <%= f.label :details %><br />
+    <%= f.text_field :details %><br />
+  </p>
+
+  <p>
     <%= f.label :opensAt %><br />
     <%= select_time f.object.opensAt.time, :prefix => "#{f.object_name}[opensAt]" %>
   </p>

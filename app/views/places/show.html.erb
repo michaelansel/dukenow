@@ -24,6 +24,10 @@
 </p>
 
 <p>
+  <b><%= link_to 'All Operating Times', '/operating_times/place/'+@place.id.to_s %></b>
+</p>
+
+<p>
   <b>Schedule for this week:</b><br/>
   <div class="weekSchedule">
 
@@ -51,9 +55,10 @@
       <div class="dayColumn">
         <%= now_indicator if i == 0 %>
       <% @place.daySchedule(Date.today + i.days).each do |schedule| %>
-        <div class="timeblock" style="<%= vertical_time_block_style(schedule) %>"></div>
-        <% schedule.special ? "Special:" : "Regular:" %> 
-        <% link_to "#{schedule.opensAt.to_s} - #{schedule.closesAt.to_s}", schedule %>
+        <div class="timeblock" style="<%= vertical_time_block_style(schedule) %>">
+          <span class="details"><%=h schedule.details %></span>
+          <% link_to "#{schedule.opensAt.to_s} - #{schedule.closesAt.to_s}", schedule %>
+        </div>
       <% end %>
       </div>
     <% end %>

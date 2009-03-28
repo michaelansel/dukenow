@@ -4,7 +4,11 @@ class OperatingTimesController < ApplicationController
   # GET /operating_times
   # GET /operating_times.xml
   def index
-    @operating_times = OperatingTime.find(:all)
+    if params[:place_id]
+      @operating_times = OperatingTime.find(:all, :conditions => ['place_id = ?',params[:place_id]])
+    else
+      @operating_times = OperatingTime.find(:all)
+    end
 
     request.format = :html if request.format == :iphone
     respond_to do |format|

@@ -1,6 +1,11 @@
 <p>
   <b>Place:</b>
-  <%=h @operating_time.place.name %>
+  <%= link_to @operating_time.place.name, @operating_time.place %>
+</p>
+
+<p>
+  <b>Details:</b>
+  <%=h @operating_time.details %>
 </p>
 
 <p>
