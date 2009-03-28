@@ -1,6 +1,8 @@
 require 'test_helper'
 
 class OperatingTimesControllerTest < ActionController::TestCase
+  fixtures :places
+
   test "should get index" do
     get :index
     assert_response :success
@@ -14,7 +16,7 @@ class OperatingTimesControllerTest < ActionController::TestCase
 
   test "should create operating_time" do
     assert_difference('OperatingTime.count') do
-      post :create, :operating_time => { }
+      post :create, :operating_time => { :place_id => places(:loop).id }
     end
 
     assert_redirected_to operating_time_path(assigns(:operating_time))

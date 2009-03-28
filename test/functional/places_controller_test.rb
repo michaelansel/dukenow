@@ -1,6 +1,16 @@
 require 'test_helper'
 
 class PlacesControllerTest < ActionController::TestCase
+
+  def setup
+    @place = places(:loop)
+    @place.tag_list = "westcampus,lunch,dinner"
+    @place.save
+    @place = places(:greathall)
+    @place.tag_list = "westcampus,lunch,dinner"
+    @place.save
+  end
+
   test "should get index" do
     get :index
     assert_response :success
