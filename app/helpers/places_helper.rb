@@ -66,6 +66,15 @@ module PlacesHelper
     "left: #{left.to_s}%;"
   end
 
+  def vertical_now_indicator(at=Time.now)
+    settimes
+    offset = 48; # offset to beginning of dayGraph == width of data cells
+
+    start = (at.hour.hours + at.min.minutes) * 100.0 / @length
+    start = (100.0 - offset) * start/100.0 + offset # incorporate offset
+    "<div class=\"verticalNowIndicator\" style=\"left:#{start.to_s}%;\"></div>"
+  end
+
   def now_indicator(at=Time.now, opts={})
     settimes
 

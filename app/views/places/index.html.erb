@@ -46,6 +46,7 @@ function handleTagClick(selectedTag,clickEvent) {
 </div>
 
 <div class="table">
+  <%= vertical_now_indicator(Time.now) %>
   <div class="headerRow">
     <div class="header">Name</div>
     <div class="header">Location</div>
@@ -57,7 +58,6 @@ function handleTagClick(selectedTag,clickEvent) {
             <%= hour.to_s %>
       </div>
       <% end -%>
-      <div id="nowIndicator" style="<%= time_label_style(Time.now) %>"></div>
       <script>//function sizeTime(){document.getElementById('nowIndicator').style.height = document.getElementsByTagName('table')[0].getHeight().toString() + "px";};document.body.setAttribute('onload','sizeTime()');</script>
     </div></div>
   </div>
