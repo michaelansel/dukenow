@@ -1,14 +1,17 @@
 .table {
   background-color: #EEEEEE;
 
-  padding: 5px;
+  border: 1px solid black;
+  margin: 1px;
   width: 100%;
   position: relative;
 }
 .headerRow, .placeRow {
   clear: both;
   height: 2em;
+  line-height: 2em;
   position: relative;
+  padding-left: 5px;
 }
 
 .placeRow .placeLink {
