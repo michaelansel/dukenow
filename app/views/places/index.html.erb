@@ -5,10 +5,37 @@
   <div style="font-size:2em;font-weight:bold;text-align:center;line-height:1.5em;">Tags</div>
   <div style="border-top: 1px solid black;padding-top:5px;">
   <% tag_cloud @tags, %w(size1 size2 size3 size4 size5 size6) do |tag, css_class| %>
-    <%= link_to tag.name, { :action => :tag, :id => tag.name }, :class => css_class %>
+    <%= link_to tag.name, { :action => :tag, :id => tag.name }, :class => css_class, :onclick => "handleTagClick('#{h tag.name}',event);return false;" %>
   <% end %>
   </div>
 </div>
+
+<script>
+function handleTagClick(selectedTag,clickEvent) {
+  if(clickEvent.shiftKey) {
+    if(document.selectedTags == null){document.selectedTags = new Array();}
+    document.selectedTags[document.selectedTags.length] = selectedTag;
+  } else {
+    document.selectedTags = new Array();
+    document.selectedTags[0] = selectedTag;
+  }
+  elements = document.getElementsByTagName('div');
+  for( i in elements ) {
+    e = elements[i];
+    if(e&&e.className&&e.className.match(/placeRow/)){
+      matchedAll = true;
+      document.selectedTags.forEach(function(selectedTag){
+        if( matchedAll && e.className.match(selectedTag) ) {
+          e.style['display'] = '';
+        }else{
+          e.style['display'] = 'none';
+          matchedAll = false;
+        }
+      });
+    }
+  }
+}
+</script>
 
 <div style="position:absolute; right:0; top:0;">
   <%= link_to "Yesterday",  :at => Date.today - 1.day %><br/>
@@ -18,60 +45,45 @@
                             :at => Date.today + 2.day %><br/>
 </div>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Location</th>
-    <th>Phone</th>
-    <th>Current Schedule</th>
-    <th class="daygraph"><div>
+<div class="table">
+  <div class="headerRow">
+    <div class="header">Name</div>
+    <div class="header">Location</div>
+    <div class="header">Phone</div>
+    <div class="dayGraph"><div class="labels">
       <% 24.times do |hour| -%>
-        <% if hour % 2 == 0 %>
-          <% colors = "background-color: black; color: white;" %>
-        <% else %>
-          <% colors = "background-color: white; color: black;" %>
-        <% end %>
-      <div style="<%= time_block_style(hour.hours,(hour+1).hours) + colors %> z-index: 2;"><%= hour.to_s %></div>
+      <div  class="color<%= (hour%2)+1%> timeblock"
+            style="<%= time_block_style(hour.hours,(hour+1).hours) %>">
+            <%= hour.to_s %>
+      </div>
       <% end -%>
-      <div id="nowIndicator" style="<%= time_label_style(Time.now) %>; width: 2px; background-color: red; z-index: 1;"/>
-      <script>function sizeTime(){document.getElementById('nowIndicator').style.height = document.getElementsByTagName('table')[0].getHeight().toString() + "px";};document.body.setAttribute('onload','sizeTime()');</script>
-    </div></tr>
-  </tr>
-
-  <style>
-  </style>
+      <div id="nowIndicator" style="<%= time_label_style(Time.now) %>"></div>
+      <script>//function sizeTime(){document.getElementById('nowIndicator').style.height = document.getElementsByTagName('table')[0].getHeight().toString() + "px";};document.body.setAttribute('onload','sizeTime()');</script>
+    </div></div>
+  </div>
 
 <% for place in @places %>
-  <% if (open = place.open?) %>
-  <tr class="placeOpen" onclick="window.location='<%= url_for place %>'">
-  <% else %>
-  <tr class="placeClosed" onclick="window.location='<%= url_for place %>'">
-  <% end %>
-    <td class="placeData"><%=h place.name %></td>
-    <td class="placeData"><%=h place.location %></td>
-    <td class="placeData"><%=h place.phone %></td>
-    <td class="placeData">
-      <% if open %>
-        <% schedule = place.currentSchedule %>
-        <%= link_to "#{schedule.opensAt.to_s} - #{schedule.closesAt.to_s}", schedule %>
-      <% end %>
-    </td>
-    <td class="daygraph"><div>
+  <div class="placeRow <%=h placeClasses(place) %>">
+    <a class="placeLink" href="<%= url_for place %>"></a>
+    <div class="placeData"><%=h place.name %></div>
+    <div class="placeData"><%=h place.location %></div>
+    <div class="placeData"><%=h place.phone %></div>
+    <div class="dayGraph"><div class="data">
       <% place.daySchedule(@at).each do |time_block| -%>
-        <div style="<%= time_block_style(time_block) %>"></div>
+        <div class="timeblock" style="<%= time_block_style(time_block) %>"></div>
       <% end -%>
-    </div></td>
+    </div></div>
 <%
 =begin
 %>
-    <td><%= link_to 'Edit', edit_place_path(place) %></td>
-    <td><%= link_to 'Destroy', place, :confirm => 'Are you sure?', :method => :delete %></td>
+    <div><%= link_to 'Edit', edit_place_path(place) %></div>
+    <div><%= link_to 'Destroy', place, :confirm => 'Are you sure?', :method => :delete %></div>
 <%
 =end
 %>
-  </tr>
+  </div>
 <% end %>
-</table>
+</div>
 
 <br />
 

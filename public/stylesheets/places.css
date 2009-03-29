@@ -1,68 +1,118 @@
-table tr td,
-table tr th {
-  padding: 7px;
-  width: 12%
+.table {
+  background-color: #EEEEEE;
+
+  padding: 5px;
+  width: 100%;
+  position: relative;
+}
+.headerRow, .placeRow {
+  clear: both;
+  height: 2em;
+  position: relative;
 }
 
-table {
-  border-collapse: collapse;
-  position: relative;
-  width: 100%;
+.placeRow .placeLink {
+  position: absolute;
+  left:0;right:0;top:0;bottom:0;
+  width:auto;height:auto;
+
+  z-index: 2;
 }
+
+.header, .placeData {
+  width: 16%; /* 3*16 = 48% */
+  height: 2em;
+  float: left;
+}
+
+.dayGraph {
+  position: relative;
+  float: left;
+  height: 2em;
+  width: 52%;
+  background-color: #EEEEEE;
+}
+
+.headerRow + .placeRow .dayGraph {
+  margin-top: -1px;
+  border-top: 1px solid black;
+}
+
+.placeRow .dayGraph {
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+
+.dayGraph .labels {
+  z-index: 2;
+  text-align: center;
+}
+
+.dayGraph .timeblock {
+  position: absolute;
+}
+
+.dayGraph .data .timeblock {
+  top: 10%; bottom: 10%;
+  height: auto;
+}
+
+.dayGraph .nowIndicator {
+  position: absolute;
+  background-color: red;
+  width:2px;
+  height:100%;
+  z-index: 1;
+}
+
+
+/* Alternating colors for hour labels */
+.dayGraph .labels .color1 {
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.dayGraph .labels .color2 {
+  background-color: #EEEEEE;
+  color: #000000;
+}
+
 
 .placeOpen {
   background: #79FC4E;
   color: #000000;
 }
-.placeOpen:hover {
-  background: #48FB0D;
-}
+
 .placeClosed {
   background: #FF7575;
   color: #000000;
 }
-.placeClosed:hover {
-  background: #FF4848;
-}
-
-.daygraph {
-  background-color: #FFFFFF;
-  width: 50%;
-}
-
-.daygraph div {
-  position: relative;
-  height: 18px;
-}
-
-.daygraph div div {
-  position: absolute;
-  height: 18px;
-}
 
 
-.placeOpen div div {
-  background: #79FC4E;
-}
-
-.placeClosed div div {
-  background: #79FC4E;
-}
-
-
-.placeOpen:hover .daygraph div div {
+.placeOpen:hover,
+.placeOpen:hover .dayGraph .timeblock {
   background: #48FB0D;
 }
 
-.placeOpen:hover .daygraph {
-  background: #99FD77;
-}
-
-.placeClosed:hover .daygraph div div {
+.placeClosed:hover,
+.placeClosed:hover .dayGraph .timeblock {
   background: #FF4848;
 }
 
-.placeClosed:hover .daygraph {
+
+.placeOpen .timeblock,
+.placeClosed .timeblock {
+  background: #79FC4E;
+}
+
+
+.placeOpen:hover .dayGraph {
+  background: #99FD77;
+}
+
+.placeClosed:hover .dayGraph {
   background: #FF9797;
 }
 
@@ -73,7 +123,7 @@ table {
 .weekSchedule {
   position: relative;
   clear: both;
-  height: 42em; // Header + Data heights
+  height: 42em; /* Header + Data heights */
 }
 
 .weekSchedule .header,

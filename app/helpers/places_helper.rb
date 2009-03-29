@@ -73,4 +73,18 @@ module PlacesHelper
     "<div class=\"nowIndicator\" style=\"top:#{start.to_s}%;\"></div>"
   end
 
+  def placeClasses(place)
+    classes = []
+
+    if place.open?
+      classes << "placeOpen"
+    else
+      classes << "placeClosed"
+    end
+
+    classes += place.tag_list.split(/,/)
+
+    classes.join(' ')
+  end
+
 end
