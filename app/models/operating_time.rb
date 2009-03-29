@@ -34,6 +34,10 @@ class OperatingTime < ActiveRecord::Base
     self.endDate   = Time.now unless self.endDate
   end
 
+  def length
+    closesAt.offset - opensAt.offset
+  end
+
   def special
     (self.flags & SPECIAL_FLAG) == SPECIAL_FLAG
   end

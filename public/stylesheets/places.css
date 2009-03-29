@@ -138,10 +138,28 @@ table {
 
 .weekSchedule .dayColumn .timeblock {
   background-color: #79FC4E;
+  border: 1px solid black;
+
   position: absolute;
   width: auto;
   left: 10%;
   right: 10%;
+
+  text-align: center;
+}
+
+.weekSchedule .dayColumn .timeblock .opensat {
+  text-align: left;
+  margin-left: 10%;
+}
+
+.weekSchedule .dayColumn .timeblock .closesat {
+  position: absolute;
+  left: 0;right: 0; width: auto;
+  text-align: right;
+  margin-right: 10%;
+
+  bottom: 0;
 }
 
 .weekSchedule .labelColumn {

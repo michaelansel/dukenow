@@ -56,7 +56,9 @@
         <%= now_indicator if i == 0 %>
       <% @place.daySchedule(Date.today + i.days).each do |schedule| %>
         <div class="timeblock" style="<%= vertical_time_block_style(schedule) %>">
-          <span class="details"><%=h schedule.details %></span>
+          <div class="opensat"><%=h schedule.opensAt %></div>
+          <div class="details"><%=h schedule.details if schedule.length >= 2.hours %></div>
+          <div class="closesat"><%=h schedule.closesAt %></div>
           <% link_to "#{schedule.opensAt.to_s} - #{schedule.closesAt.to_s}", schedule %>
         </div>
       <% end %>
