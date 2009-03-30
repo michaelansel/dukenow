@@ -155,11 +155,16 @@
   border-width: 1px 0 0 1px;
 }
 
+.weekSchedule .header,
 .weekSchedule .data {
   position: absolute;
   left:  0;
   right: 0;
   width: auto;
+}
+
+.weekSchedule .data {
+  top: 2em;
 }
 
 .weekSchedule .data .labelColumn {
