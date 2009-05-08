@@ -21,6 +21,9 @@ class PlacesController < ApplicationController
         @places = @places & Place.tagged_with(tag, :on => :tags)
       end
 
+    else
+      @places = @places - Place.tagged_with("machineAdded", :on => :tags)
+
     end
 
     @tags = Place.tag_counts_on(:tags)

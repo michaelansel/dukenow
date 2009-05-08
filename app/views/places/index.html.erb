@@ -12,33 +12,6 @@
   </div>
 </div>
 
-<script>
-function handleTagClick(selectedTag,clickEvent) {
-  if(clickEvent.shiftKey) {
-    if(document.selectedTags == null){document.selectedTags = new Array();}
-    document.selectedTags[document.selectedTags.length] = selectedTag;
-  } else {
-    document.selectedTags = new Array();
-    document.selectedTags[0] = selectedTag;
-  }
-  elements = document.getElementsByTagName('div');
-  for( i in elements ) {
-    e = elements[i];
-    if(e&&e.className&&e.className.match(/placeRow/)){
-      matchedAll = true;
-      document.selectedTags.forEach(function(selectedTag){
-        if( matchedAll && e.className.match(selectedTag) ) {
-          e.style['display'] = '';
-        }else{
-          e.style['display'] = 'none';
-          matchedAll = false;
-        }
-      });
-    }
-  }
-}
-</script>
-
 <div style="position:absolute; right:0; top:0;">
   <%= link_to "Yesterday",  :at => Date.today - 1.day %><br/>
   <%= link_to "Today",      :at => Date.today         %><br/>
@@ -60,7 +33,13 @@ function handleTagClick(selectedTag,clickEvent) {
             <%= hour.to_s %>
       </div>
       <% end -%>
+<%
+=begin
+%>
       <script>//function sizeTime(){document.getElementById('nowIndicator').style.height = document.getElementsByTagName('table')[0].getHeight().toString() + "px";};document.body.setAttribute('onload','sizeTime()');</script>
+<%
+=end
+%>
     </div></div>
   </div>
 
