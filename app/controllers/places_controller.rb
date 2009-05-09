@@ -12,21 +12,51 @@ class PlacesController < ApplicationController
   # GET /places.xml
   def index
     @places = Place.find(:all, :order => "name ASC")
-
-    # Restrict to specific tags
     if params[:tags]
-
-      params[:tags].split(/[,+ ][ ]*/).each do |tag|
-        RAILS_DEFAULT_LOGGER.debug "Restricting by tag: #{tag}"
-        @places = @places & Place.tagged_with(tag, :on => :tags)
-      end
-
+      @selected_tags = params[:tags].split(/[,+ ][ ]*/)
     else
-      @places = @places - Place.tagged_with("machineAdded", :on => :tags)
-
+      @selected_tags = []
     end
 
-    @tags = Place.tag_counts_on(:tags)
+    # Restrict to specific tags
+    @selected_tags.each do |tag|
+      RAILS_DEFAULT_LOGGER.debug "Restricting by tag: #{tag}"
+      @places = @places & Place.tagged_with(tag, :on => :tags)
+    end
+
+    # Don't display machineAdded Places on the main listing
+    @places = @places - Place.tagged_with("machineAdded", :on => :tags) unless @selected_tags.include?("machineAdded")
+
+
+    # Calculate tag count for all Places with Tags
+    #@tags = Place.tag_counts_on(:tags, :at_least => 1)
+
+    # Manually calculate tag counts for only displayed places
+    tags = []
+    @places.each do |place|
+      tags = tags + place.tag_list
+    end
+
+    # Remove already selected tags
+    tags = tags - @selected_tags
+
+    # Count tags and make a set of [name,count] pairs
+    @tag_counts = tags.uniq.collect {|tag| [tag,tags.select{|a|a == tag}.size] }
+
+    # Filter out single tags
+    @tag_counts = @tag_counts.select{|name,count| count > 1}
+
+    # Make the count arrays act like tags for the tag cloud
+    @tag_counts.each do |a|
+      a.instance_eval <<-RUBY
+        def count
+          self[1]
+        end
+        def name
+          self[0]
+        end
+      RUBY
+    end
 
     respond_to do |format|
       format.html # index.html.erb

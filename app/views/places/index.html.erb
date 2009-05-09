@@ -5,9 +5,14 @@
 
 <div class="tagCloud">
   <div style="font-size:2em;font-weight:bold;text-align:center;line-height:1.5em;">Tags</div>
+  <div id="selectedTags" style="border-top: 1px solid black; padding-top:5px;">
+    <% @selected_tags.each do |tag_name| %>
+      <%= link_to tag_name, { :action => :tag, :id => tag_name }, :id => "selected_tag_#{tag_name}", :class => "selectedTag", :onclick => "handleTagClick('#{h tag_name}',event);return false;" %>
+    <% end %>
+  </div>
   <div style="border-top: 1px solid black;padding-top:5px;">
-  <% tag_cloud @tags, %w(size1 size2 size3 size4 size5 size6) do |tag, css_class| %>
-    <%= link_to tag.name, { :action => :tag, :id => tag.name }, :class => css_class, :onclick => "handleTagClick('#{h tag.name}',event);return false;" %>
+  <% tag_cloud @tag_counts, %w(size1 size2 size3 size4 size5 size6) do |tag, css_class| %>
+    <%= link_to tag.name, { :action => :tag, :id => tag.name }, :id => "tag_#{tag.name}", :class => css_class, :onclick => "handleTagClick('#{h tag.name}',event);return false;" %>
   <% end %>
   </div>
 </div>
@@ -20,7 +25,7 @@
                             :at => Date.today + 2.day %><br/>
 </div>
 
-<div class="table">
+<div class="table" id="places_table">
   <%= vertical_now_indicator(Time.now) %>
   <div class="headerRow">
     <div class="header">Name</div>
