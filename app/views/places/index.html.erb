@@ -10,6 +10,16 @@
       <%= link_to tag_name, { :action => :tag, :id => tag_name }, :id => "selected_tag_#{tag_name}", :class => "selectedTag", :onclick => "handleTagClick('#{h tag_name}',event);return false;" %>
     <% end %>
   </div>
+
+  <script>
+    // <%= @selected_tags.inspect %>
+  <% if not @selected_tags.nil? %>
+    document.lockedTags = <%= @selected_tags.join(", ").inspect %>;
+  <% else %>
+    document.lockedTags = "";
+  <% end %>
+  </script>
+
   <div style="border-top: 1px solid black;padding-top:5px;">
   <% tag_cloud @tag_counts, %w(size1 size2 size3 size4 size5 size6) do |tag, css_class| %>
     <%= link_to tag.name, { :action => :tag, :id => tag.name }, :id => "tag_#{tag.name}", :class => css_class, :onclick => "handleTagClick('#{h tag.name}',event);return false;" %>
@@ -38,13 +48,6 @@
             <%= hour.to_s %>
       </div>
       <% end -%>
-<%
-=begin
-%>
-      <script>//function sizeTime(){document.getElementById('nowIndicator').style.height = document.getElementsByTagName('table')[0].getHeight().toString() + "px";};document.body.setAttribute('onload','sizeTime()');</script>
-<%
-=end
-%>
     </div></div>
   </div>
 

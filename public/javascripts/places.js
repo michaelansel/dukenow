@@ -2,7 +2,8 @@
 function handleTagClick(selectedTag,clickEvent) {
   if(document.selectedTags == null){document.selectedTags = new Array();}
 
-  if( clickEvent.target == document.getElementById("selectedTags").childElements()[0] ) {
+  if( document.lockedTags.match(clickEvent.target.id.sub(/^selected_tag_/,'')) &&
+      clickEvent.target == document.getElementById("selectedTags").childElements()[0] ) {
     // Trying to deselect primary tag. Oh no!
     // Just clear all selected tags instead
     document.selectedTags = new Array();
