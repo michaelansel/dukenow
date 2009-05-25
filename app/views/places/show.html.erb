@@ -20,7 +20,7 @@
 
 <p>
   <b>Open Now?</b>
-  <%=h (@place.open? ? "Yes" : "No") %>
+  <%=h (@place.open?(@at) ? "Yes" : "No") %>
 </p>
 
 <p>
@@ -36,7 +36,7 @@
 
     <% 7.times do |i| %>
       <div class="dayColumn">
-        <%= Date::DAYNAMES[(Date.today + i.days).wday] %>
+        <%= Date::DAYNAMES[(@at + i.days).wday] %>
       </div>
     <% end %>
 
@@ -54,7 +54,7 @@
     <% 7.times do |i| %>
       <div class="dayColumn">
         <%= now_indicator if i == 0 %>
-      <% @place.daySchedule(Date.today + i.days).each do |schedule| %>
+      <% @place.daySchedule(@at + i.days).each do |schedule| %>
         <div class="timeblock" style="<%= vertical_time_block_style(schedule) %>">
           <div class="opensat"><%=h schedule.opensAt %></div>
           <div class="details"><%=h schedule.details if schedule.length >= 2.hours %></div>
