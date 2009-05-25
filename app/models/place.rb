@@ -51,4 +51,7 @@ class Place < ActiveRecord::Base
     a = currentSchedule(at)
     return a ? true : false
   end
+
+  # Alias for <tt>open?</tt>
+  def open(at = Time.now); open? at ; end
 end
