@@ -73,4 +73,7 @@ class OperatingTime < ActiveRecord::Base
     str
   end
 
+  def to_xml(params)
+    super(params.merge({:only => [:id, :place_id, :flags], :methods => [ :opensAt, :closesAt, :startDate, :endDate ]}))
+  end
 end

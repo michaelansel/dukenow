@@ -128,7 +128,7 @@ module PlacesHelper
       return "ERROR in next_time" # TODO: How could we possibly get here?
     end
 
-    return "Closed","Closed" # No more state time changes for today
+    return "","Closed" # No more state time changes for today
   end
 
 end

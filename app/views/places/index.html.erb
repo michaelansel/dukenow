@@ -23,13 +23,13 @@
           <%= link_to 'More Info', place, :class => "more_info" %>
           <a class="weekly_schedule" href="#weekly_schedule">Weekly Schedule</a>
           <div class="tags">
+            <span>Tags</span>
           <% if place.tags != [] %>
           <% place.tags[0..-2].each do |tag| %>
             <a class="tag" href="#tag=<%=h tag.name %>"><%=h tag.name %></a>,
           <% end %>
             <a class="tag" href="#tag=<%=h place.tags[-1].name %>"><%=h place.tags[-1].name %></a>
           <% end # if place.tags != [] %>
-            <span>Tags</span>
           </div>
         </div>
         <!-- TODO: Load schedule info to generate timeblocks -->

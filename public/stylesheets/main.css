@@ -254,7 +254,7 @@ body {
 
 .details .location {
   position: absolute;
-  left: 20px; height: 20px;
+  left: 20px; width: 260px;
 }
 
 .details .location span {
@@ -265,7 +265,7 @@ body {
 
 .details .phone {
   position: absolute;
-  left: 320px;
+  left: 320px; width: 210px;
 }
 
 .details .phone span {
@@ -300,7 +300,7 @@ body {
   left: 0;top:0;
 }
 
-.details .tags .tag:first-child {
+.details .tags span:first-child+.tag {
   position: relative;
   margin-left: 60px;
 }
