@@ -83,17 +83,52 @@ module PlacesHelper
   end
 
   def placeClasses(place)
-    classes = []
+    classes = ["place"]
 
     if place.open?
-      classes << "placeOpen"
+      classes << "open"
     else
-      classes << "placeClosed"
+      classes << "closed"
     end
 
     classes += place.tag_list.split(/,/)
 
     classes.join(' ')
+  end
+  
+  def short_time_string(time)
+    if time.min == 0 # time has no minutes
+      time.strftime('%I%p')
+    else # time has minutes
+      time.strftime('%I:%M%p')
+    end
+  end
+
+
+  # Returns [words,time] -- both are strings
+  def next_time(place, at=Time.now)
+    place.daySchedule.each do |schedule|
+      # If the whole time period has already passed
+      next if schedule.opensAt.time(at) < at and
+              schedule.closesAt.time(at) < at
+
+      if schedule.opensAt.time(at) <= at # Open now
+        # TODO: Handle late-night rollovers
+        time_string = short_time_string(schedule.closesAt.time(at))
+        time_string = time_string.sub(/^0+/,'')
+        return ["Open until", time_string]
+      end
+
+      if schedule.closesAt.time(at) >= at # Closed now
+        time_string = short_time_string(schedule.opensAt.time(at))
+        time_string = time_string.sub(/^0+/,'')
+        return ["Opens at", time_string]
+      end
+
+      return "ERROR in next_time" # TODO: How could we possibly get here?
+    end
+
+    return "Closed","Closed" # No more state time changes for today
   end
 
 end

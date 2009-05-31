@@ -1,0 +1,354 @@
+/* Reset CSS */
+/* v1.0 | 20080212 */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Backgrounds
+ *
+ * Body: f1f7f2
+ * Box: b3daff
+ */
+
+a {
+  text-decoration: none;
+  outline: none;
+}
+a:hover, a:visited, a:link { color: black; }
+
+
+body {
+  background-color: #F1F7F2;
+  font-family: Arial, Helvetica, Sans-Serif;
+  margin: 0; padding: 0;
+  left: 0; right: 0; top: 0; bottom: 0;
+  width: auto; height: auto;
+  position: absolute;
+}
+
+#container {
+  width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+#header {
+  background-color: #B2DAFF;
+  height: 60px;
+
+  border: 1px solid #0284FF;
+}
+
+#header h1#title {
+  position: relative;
+  left: 80px;
+  width: 700px;
+  font-size: 60px;
+  text-align: center;
+}
+
+#header h2#controller {
+  display: none;
+}
+
+
+#sidebar {
+  position: absolute;
+  right: 0px;    top: 90px;
+  width: 150px;   height: 500px;
+  background-color: #B2DAFF;
+
+  border: 1px solid #0284FF;
+}
+
+#sidebar :first-child h2 {
+  border-top: none;
+}
+
+#sidebar h2 {
+  text-align: center;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+#sidebar > div {
+  height: 300px;
+}
+
+
+#content {
+  left: 60px;
+  width: 720px;
+  position: relative;
+}
+
+#content .place {
+  position: relative;
+
+  margin-top: 30px;
+  left: 20px;
+  width: 700px;
+
+  background-color: #B2DAFF;
+}
+
+#content .place .place_short {
+  position: relative;
+
+  height: 50px;
+  width: 100%;
+
+  border: 1px solid #0284FF;
+}
+
+.place_short .bubble-left,
+.place_short .bubble-right {
+  position: absolute;
+  height: 70px; width: 10px; top: 0px;
+}
+
+.place_short .bubble-left  { left:  -10px; background: transparent no-repeat 0 0; }
+.place_short .bubble-right { right: -10px; background: transparent no-repeat -10px 0; }
+
+.place.open .place_short .bubble-left,
+.place.open .place_short .bubble-right {
+  background-image: url('/images/place_name_bubble_open.png');
+}
+.place.open .place_short .place_name {
+  background-image: url('/images/place_name_bubble_open_middle.png');
+}
+
+.place.closed .place_short .bubble-left,
+.place.closed .place_short .bubble-right {
+  background-image: url('/images/place_name_bubble_closed.png');
+}
+.place.closed .place_short .place_name {
+  background-image: url('/images/place_name_bubble_closed_middle.png');
+}
+
+.place_short .place_name {
+  position: relative;
+  top: -10px;         left: 0px;
+  padding-top: 10px;  padding-left: 5px;
+  height: 70px;       width: 400px;
+
+  background: transparent repeat-x;
+
+  font-size: 40px;
+  text-align: left;
+}
+.place_short a.place_name { display:block; }
+.place_short a.place_name span { display:block; }
+
+/* Element containing name */
+.place_short .place_name span.name {
+  height: 100%; width: 100%;
+  /* TODO: Handle long names better */
+  white-space: nowrap; overflow: hidden; /* Long names just get cut off on the right side instead of wrapping down below */
+}
+
+.place_short .next_time {
+  position: absolute;
+  right: 0px;   top: 0px;
+  width: 260px; height: 50px;
+}
+
+.next_time .next_time_words {
+  position: absolute;
+  top: 15px;
+  height: 20px;   width: 100px;
+
+  font-size: 16px;
+  text-align: center;
+  color: #4A4A4A;
+}
+
+.next_time .next_time_time {
+  position: relative;
+  left: 100px;   top: 4px;
+  width: 140px;
+
+  font-size: 36px;
+  text-align: center;
+}
+
+#content .place .place_long {
+  height: 200px;  width: 100%;
+
+  border: 1px solid #0284FF;
+  border-top: none;
+}
+
+.place_long .details {
+  position: relative;
+  top: 20px;  height: 55px;
+
+  font-size: 14px; line-height: 14px;
+}
+
+.details .location {
+  position: absolute;
+  left: 20px; height: 20px;
+}
+
+.details .location span {
+  position: absolute;
+  left: 70px; width: 210px;
+  height: 1.0em; overflow: hidden;
+}
+
+.details .phone {
+  position: absolute;
+  left: 320px;
+}
+
+.details .phone span {
+  position: absolute;
+  left: 60px; width: 150px;
+  height: 1.0em; overflow: hidden;
+}
+
+.details .more_info {
+  position: absolute;
+  left: 580px;
+  font-weight: bold;
+}
+
+.details .weekly_schedule {
+  position: absolute;
+  left: 20px;
+  top: 30px;
+
+  font-weight: bold;
+}
+
+.details .tags {
+  position: absolute;
+  left: 320px;  top: 30px;
+  width: 380px; height: 4.0em;
+  overflow: hidden;
+}
+
+.details .tags span {
+  position: absolute;
+  left: 0;top:0;
+}
+
+.details .tags .tag:first-child {
+  position: relative;
+  margin-left: 60px;
+}
+.details .tags .tag {
+  margin-left: 2px;
+  font-style: italic;
+  color: #4F4F4F;
+}
+
+.place_long .schedule {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+
+  width: 680px;
+  height: 50px;
+
+  background-color: #D7F5FF;
+}
+
+.place_long .schedule .timeblock { top: 20px; }
+
+.place_long .schedule .timeblock,
+.place_long .schedule .timeblock div {
+  position: absolute;
+  height: 20px;
+}
+
+.place_long .schedule .timeblock .bubble-left {
+  width: 10px; left: 0;
+  background: url('/images/timeblock_bubble.png') no-repeat 0 0;
+}
+
+.place_long .schedule .timeblock .bubble-middle {
+  left: 10px; right: 10px;
+  background: url('/images/timeblock_bubble_middle.png') repeat-x;
+  /*background-color: #4EFE4E;
+  opacity: 0.5;*/
+}
+
+.place_long .schedule .timeblock .bubble-right {
+  width: 10px; right: 0;
+  background: url('/images/timeblock_bubble.png') no-repeat -10px 0;
+}
+
+.place .schedule .nowindicator {
+  position: absolute;
+  width: 1px; height: 40px; top: 10px;
+  background-color: #FF2D2D;
+}

@@ -1,14 +1,28 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-  <title>DukeNow: Places</title>
-  <%= stylesheet_link_tag 'scaffold' %>
-  <%= stylesheet_link_tag 'places' %>
-  <%= javascript_include_tag :defaults %>
-  <%= javascript_include_tag 'places' %>
+  <title>DukeNow: <%=h controller_name.capitalize %></title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+  <%= stylesheet_link_tag 'main' %>
+  <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.0.3/prototype.js"></script>
+  <script type='text/javascript'>
+    function toggle_drawer(id,e) {
+      var a = $(id).select('.place_long')[0];
+      var b = "";
+      if(a.visible()) {
+        a.href="#expand="+id;
+        b = "#";
+        $(id).select('.place_short')[0].setStyle({borderBottom:''});
+      } else {
+        a.href="#";
+        b = "#expand="+id;
+        $(id).select('.place_short')[0].setStyle({borderBottom:'none'});
+      }
+      a.toggle();
+      window.location=b;
+    }
+  </script>
 
   <% if iphone_user_agent? -%>
     <%= stylesheet_link_tag 'iphone'%>
@@ -16,6 +30,7 @@
   <% end -%>
 
 </head>
+
 <body>
 
 <% if iphone_user_agent? and request.format != :iphone # Show message for iPhone users -%>
@@ -24,14 +39,28 @@
 </div>
 <% end -%>
 
+<div id="container">
+  <div id="header">
+    <h1 id="title">DukeNow</h1>
+    <h2 id="controller"><%=h controller_name.capitalize %></h2>
+  </div>
 
-<div class="layoutHeader">
-  <h1><%= link_to "DukeNow", {:action => :index}, {:style => "text-decoration:none;"} %></h1>
+  <div id="sidebar">
+    <div id="tags">
+      <h2 class="title">Tags</h2>
+    </div>
+    <div id="times">
+      <h2 class="title">Times</h2>
+    </div>
+  </div>
 
-  <p style="color: green"><%= flash[:notice] %></p>
-</div>
+  <div id="flash_notice"><%= flash[:notice] %></div>
+
+  <div id="content">
 
 <%= yield  %>
 
+  </div> <!-- id=content -->
+</div> <!-- id=container -->
 </body>
 </html>
