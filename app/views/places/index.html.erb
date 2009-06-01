@@ -8,7 +8,6 @@
           <span class="name"><%=h place.name %></span>
           <span class="bubble-right"></span>
         </a>
-        <!-- TODO: Calculate next close/open time -->
         <div class="next_time">
           <% next_time_words,next_time_time = next_time place %>
           <div class="next_time_words"><%=h next_time_words %></div>
@@ -19,33 +18,36 @@
         <div class="details">
           <div class="location">Location: <span><%=h place.location %></span></div>
           <div class="phone">Phone: <span><%=h place.phone %></span></div>
-          <!-- <a class="more_info" href="#more_info">More Info</a> -->
           <%= link_to 'More Info', place, :class => "more_info" %>
           <a class="weekly_schedule" href="#weekly_schedule">Weekly Schedule</a>
           <div class="tags">
             <span>Tags</span>
-          <% if place.tags != [] %>
+        <% if place.tags != [] %>
           <% place.tags[0..-2].each do |tag| %>
             <a class="tag" href="#tag=<%=h tag.name %>"><%=h tag.name %></a>,
           <% end %>
             <a class="tag" href="#tag=<%=h place.tags[-1].name %>"><%=h place.tags[-1].name %></a>
-          <% end # if place.tags != [] %>
+        <% end # if place.tags != [] %>
           </div>
         </div>
         <!-- TODO: Load schedule info to generate timeblocks -->
-        <div class="schedule">
+        <div class="schedule"><div class="inner-schedule">
           <div class="nowindicator" style="left: 360px;"></div>
-          <div class="timeblock" id="timeblock_<%=h place.id %>_1" style="left: 10px; width: 220px;">
+          <!--  // Test timeblock
+          <div class="timeblock" id="timeblock_<%=h place.id %>_0" style="left: 0%; width: 100%;">
             <div class="bubble-left"></div>
             <div class="bubble-middle"></div>
             <div class="bubble-right"></div>
           </div>
-          <div class="timeblock" id="timeblock_<%=h place.id %>_2" style="left: 450px; width: 220px;">
+          -->
+        <% place.daySchedule.each do |schedule| %>
+          <div class="timeblock" id="timeblock_<%=h place.id %>_<%=h schedule.id %>" style="<%=h time_block_style(schedule) %>">
             <div class="bubble-left"></div>
             <div class="bubble-middle"></div>
             <div class="bubble-right"></div>
           </div>
-        </div>
+        <% end # place.daySchedule.each %>
+        </div></div> <!-- div.schedule, div.inner-schedule -->
       </div>
     </div>
 <% end # @places.each %>

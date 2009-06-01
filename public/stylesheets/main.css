@@ -164,7 +164,7 @@ body {
   height: 50px;
   width: 100%;
 
-  border: 1px solid #0284FF;
+  /* border: 1px solid #0284FF; */
 }
 
 .place_short .bubble-left,
@@ -241,8 +241,8 @@ body {
 #content .place .place_long {
   height: 200px;  width: 100%;
 
-  border: 1px solid #0284FF;
-  border-top: none;
+  /* border: 1px solid #0284FF;
+  border-top: none; */
 }
 
 .place_long .details {
@@ -322,7 +322,13 @@ body {
   background-color: #D7F5FF;
 }
 
-.place_long .schedule .timeblock { top: 20px; }
+.place_long .schedule .inner-schedule {
+  position: absolute;
+  left: 10px; right: 10px;
+  top: 10px; bottom: 10px;
+}
+
+.place_long .schedule .timeblock { top: 10px; }
 
 .place_long .schedule .timeblock,
 .place_long .schedule .timeblock div {
@@ -349,6 +355,8 @@ body {
 
 .place .schedule .nowindicator {
   position: absolute;
-  width: 1px; height: 40px; top: 10px;
+  width: 1px; height: 40px; top: 0;
+  z-index: 1;
+
   background-color: #FF2D2D;
 }
