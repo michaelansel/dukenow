@@ -47,7 +47,7 @@
     <div class="data">
       <div class="labelColumn">
         <% 24.times do |hour| -%>
-        <div class="color<%= hour % 2 + 1 %>" class="timeblock" style="<%= vertical_time_block_style(hour.hours,(hour+1).hours) %> z-index: 2;"><%= hour.to_s %></div>
+        <div class="color<%= hour % 2 + 1 %>" class="timeblock" style="<%= time_block_style(hour.hours,(hour+1).hours, :direction => :vertical) %> z-index: 2;"><%= hour.to_s %></div>
         <% end -%>
         <%= now_indicator %>
       </div>
@@ -56,7 +56,7 @@
       <div class="dayColumn">
         <%= now_indicator if i == 0 %>
       <% @place.daySchedule(@at + i.days).each do |schedule| %>
-        <div class="timeblock" style="<%= vertical_time_block_style(schedule) %>">
+        <div class="timeblock" style="<%= time_block_style(schedule, :direction => :vertical) %>">
           <div class="opensat"><%=h schedule.opensAt %></div>
           <div class="details"><%=h schedule.details if schedule.length >= 2.hours %></div>
           <div class="closesat"><%=h schedule.closesAt %></div>
