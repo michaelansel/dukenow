@@ -30,13 +30,34 @@
 
     $(document).ready(function() {
       update_nowIndicator();
-      setInterval('update_nowIndicator()', 5 *60*1000); // Update every 5 minutes
+      setInterval('update_nowIndicator();update_operatingStatus();update_nextTime();', 5 *60*1000); // Update every 5 minutes
     });
 
     function update_nowIndicator() {
       a=document.getElementById('nowIndicatorStyle')
       nowOffset = ((new Date().getHours() * 60 + new Date().getMinutes()) * 100 / (24*60));
       a.innerHTML = '.place .schedule .nowindicator { left: '+nowOffset.toString()+'%;}';
+    }
+
+    function update_operatingStatus() {
+      a=$('.place');
+      a.removeClass('open');
+      a.addClass('closed');
+      a.each(function(){
+        $('.timeblock',$(this)).each(function(){
+          if( nowOffset>=parseInt(this.style.left) && 
+              nowOffset<=(parseInt(this.style.left) + parseInt(this.style.width)) ) {
+            b=$(this).closest('.place')
+            b.removeClass('closed')
+            b.addClass('open')}
+        });
+      });
+    }
+
+    function update_nextTime() {
+      /*  Not (really) possible by just parsing the the timeblocks
+       *  Better off just grabbing some JSON with the proper strings
+       */
     }
   </script>
 
