@@ -27,7 +27,22 @@
       a.toggle('blind');
       window.location=b;
     }
+
+    $(document).ready(function() {
+      update_nowIndicator();
+      setInterval('update_nowIndicator()', 5 *60*1000); // Update every 5 minutes
+    });
+
+    function update_nowIndicator() {
+      a=document.getElementById('nowIndicatorStyle')
+      nowOffset = ((new Date().getHours() * 60 + new Date().getMinutes()) * 100 / (24*60));
+      a.innerHTML = '.place .schedule .nowindicator { left: '+nowOffset.toString()+'%;}';
+    }
   </script>
+
+  <style id='nowIndicatorStyle'>
+    .place .schedule .nowindicator { display: none; }
+  </style>
 
   <% if iphone_user_agent? -%>
     <%= stylesheet_link_tag 'iphone'%>

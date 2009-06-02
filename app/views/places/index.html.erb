@@ -3,7 +3,7 @@
     <!-- <%= place.inspect %> -->
     <div class="<%=h placeClasses place %>" id="place<%=h place.id %>">
       <div class="place_short">
-        <a class="place_name" onclick="toggle_drawer('place<%=h place.id %>',event);return false;" href="#expand=place<%=h place.id %>">
+        <a class="place_name" onclick="toggle_drawer('place<%=h place.id %>',event);return false;" href="<%=h url_for(place) %>">
           <span class="bubble-left"></span>
           <span class="name"><%=h place.name %></span>
           <span class="bubble-right"></span>
@@ -32,7 +32,7 @@
         </div>
         <!-- TODO: Load schedule info to generate timeblocks -->
         <div class="schedule"><div class="inner-schedule">
-          <div class="nowindicator" style="left: 360px;"></div>
+          <div class="nowindicator"></div>
           <!--  // Test timeblock
           <div class="timeblock" id="timeblock_<%=h place.id %>_0" style="left: 0%; width: 100%;">
             <div class="bubble-left"></div>

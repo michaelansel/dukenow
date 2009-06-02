@@ -195,7 +195,7 @@ body {
 .place_short .place_name {
   position: relative;
   top: -10px;         left: 0px;
-  padding-top: 10px;  padding-left: 5px;
+  /*padding-top: 10px;  padding-left: 5px;*/
   height: 70px;       width: 400px;
 
   background: transparent repeat-x;
@@ -208,9 +208,14 @@ body {
 
 /* Element containing name */
 .place_short .place_name span.name {
-  height: 100%; width: 100%;
+  position: absolute;
+  top:  0; bottom: 0;
+  left: 0; right:  0;
+  height: 1.1em; width: auto;
+  margin-top: auto; margin-bottom: auto;
   /* TODO: Handle long names better */
-  white-space: nowrap; overflow: hidden; /* Long names just get cut off on the right side instead of wrapping down below */
+  padding-left: 5px; padding-right: 5px;
+  /*white-space: nowrap;*/ overflow: hidden; /* Long names just get cut off */
 }
 
 .place_short .next_time {
