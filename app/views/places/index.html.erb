@@ -1,9 +1,11 @@
 <% @places.each do |place| %>    
+<% if RAILS_ENV == 'development' %>
     <!-- TODO: Remove the following comment (for debugging only) -->
     <!-- <%= place.inspect %> -->
+<% end %>
     <div class="<%=h placeClasses place %>" id="place<%=h place.id %>">
       <div class="place_short">
-        <a class="place_name" onclick="toggle_drawer('place<%=h place.id %>',event);return false;" href="<%=h url_for(place) %>">
+        <a class="place_name" title="<%=h place.name %>" onclick="toggle_drawer('place<%=h place.id %>',event);return false;" href="<%=h url_for(place) %>">
           <span class="bubble-left"></span>
           <span class="name"><%=h place.name %></span>
           <span class="bubble-right"></span>

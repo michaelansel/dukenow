@@ -36,7 +36,7 @@
     function update_nowIndicator() {
       a=document.getElementById('nowIndicatorStyle')
       nowOffset = ((new Date().getHours() * 60 + new Date().getMinutes()) * 100 / (24*60));
-      a.innerHTML = '.place .schedule .nowindicator { left: '+nowOffset.toString()+'%;}';
+      $(a).html( '.place .schedule .nowindicator { left: '+nowOffset.toString()+'%;}' );
     }
 
     function update_operatingStatus() {
@@ -47,9 +47,10 @@
         $('.timeblock',$(this)).each(function(){
           if( nowOffset>=parseInt(this.style.left) && 
               nowOffset<=(parseInt(this.style.left) + parseInt(this.style.width)) ) {
-            b=$(this).closest('.place')
-            b.removeClass('closed')
-            b.addClass('open')}
+            b=$(this).closest('.place');
+            if(b.hasClass('closed')) { b.removeClass('closed'); };
+            b.addClass('open');
+          }
         });
       });
     }
