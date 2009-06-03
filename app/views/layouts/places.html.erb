@@ -19,11 +19,11 @@
       var a = $('#'+id + " .place_long");
       var b = "";
       if(a.is(':visible')) {
-        a.href="#expand="+id;
-        b = "#";
+        a.href="#/places?expand="+id;
+        b = "#/places?";
       } else {
-        a.href="#";
-        b = "#expand="+id;
+        a.href="#/places?";
+        b = "#/places?expand="+id;
       }
       a.toggle('blind');
       window.location=b;
@@ -46,8 +46,8 @@
       a.addClass('closed');
       a.each(function(){
         $('.timeblock',$(this)).each(function(){
-          if( nowOffset>=parseInt(this.style.left) && 
-              nowOffset<=(parseInt(this.style.left) + parseInt(this.style.width)) ) {
+          if( nowOffset>=parseFloat(this.style.left) && 
+              nowOffset<=(parseFloat(this.style.left) + parseFloat(this.style.width)) ) {
             b=$(this).closest('.place');
             if(b.hasClass('closed')) { b.removeClass('closed'); };
             b.addClass('open');
