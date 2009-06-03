@@ -60,7 +60,7 @@ class PlacesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.iphone { render :layout => "places.html.erb" } # index.iphone.erb
+      format.iphone # index.iphone.erb
       format.xml  { render :xml => @places }
     end
   end

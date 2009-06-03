@@ -5,6 +5,7 @@
   <title>DukeNow: <%=h controller_name.capitalize %></title>
   <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
   <%= stylesheet_link_tag 'main' %>
+
 <% if RAILS_ENV == 'production' %>
   <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
   <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
@@ -66,16 +67,12 @@
     .place .schedule .nowindicator { display: none; }
   </style>
 
-  <% if iphone_user_agent? -%>
-    <%= stylesheet_link_tag 'iphone'%>
-    <meta name="viewport" content="width = device-width" />
-  <% end -%>
-
 </head>
 
 <body>
 
-<% if iphone_user_agent? and request.format != :iphone # Show message for iPhone users -%>
+<%# TODO: Set up the iPhone-optimized version on a separate domain %>
+<% if false and iphone_user_agent? and request.format != :iphone # Show message for iPhone users -%>
 <div class="message">
     <p>Using an iPhone? <a href="http://i.dukenow.datadrop.biz/">Use the optimised version</a>.</p>
 </div>

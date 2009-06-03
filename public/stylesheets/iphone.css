@@ -59,7 +59,7 @@ ul
 {
 
 	font-size:20px;             /* All text content is 20 pixels */
-	font-family: Helvetica;
+	font-family: Helvetica, Sans-Serif;
 	font-weight:bold;
 	color:black;
 	
@@ -88,6 +88,17 @@ li
 	line-height:19px;  /* Ensure that the height of the cell includes the line at the top of the cell  */
 }
 
+li.place {
+  background: transparent repeat-x;
+}
+
+
+li.place.open {
+  background-image: url('/images/place_name_bubble_open_middle.png');
+}
+li.place.closed {
+  background-image: url('/images/place_name_bubble_closed_middle.png');
+}
 
 li:first-child
 {
