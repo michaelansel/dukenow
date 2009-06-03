@@ -167,35 +167,9 @@ body {
   /* border: 1px solid #0284FF; */
 }
 
-.place_short .bubble-left,
-.place_short .bubble-right {
-  position: absolute;
-  height: 70px; width: 10px; top: 0px;
-}
-
-.place_short .bubble-left  { left:  -10px; background: transparent no-repeat 0 0; }
-.place_short .bubble-right { right: -10px; background: transparent no-repeat -10px 0; }
-
-.place.open .place_short .bubble-left,
-.place.open .place_short .bubble-right {
-  background-image: url('/images/place_name_bubble_open.png');
-}
-.place.open .place_short .place_name {
-  background-image: url('/images/place_name_bubble_open_middle.png');
-}
-
-.place.closed .place_short .bubble-left,
-.place.closed .place_short .bubble-right {
-  background-image: url('/images/place_name_bubble_closed.png');
-}
-.place.closed .place_short .place_name {
-  background-image: url('/images/place_name_bubble_closed_middle.png');
-}
-
 .place_short .place_name {
-  position: relative;
-  top: -10px;         left: 0px;
-  /*padding-top: 10px;  padding-left: 5px;*/
+  position: relative; display: block;
+  top: -10px;         left: -10px;
   height: 70px;       width: 400px;
 
   background: transparent repeat-x;
@@ -203,20 +177,45 @@ body {
   font-size: 40px;
   text-align: left;
 }
-.place_short a.place_name { display:block; }
-.place_short a.place_name span { display:block; }
 
 /* Element containing name */
 .place_short .place_name span.name {
-  position: absolute;
+  position: absolute; display: block;
   top:  0; bottom: 0;
   left: 0; right:  0;
   height: 1.1em; width: auto;
-  margin-top: auto; margin-bottom: auto;
+  margin: auto 0;
   /* TODO: Handle long names better */
-  padding-left: 5px; padding-right: 5px;
-  /*white-space: nowrap;*/ overflow: hidden; /* Long names just get cut off */
+  /* padding-left: 5px; padding-right: 5px; */
+  /*white-space: nowrap;*/ /** Let the browser wrap and chop at an appropriate place **/
+  overflow: hidden; /* Long names just get cut off */
 }
+
+/* Use appropriate gradient images for open/closed status */
+.place.open .place_short .place_name {
+  background-image: url('/images/place_name_bubble_open_middle.png');
+}
+.place.closed .place_short .place_name {
+  background-image: url('/images/place_name_bubble_closed_middle.png');
+}
+
+
+/* CSS3 rounded corners; only with Mozilla/WebKit */
+.place_short .place_name {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  padding-left: 10px; padding-right: 10px;
+}
+.place_short .place_name span.name {
+  padding-left: 10px; padding-right: 10px;
+}
+/* Hide rounded corner images */
+.place_short .bubble-left,
+.place_short .bubble-right {
+  display: none;
+}
+/* End CSS3 rounded corners */
 
 .place_short .next_time {
   position: absolute;
