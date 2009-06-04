@@ -1,0 +1,37 @@
+/* Image-based rounded corners; for IE */
+.place_short .place_name {
+  /* "Middle" image should only span the middle now instead of the whole thing
+   * (we are putting in separate images now instead of letting the browser
+   * round the corners
+   */
+  margin-left: 10px; margin-right: 10px;
+  padding-left: 0px; padding-right: 0px;
+}
+
+.place_short .place_name span.name {
+  /* Kill some extra spacing we had for browser-rounded corners */
+  padding-left: 0px; padding-right: 0px;
+
+  /* Vertically center manually because IE 6/7 won't play nice */
+  margin-top: 13px; margin-bottom: 13px;
+}
+
+.place_short .bubble-left,
+.place_short .bubble-right {
+  position: absolute; display: block;
+  height: 70px; width: 10px; top: 0px;
+}
+
+.place_short .bubble-left  { left:  -10px; background: transparent no-repeat 0 0; }
+.place_short .bubble-right { right: -10px; background: transparent no-repeat -10px 0; }
+
+.place.open .place_short .bubble-left,
+.place.open .place_short .bubble-right {
+  background-image: url('/images/place_name_bubble_open.png');
+}
+
+.place.closed .place_short .bubble-left,
+.place.closed .place_short .bubble-right {
+  background-image: url('/images/place_name_bubble_closed.png');
+}
+/* End image-based rounded corners */
