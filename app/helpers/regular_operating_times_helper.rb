@@ -1,2 +1,0 @@
-module RegularOperatingTimesHelper
-end

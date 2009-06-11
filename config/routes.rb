@@ -3,11 +3,6 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :operating_times
   map.connect 'operating_times/place/:place_id', :controller => 'operating_times', :action => 'index'
 
-
-  map.resources :special_operating_times
-  map.resources :regular_operating_times
-  map.resources :eateries
-
   map.root :controller => "places"
 
   # The priority is based upon order of creation: first created -> highest priority.
