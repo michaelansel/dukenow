@@ -1,10 +1,6 @@
 <ul>
-<% for place in @places %>
-  <% if (open = place.open?) %>
-  <li class="placeOpen">
-  <% else %>
-  <li class="placeClosed">
-  <% end %>
+<% @places.each do |place| %>
+  <li class="place <%=h place.open ? "open" : "closed" %>">
     <%= link_to place.name, place %></td>
   </li>
 <% end %>

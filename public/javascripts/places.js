@@ -1,3 +1,49 @@
+function toggle_drawer(id,e) {
+  var a = $('#'+id + " .place_long");
+  var b = "";
+  if(a.is(':visible')) {
+    a.href="#/places?expand="+id;
+    b = "#/places?";
+  } else {
+    a.href="#/places?";
+    b = "#/places?expand="+id;
+  }
+  a.toggle('blind');
+  window.location=b;
+}
+
+function update_nowIndicator() {
+  a=document.getElementById('nowIndicatorStyle')
+  nowOffset = ((new Date().getHours() * 60 + new Date().getMinutes()) * 100 / (24*60));
+  $(a).html( '.place .schedule .nowindicator { left: '+nowOffset.toString()+'%;}' );
+}
+
+function update_operatingStatus() {
+  a=$('.place');
+  a.removeClass('open');
+  a.addClass('closed');
+  a.each(function(){
+    $('.timeblock',$(this)).each(function(){
+      if( nowOffset>=parseFloat(this.style.left) && 
+          nowOffset<=(parseFloat(this.style.left) + parseFloat(this.style.width)) ) {
+        b=$(this).closest('.place');
+        if(b.hasClass('closed')) { b.removeClass('closed'); };
+        b.addClass('open');
+      }
+    });
+  });
+}
+
+function update_nextTime() {
+  /*  Not (really) possible by just parsing the the timeblocks
+    *  Better off just grabbing some JSON with the proper strings
+    */
+}
+
+
+
+
+
 // Rewrite to use # tag in URL and run function on location change
 function handleTagClick(selectedTag,clickEvent) {
   if(document.selectedTags == null){document.selectedTags = new Array();}

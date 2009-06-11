@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html  xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <title>DukeNow: <%=h controller_name.capitalize %></title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<% if RAILS_ENV == 'production' %>
+  <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+  <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
+<% else %>
+  <%= javascript_include_tag 'jquery' %>
+  <%= javascript_include_tag 'jqueryui' %>
+<% end %>
+
+  <script type='text/javascript'>
+    function toggle_drawer(id,e) {
+      var a = $('#'+id + " .place_long");
+      var b = "";
+      if(a.is(':visible')) {
+        a.href="#/places?expand="+id;
+        b = "#/places?";
+      } else {
+        a.href="#/places?";
+        b = "#/places?expand="+id;
+      }
+      a.toggle('blind');
+      window.location=b;
+    }
+
+    $(document).ready(function() {
+      update_nowIndicator();
+      setInterval('update_nowIndicator();update_operatingStatus();update_nextTime();', 5 *60*1000); // Update every 5 minutes
+    });
+
+    function update_nowIndicator() {
+      a=document.getElementById('nowIndicatorStyle')
+      nowOffset = ((new Date().getHours() * 60 + new Date().getMinutes()) * 100 / (24*60));
+      $(a).html( '.place .schedule .nowindicator { left: '+nowOffset.toString()+'%;}' );
+    }
+
+    function update_operatingStatus() {
+      a=$('.place');
+      a.removeClass('open');
+      a.addClass('closed');
+      a.each(function(){
+        $('.timeblock',$(this)).each(function(){
+          if( nowOffset>=parseFloat(this.style.left) && 
+              nowOffset<=(parseFloat(this.style.left) + parseFloat(this.style.width)) ) {
+            b=$(this).closest('.place');
+            if(b.hasClass('closed')) { b.removeClass('closed'); };
+            b.addClass('open');
+          }
+        });
+      });
+    }
+
+    function update_nextTime() {
+      /*  Not (really) possible by just parsing the the timeblocks
+       *  Better off just grabbing some JSON with the proper strings
+       */
+    }
+  </script>
+
+  <style id='nowIndicatorStyle'>
+    .place .schedule .nowindicator { display: none; }
+  </style>
+
+  <%= stylesheet_link_tag 'iphone'%>
+  <meta name="viewport" content="width = device-width" />
+
+</head>
+
+<body>
+
+  <div id="flash_notice"><%= flash[:notice] %></div>
+
+
+<%= yield  %>
+
+</body>
+</html>

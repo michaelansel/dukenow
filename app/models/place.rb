@@ -54,4 +54,11 @@ class Place < ActiveRecord::Base
 
   # Alias for <tt>open?</tt>
   def open(at = Time.now); open? at ; end
+
+  def to_json(params)
+    super(params.merge({:only => [:id, :name, :location, :phone], :methods => [ :open ]}))
+  end
+  def to_xml(params)
+    super(params.merge({:only => [:id, :name, :location, :phone], :methods => [ :open ]}))
+  end
 end
