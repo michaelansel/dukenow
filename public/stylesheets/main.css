@@ -102,6 +102,11 @@ body {
   background-color: #B2DAFF;
   height: 60px;
 
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-bottom-right-radius: 10px;
+
   border: 1px solid #0284FF;
 }
 
@@ -123,6 +128,9 @@ body {
   right: 0px;    top: 90px;
   width: 150px;   height: 500px;
   background-color: #B2DAFF;
+
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 
   border: 1px solid #0284FF;
 }
@@ -154,6 +162,9 @@ body {
   margin-top: 30px;
   left: 20px;
   width: 700px;
+
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 
   background-color: #B2DAFF;
 }
