@@ -1,6 +1,8 @@
-tmp/*/*
+*.~1~
+*.swp
+tmp/**/[a-zA-Z]*
 log/*.log
-db/production.sqlite3
-db/development.sqlite3
-db/test.sqlite3
-log/development.log*
+db/*.sqlite3
+doc/api
+doc/app
+tmp/restart.txt
