@@ -1,5 +1,4 @@
 class OperatingTimesController < ApplicationController
-  include RelativeTimes::ControllerMethods
 
   # GET /operating_times
   # GET /operating_times.xml
@@ -101,5 +100,38 @@ class OperatingTimesController < ApplicationController
       format.html { redirect_to(operating_times_url) }
       format.xml  { head :ok }
     end
+  end
+
+
+
+## Helpers ##
+  def operatingTimesFormHandler(operatingTimesParams)
+=begin
+    params[:regular_operating_time][:opensAtOffset] =
+      params[:regular_operating_time].delete('opensAtHour') * 3600 +
+      params[:regular_operating_time].delete('opensAtMinute') * 60
+
+    params[:regular_operating_time][:closesAtOffset] =
+      params[:regular_operating_time].delete('closesAtHour') * 3600 +
+      params[:regular_operating_time].delete('closesAtMinute') * 60
+=end
+
+    if operatingTimesParams[:daysOfWeekHash] != nil
+      daysOfWeek = 0
+
+      operatingTimesParams[:daysOfWeekHash].each do |dayOfWeek|
+        daysOfWeek += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
+      end
+      operatingTimesParams.delete('daysOfWeekHash')
+
+      operatingTimesParams[:flags] = 0 if operatingTimesParams[:flags].nil?
+      operatingTimesParams[:flags] = operatingTimesParams[:flags] & ~OperatingTime::ALLDAYS_FLAG
+      operatingTimesParams[:flags] = operatingTimesParams[:flags] |  daysOfWeek
+    end
+
+
+
+
+    return operatingTimesParams
   end
 end

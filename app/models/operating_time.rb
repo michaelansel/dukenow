@@ -1,6 +1,5 @@
 class OperatingTime < ActiveRecord::Base
-  require RAILS_ROOT + '/lib/relative_times.rb'
-  include RelativeTimes::InstanceMethods
+  #require RAILS_ROOT + '/lib/relative_time.rb'
 
   belongs_to :place
   validates_presence_of :place_id
@@ -38,10 +37,11 @@ class OperatingTime < ActiveRecord::Base
     closesAt.offset - opensAt.offset
   end
 
+
   def special
     (self.flags & SPECIAL_FLAG) == SPECIAL_FLAG
   end
-
+  # Input: isSpecial = true/false
   def special=(isSpecial)
     if isSpecial == true or isSpecial == "true" or isSpecial == 1
       self.flags = self.flags |  SPECIAL_FLAG
@@ -50,6 +50,60 @@ class OperatingTime < ActiveRecord::Base
     end
   end
 
+
+  def opensAt
+    @relativeOpensAt = RelativeTime.new(self,:opensAt) if @relativeOpensAt.nil?
+    @relativeOpensAt
+  end
+  # Input: params = { :hour => 12, :minute => 45 }
+  def opensAt=(params = {})
+    params[:hour] = 0 if params[:hour].nil?
+    params[:minute] = 0 if params[:minute].nil?
+    opensAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
+  end
+
+
+  def closesAt
+    @relativeClosesAt = RelativeTime.new(self,:closesAt) if @relativeClosesAt.nil?
+    @relativeClosesAt
+  end
+  # Input: params = { :hour => 12, :minute => 45 }
+  def closesAt=(params = {})
+    closesAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
+  end
+
+
+  # Hash mapping day of week (Symbol) to valid(true)/invalid(false)
+  def daysOfWeekHash
+    a=daysOfWeek
+    daysOfWeek = 127 if a.nil?
+    daysOfWeek = a
+
+    { :sunday    => (daysOfWeek &  1) > 0,  # Sunday
+      :monday    => (daysOfWeek &  2) > 0,  # Monday
+      :tuesday   => (daysOfWeek &  4) > 0,  # Tuesday
+      :wednesday => (daysOfWeek &  8) > 0,  # Wednesday
+      :thursday  => (daysOfWeek & 16) > 0,  # Thursday
+      :friday    => (daysOfWeek & 32) > 0,  # Friday
+      :saturday  => (daysOfWeek & 64) > 0}  # Saturday
+  end
+
+  # Array beginning with Sunday of valid(true)/inactive(false) values
+  def daysOfWeekArray
+    a=daysOfWeek
+    daysOfWeek = 127 if a.nil?
+    daysOfWeek = a
+
+    [ daysOfWeek &  1 > 0,  # Sunday
+      daysOfWeek &  2 > 0,  # Monday
+      daysOfWeek &  4 > 0,  # Tuesday
+      daysOfWeek &  8 > 0,  # Wednesday
+      daysOfWeek & 16 > 0,  # Thursday
+      daysOfWeek & 32 > 0,  # Friday
+      daysOfWeek & 64 > 0]  # Saturday
+  end
+
+  # Days of week valid (sum of flags)
   def daysOfWeek
     sum = 0
     7.times do |i|
@@ -59,6 +113,7 @@ class OperatingTime < ActiveRecord::Base
     sum
   end
 
+  # Human-readable string of days of week valid
   def daysOfWeekString
     str = ""
 
