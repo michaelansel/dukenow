@@ -38,9 +38,11 @@ class OperatingTime < ActiveRecord::Base
 
 
   def at
-    @at ||= Time.now
+    @at
   end
   def at=(time)
+    @opensAt = nil
+    @closesAt = nil
     @at = time
   end
 
@@ -60,35 +62,29 @@ class OperatingTime < ActiveRecord::Base
 
   # Returns a Time object representing the beginning of this OperatingTime
   def opensAt
-    relativeOpensAt.time(at)
+    @opensAt ||= relativeTime.openTime(at)
   end
-  # Returns a RelativeTime object representing the beginning of this OperatingTime
-  def relativeOpensAt
-    @relativeOpensAt ||= RelativeTime.new(self,:opensAt) if @relativeOpensAt.nil?
-    @relativeOpensAt
-  end; protected :relativeOpensAt
+  def closesAt
+    @closesAt ||= relativeTime.closeTime(at)
+  end
+
+
+
+  # Returns a RelativeTime object representing this OperatingTime
+  def relativeTime
+    @relativeTime ||= RelativeTime.new(self, :opensAt, :length)
+  end; protected :relativeTime
+
+
   # Sets the beginning of this OperatingTime
   # Input: params = { :hour => 12, :minute => 45 }
-  def opensAt=(params = {})
-    params[:hour] = 0 if params[:hour].nil?
-    params[:minute] = 0 if params[:minute].nil?
-    relativeOpensAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
+  def opensAt=(time)
+    @opensAt = relativeTime.openTime = time
   end
 
-
-  # Returns a Time object representing the end of this OperatingTime
-  def closesAt
-    relativeClosesAt.time(at)
-  end
-  # Returns a RelativeTime object representing the beginning of this OperatingTime
-  def relativeClosesAt
-    @relativeClosesAt ||= RelativeTime.new(self,:closesAt) if @relativeClosesAt.nil?
-    @relativeClosesAt
-  end; protected :relativeClosesAt
   # Sets the end of this OperatingTime
-  # Input: params = { :hour => 12, :minute => 45 }
-  def closesAt=(params = {})
-    relativeClosesAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
+  def closesAt=(time)
+    @closesAt = relativeTime.closeTime = time
   end
 
 

@@ -15,13 +15,39 @@ class Place < ActiveRecord::Base
   def schedule(startAt,endAt)
     # TODO Returns the schedule for a specified time window
     # TODO Handle events starting within the range but ending outside of it?
-    regular_times = regular_operating_times.select do |ot|
-      ot.at = startAt
+    regular_times = []
+    regular_operating_times.each do |ot|
       ot.startDate ||= startAt.to_date
       ot.endDate ||= endAt.to_date
-      (ot.startDate <= startAt.to_date and ot.endDate >= endAt.to_date) and
-        ((ot.opensAt >= startAt and ot.opensAt <= endAt) or (ot.closesAt >= startAt and ot.closesAt <= endAt))
+
+      if ot.startDate >= startAt.to_date-1 and ot.endDate <= endAt.to_date+1
+        ot.at = nil
+
+        # Yesterday
+        ot.at = (startAt.to_date - 1).midnight
+        if ot.closesAt >= ot.at and ot.flags & 1<<ot.at.wday > 0
+          t = ot.dup
+          t.opensAt = startAt
+          regular_times << t
+          t=nil
+        end
+
+        # Today
+        ot.at = startAt.to_date.midnight
+        regular_times << ot.dup if ot.opensAt >= startAt and ot.opensAt < endAt and ot.flags & 1<<ot.at.wday > 0
+
+        # Tomorrow
+        ot.at =    endAt == endAt.midnight ? endAt : endAt.midnight + 1.days
+        if ot.opensAt < endAt and ot.flags & 1<<ot.at.wday > 0
+          t = ot.dup 
+          t.closesAt = endAt
+          regular_times << t
+          t=nil
+        end
+
+      end
     end
+
     special_times = special_operating_times.select do |ot|
       ot.at = startAt
       ot.startDate ||= startAt.to_date
@@ -32,14 +58,15 @@ class Place < ActiveRecord::Base
 
     # TODO Handle combinations (i.e. part special, part regular)
     special_times == [] ? regular_times : special_times
+    regular_times
   end
 
   def daySchedule(at = Date.today)
     at = at.to_date if at.class == Time or at.class == DateTime
 
     schedule = schedule(at.midnight,(at+1).midnight)
-    schedule = schedule.select {|ot| (ot.flags & 1<<at.wday) > 0 }
-    schedule.each {|t| t.at = at }
+    #schedule = schedule.select {|ot| (ot.flags & 1<<at.wday) > 0 }
+    #schedule.each {|t| t.at = at }
 
 =begin
     # Find all operating times for this place that are:

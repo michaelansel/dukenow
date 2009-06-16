@@ -13,12 +13,14 @@ class RelativeTime
   end
 
 
-  def initialize(object,attribute)
+  def initialize(object,startAttribute,lengthAttribute)
     @object = object
-    @attribute = attribute
+    @startAttribute = startAttribute
+    @lengthAttribute = lengthAttribute
   end
 
 
+=begin
   def hour
     (offset / 3600).to_i
   end
@@ -35,24 +37,40 @@ class RelativeTime
     #        hour_seconds  + minute_seconds + remainder_seconds
     offset = (hour * 3600) + (minute * 60) + (offset % 60)
   end
+=end
 
 
   def offset
-    @object.send(:read_attribute,@attribute)
+    @object.send(:read_attribute,@startAttribute)
   end
   def offset=(newOffset)
-    @object.send(:write_attribute,@attribute,newOffset)
+    @object.send(:write_attribute,@startAttribute,newOffset)
+  end
+
+  def length
+    @object.send(:read_attribute,@lengthAttribute)
+  end
+  def length=(newLength)
+    @object.send(:write_attribute,@lengthAttribute,newLength)
   end
 
 
-  def time(baseTime = Time.now)
+  def openTime(baseTime = Time.now)
     RelativeTime._relativeTime(offset, baseTime)
   end
-  def time=(newTime = Time.now)
+  def openTime=(newTime = Time.now)
     RAILS_DEFAULT_LOGGER.debug "Updating offset using Time object: #{newTime.inspect} ; offset = #{RelativeTime._getMidnightOffset(newTime)}"
     offset = RelativeTime._getMidnightOffset(newTime)
   end
 
+  def closeTime(baseTime = Time.now)
+    RelativeTime._relativeTime(offset, baseTime) + length
+  end
+  def closeTime=(newTime = Time.now)
+    RAILS_DEFAULT_LOGGER.debug "Updating offset using Time object: #{newTime.inspect} ; offset = #{RelativeTime._getMidnightOffset(newTime)}"
+    length = newTime - openTime
+    length = length + 24*60*60 if length < 0
+  end
 
   def to_s
     '%02d:%02d' % [hour,minute]

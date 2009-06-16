@@ -9,12 +9,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090324042504) do
+ActiveRecord::Schema.define(:version => 20090616040958) do
 
   create_table "operating_times", :force => true do |t|
     t.integer  "place_id"
     t.integer  "opensAt"
-    t.integer  "closesAt"
+    t.integer  "length"
     t.text     "details"
     t.integer  "flags"
     t.date     "startDate"

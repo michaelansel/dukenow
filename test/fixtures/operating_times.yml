@@ -4,21 +4,21 @@
 openNow:
   place: greathall
   opensAt: <%= RelativeTime._getMidnightOffset(Time.now - 1.hours) %>
-  closesAt: <%= RelativeTime._getMidnightOffset(Time.now + 1.hours) %>
+  length: <%= 1.hours %>
   details: Open right now for dine-in (not special)
   flags: <%= OperatingTime::ALLDAYS_FLAG | OperatingTime::DINE_IN_FLAG %>
 
 openNowDifferentWeekday:
   place: greathall
   opensAt: <%= RelativeTime._getMidnightOffset(Time.now - 1.hours) %>
-  closesAt: <%= RelativeTime._getMidnightOffset(Time.now + 1.hours) %>
+  length: <%= 1.hours %>
   details: Open right now for dine-in, but on a different day of the week (not special)
   flags: <%= OperatingTime::DINE_IN_FLAG %>
 
 openNowSpecial:
   place: greathall
   opensAt: <%= RelativeTime._getMidnightOffset(Time.now - 1.hours) %>
-  closesAt: <%= RelativeTime._getMidnightOffset(Time.now + 1.hours) %>
+  length: <%= 1.hours %>
   startDate: <%= Date.today - 1.day %>
   endDate: <%= Date.today + 1.day %>
   details: Open right now for dine-in (not special)
