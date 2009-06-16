@@ -1,48 +1,60 @@
 module PlacesHelper
   # TODO: clean and remove
   def settimes
-    @startTime = 0 # hard coded midnight start time for window (for dev/testing only)
-    @length = 24.hours - 1 # 24 hour window
-    @endTime = @startTime + @length
+    length
+  end
+  def startTime
+    @startTime ||= Date.today.midnight
+  end
+  def endTime
+    @endTime ||= (Date.today + 1).midnight
+  end
+  def length
+    @length ||= endTime - startTime
   end
 
   def time_block_style(time_block_or_start_offset,end_offset = nil, opts = {})
-    settimes
-
     # Accept "time_block_style(time_block,:direction => :vertical)"
     if end_offset.class == Hash and opts == {}
       opts = end_offset 
       end_offset = nil
     end
 
-    # TODO: There has GOT to be a more DRY way to code this!
-    direction = :horizontal
-    if opts[:direction]
-      case opts[:direction]
-        when :vertical
-          direction = :vertical
-        when :horizontal
-          direction = :horizontal
-      end
+    direction = :vertical   if opts[:direction] == :vertical
+    direction = :horizontal if opts[:direction] == :horizontal
+    direction ||= :horizontal
+
+    if opts[:day] != nil
+      @startTime = opts[:day].midnight
+      @endTime = startTime + 1.days
     end
+    settimes
 
     if end_offset.nil?
 
       if time_block_or_start_offset.class == OperatingTime
-        open = time_block_or_start_offset.opensAt.offset
-        close = time_block_or_start_offset.closesAt.offset
+        # Generate style for OperatingTime object
+        open = time_block_or_start_offset.opensAt
+        close = time_block_or_start_offset.closesAt
 
       else
         return time_label_style(time_block_or_start_offset)
       end
 
     else
-      open = time_block_or_start_offset
-      close = end_offset
+      # Generate style for block spanning given time range
+      open = startTime.midnight + time_block_or_start_offset
+      close = startTime.midnight + end_offset
     end
 
-    offset = (open - @startTime) * 100.0 / @length
-    size = (close - open) * 100.0 / @length
+    if open >= startTime and close <= endTime
+      offset = (open - startTime) * 100.0 / length
+      size = (close - open) * 100.0 / length
+
+    elsif open >= startTime and close >= endTime
+      offset = (open - startTime) * 100.0 / length
+      size = (endTime - open) * 100.0 / length
+    end
 
     case direction
       when :horizontal
@@ -64,7 +76,7 @@ module PlacesHelper
         time = at.to_i.hours
     end
         
-    left = (time - @startTime) * 100.0 / @length
+    left = (time - startTime) * 100.0 / length
 
     "left: #{left.to_s}%;"
   end
@@ -74,7 +86,7 @@ module PlacesHelper
     settimes
     offset = 48; # offset to beginning of dayGraph == width of data cells
 
-    start = (at.hour.hours + at.min.minutes) * 100.0 / @length
+    start = (at.hour.hours + at.min.minutes) * 100.0 / length
     start = (100.0 - offset) * start/100.0 + offset # incorporate offset
     "<div class=\"verticalNowIndicator\" style=\"left:#{start.to_s}%;\"></div>"
   end
@@ -83,7 +95,7 @@ module PlacesHelper
   def now_indicator(at=Time.now, opts={})
     settimes
 
-    start = (at.hour.hours + at.min.minutes) * 100.0 / @length
+    start = (at.hour.hours + at.min.minutes) * 100.0 / length
     "<div class=\"nowIndicator\" style=\"top:#{start.to_s}%;\"></div>"
   end
 
@@ -103,31 +115,27 @@ module PlacesHelper
   
   def short_time_string(time)
     if time.min == 0 # time has no minutes
-      time.strftime('%I%p')
+      time.strftime('%I%p').sub(/^0+/,'')
     else # time has minutes
-      time.strftime('%I:%M%p')
+      time.strftime('%I:%M%p').sub(/^0+/,'')
     end
   end
 
 
   # Returns [words,time] -- both are strings
   def next_time(place, at=Time.now)
-    place.daySchedule.each do |schedule|
+    place.daySchedule(at).each do |schedule|
       # If the whole time period has already passed
-      next if schedule.opensAt.time(at) < at and
-              schedule.closesAt.time(at) < at
+      next if schedule.opensAt < at and
+              schedule.closesAt < at
 
-      if schedule.opensAt.time(at) <= at # Open now
+      if schedule.opensAt <= at # Open now
         # TODO: Handle late-night rollovers
-        time_string = short_time_string(schedule.closesAt.time(at))
-        time_string = time_string.sub(/^0+/,'')
-        return ["Open until", time_string]
+        return ["Open until", short_time_string(schedule.closesAt)]
       end
 
-      if schedule.closesAt.time(at) >= at # Closed now
-        time_string = short_time_string(schedule.opensAt.time(at))
-        time_string = time_string.sub(/^0+/,'')
-        return ["Opens at", time_string]
+      if schedule.closesAt >= at # Closed now
+        return ["Opens at", short_time_string(schedule.opensAt)]
       end
 
       return "ERROR in next_time" # TODO: How could we possibly get here?

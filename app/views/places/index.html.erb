@@ -3,7 +3,7 @@
     <!-- TODO: Remove the following comment (for debugging only) -->
     <!-- <%= place.inspect %> -->
 <% end %>
-    <div class="<%=h placeClasses place %>" id="place<%=h place.id %>">
+    <div class="<%=h placeClasses(place) %>" id="place<%=h place.id %>">
       <div class="place_short">
         <a class="place_name" title="<%=h place.name %>" onclick="toggle_drawer('place<%=h place.id %>',event);return false;" href="<%=h url_for(place) %>">
           <span class="bubble-left"></span>
@@ -101,24 +101,6 @@
   <%= link_to Date::DAYNAMES[(Date.today + 2.day).wday],
                             :at => Date.today + 2.day %><br/>
 </div>
-
-
-
-
-<!-- TODO: Reimplement under new design -->
-<%= vertical_now_indicator(Time.now) %>
-
-
-
-
-<!-- TODO: Reimplement under new design -->
-<% for place in @places %>
-    <div class="dayGraph"><div class="data">
-      <% place.daySchedule(@at).each do |time_block| -%>
-        <div class="timeblock" style="<%= time_block_style(time_block) %>"></div>
-      <% end -%>
-    </div></div>
-<% end %>
 
 
 

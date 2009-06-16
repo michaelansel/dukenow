@@ -10,12 +10,12 @@
 
   <p>
     <%= f.label :opensAt %><br />
-    <%= select_time f.object.opensAt.time, :prefix => "#{f.object_name}[opensAt]" %>
+    <%= select_time f.object.opensAt, :prefix => "#{f.object_name}[opensAt]" %>
   </p>
 
   <p>
     <%= f.label :closesAt %><br />
-    <%= select_time f.object.closesAt.time, :prefix => "#{f.object_name}[closesAt]" %>
+    <%= select_time f.object.closesAt, :prefix => "#{f.object_name}[closesAt]" %>
   </p>
 
   <p>

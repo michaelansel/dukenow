@@ -1,6 +1,4 @@
 class OperatingTime < ActiveRecord::Base
-  #require RAILS_ROOT + '/lib/relative_time.rb'
-
   belongs_to :place
   validates_presence_of :place_id
   validates_associated :place
@@ -31,10 +29,19 @@ class OperatingTime < ActiveRecord::Base
     self.flags = 0 unless self.flags
     self.startDate = Time.now unless self.startDate
     self.endDate   = Time.now unless self.endDate
+    @at = Time.now
   end
 
   def length
-    closesAt.offset - opensAt.offset
+    closesAt - opensAt
+  end
+
+
+  def at
+    @at ||= Time.now
+  end
+  def at=(time)
+    @at = time
   end
 
 
@@ -51,25 +58,37 @@ class OperatingTime < ActiveRecord::Base
   end
 
 
+  # Returns a Time object representing the beginning of this OperatingTime
   def opensAt
-    @relativeOpensAt = RelativeTime.new(self,:opensAt) if @relativeOpensAt.nil?
-    @relativeOpensAt
+    relativeOpensAt.time(at)
   end
+  # Returns a RelativeTime object representing the beginning of this OperatingTime
+  def relativeOpensAt
+    @relativeOpensAt ||= RelativeTime.new(self,:opensAt) if @relativeOpensAt.nil?
+    @relativeOpensAt
+  end; protected :relativeOpensAt
+  # Sets the beginning of this OperatingTime
   # Input: params = { :hour => 12, :minute => 45 }
   def opensAt=(params = {})
     params[:hour] = 0 if params[:hour].nil?
     params[:minute] = 0 if params[:minute].nil?
-    opensAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
+    relativeOpensAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
   end
 
 
+  # Returns a Time object representing the end of this OperatingTime
   def closesAt
-    @relativeClosesAt = RelativeTime.new(self,:closesAt) if @relativeClosesAt.nil?
-    @relativeClosesAt
+    relativeClosesAt.time(at)
   end
+  # Returns a RelativeTime object representing the beginning of this OperatingTime
+  def relativeClosesAt
+    @relativeClosesAt ||= RelativeTime.new(self,:closesAt) if @relativeClosesAt.nil?
+    @relativeClosesAt
+  end; protected :relativeClosesAt
+  # Sets the end of this OperatingTime
   # Input: params = { :hour => 12, :minute => 45 }
   def closesAt=(params = {})
-    closesAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
+    relativeClosesAt.offset = params[:hour].to_i.hours + params[:minute].to_i.minutes
   end
 
 
