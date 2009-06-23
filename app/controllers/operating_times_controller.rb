@@ -105,7 +105,8 @@ class OperatingTimesController < ApplicationController
 
 
 ## Helpers ##
-  def operatingTimesFormHandler(operatingTimesParams)
+  def operatingTimesFormHandler(operatingTimesParams={})
+    operatingTimesParams ||= {}
 =begin
     params[:regular_operating_time][:opensAtOffset] =
       params[:regular_operating_time].delete('opensAtHour') * 3600 +

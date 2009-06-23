@@ -4,6 +4,7 @@ describe "/places/show.html.erb" do
   include PlacesHelper
   before(:each) do
     assigns[:place] = @place = stub_model(Place)
+    assigns[:at] = @at = Date.today
   end
 
   it "renders attributes in <p>" do

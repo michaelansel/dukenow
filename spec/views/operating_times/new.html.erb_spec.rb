@@ -7,6 +7,7 @@ describe "/operating_times/new.html.erb" do
     assigns[:operating_time] = stub_model(OperatingTime,
       :new_record? => true
     )
+    assigns[:places] = @places = [stub_model(Place),stub_model(Place)]
   end
 
   it "renders new operating_time form" do

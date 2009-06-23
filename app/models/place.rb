@@ -34,6 +34,10 @@ class Place < ActiveRecord::Base
   end
 
   def daySchedule(at = Date.today)
+    if at.nil?
+      instance_eval("class Place::MonkeyButt < StandardError ; end")
+      raise MonkeyButt, "Oh no! It looks like we found a monkey butt!"
+    end
     at = at.to_date if at.class == Time or at.class == DateTime
 
     schedule = schedule(at.midnight,(at+1).midnight)
@@ -60,6 +64,10 @@ class Place < ActiveRecord::Base
   end
 
   def currentSchedule(at = Time.now)
+    if at.nil?
+      instance_eval("class Place::MonkeyButt < StandardError ; end")
+      raise MonkeyButt, "Oh no! It looks like we found a monkey butt!"
+    end
     current_schedule = nil
 
     daySchedule(at).each do |optime|
@@ -75,6 +83,10 @@ class Place < ActiveRecord::Base
   end
 
   def open?(at = Time.now)
+    if at.nil?
+      instance_eval("class Place::MonkeyButt < StandardError ; end")
+      raise MonkeyButt, "Oh no! It looks like we found a monkey butt!"
+    end
     a = currentSchedule(at)
     return a ? true : false
   end

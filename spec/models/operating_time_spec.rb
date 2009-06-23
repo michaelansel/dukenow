@@ -2,7 +2,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe OperatingTime do
   before(:each) do
+    @place = mock_model(Place)
     @valid_attributes = {
+      :place_id => @place.id
     }
   end
 

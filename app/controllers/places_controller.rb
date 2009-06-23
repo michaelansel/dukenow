@@ -104,7 +104,7 @@ class PlacesController < ApplicationController
   # POST /places
   # POST /places.xml
   def create
-    if params[:place][:tag_list]
+    if params[:place] and params[:place][:tag_list]
       params[:place][:tag_list].strip!
       params[:place][:tag_list].gsub!(/( )+/,', ')
     end
@@ -127,7 +127,7 @@ class PlacesController < ApplicationController
   # PUT /places/1.xml
   def update
     @place = Place.find(params[:id])
-    if params[:place][:tag_list]
+    if params[:place] and params[:place][:tag_list]
       params[:place][:tag_list].strip!
       params[:place][:tag_list].gsub!(/( )+/,', ')
     end
