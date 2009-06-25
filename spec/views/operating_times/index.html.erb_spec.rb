@@ -14,6 +14,7 @@ describe "/operating_times/index.html.erb" do
   end
 
   it "renders a list of operating_times" do
+    pending('Fix libRelativeTime')
     render
   end
 end

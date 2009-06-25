@@ -1,5 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
+# TODO Create mocks for OperatingTime so we can test the scheduling methods
+describe "a Place with OperatingTimes", :shared => true do
+  it "should have a valid daily schedule"
+  it "should have a valid current schedule"
+  it "should have regular OperatingTimes"
+  it "should have special OperatingTimes"
+end
+
 describe Place do
   before(:each) do
     @valid_attributes = {
@@ -18,5 +26,20 @@ describe Place do
     lambda { Place.create!(@valid_attributes) }.should raise_error
   end
 
-  # TODO Create mocks for OperatingTime so we can test the scheduling methods
+  describe "that is currently open" do
+    it_should_behave_like "a Place with OperatingTimes"
+
+    it "should be open"
+  end
+
+  describe "that is closed for the day"
+  describe "that is not open at all today"
+
+  describe "that is open past midnight today"
+  describe "that was open past midnight yesterday"
+
+###### Special Schedules ######
+  describe "that is normally open, but closed all day today"
+  describe "that has special (extended) hours"
+  describe "that has special (shortened) hours"
 end

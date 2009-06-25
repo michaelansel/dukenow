@@ -11,4 +11,11 @@ describe OperatingTime do
   it "should create a new instance given valid attributes" do
     OperatingTime.create!(@valid_attributes)
   end
+
+  # TODO: Add spec code
+  it "should not create a new instance without a valid start time"
+  it "should not create a new instance without a valid length"
+  it "should not create a new instance without a valid Place reference"
+  it "should not create a new instance without a valid start date"
+  it "should not create a new instance without a valid end date"
 end
