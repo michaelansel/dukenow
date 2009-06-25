@@ -11,14 +11,6 @@
 
 ActiveRecord::Schema.define(:version => 20090324042504) do
 
-  create_table "eateries", :force => true do |t|
-    t.string   "name"
-    t.string   "location"
-    t.string   "phone"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "operating_times", :force => true do |t|
     t.integer  "place_id"
     t.integer  "opensAt"
@@ -35,26 +27,6 @@ ActiveRecord::Schema.define(:version => 20090324042504) do
     t.string   "name"
     t.string   "location"
     t.string   "phone"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "regular_operating_times", :force => true do |t|
-    t.integer  "eatery_id"
-    t.integer  "opensAt"
-    t.integer  "closesAt"
-    t.integer  "daysOfWeek"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "special_operating_times", :force => true do |t|
-    t.integer  "eatery_id"
-    t.integer  "opensAt"
-    t.integer  "closesAt"
-    t.integer  "daysOfWeek"
-    t.date     "start"
-    t.date     "end"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
