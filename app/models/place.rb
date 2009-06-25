@@ -1,6 +1,7 @@
 class Place < ActiveRecord::Base
   has_many :operating_times
   acts_as_taggable_on :tags
+  validates_presence_of :name
 
   def special_operating_times
     OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) > 0", id], :order => "startDate ASC, opensAt ASC" )
@@ -34,10 +35,6 @@ class Place < ActiveRecord::Base
   end
 
   def daySchedule(at = Date.today)
-    if at.nil?
-      instance_eval("class Place::MonkeyButt < StandardError ; end")
-      raise MonkeyButt, "Oh no! It looks like we found a monkey butt!"
-    end
     at = at.to_date if at.class == Time or at.class == DateTime
 
     schedule = schedule(at.midnight,(at+1).midnight)
@@ -64,10 +61,6 @@ class Place < ActiveRecord::Base
   end
 
   def currentSchedule(at = Time.now)
-    if at.nil?
-      instance_eval("class Place::MonkeyButt < StandardError ; end")
-      raise MonkeyButt, "Oh no! It looks like we found a monkey butt!"
-    end
     current_schedule = nil
 
     daySchedule(at).each do |optime|
@@ -83,10 +76,6 @@ class Place < ActiveRecord::Base
   end
 
   def open?(at = Time.now)
-    if at.nil?
-      instance_eval("class Place::MonkeyButt < StandardError ; end")
-      raise MonkeyButt, "Oh no! It looks like we found a monkey butt!"
-    end
     a = currentSchedule(at)
     return a ? true : false
   end
