@@ -48,6 +48,38 @@ API
 
 
 
+Milestones
+  OperatingTimes StartLengthSchema
+    -- Migration
+    Feature-parity
+      -- schedule(from,to)
+      -- daySchedule(date)
+      -- currentSchedule(at)
+      -- open?(at)
+      -- Full unit tests + validation
+          -- Prevent overlapping time periods without "override" flag
+    Extend API
+      -- Generate Time objects
+      -- Add versioning
+  DiningExtensions
+    -- Migration
+    -- Full unit tests + validation
+  DiningExtensions Tags
+    -- Migrations
+    -- Full unit tests + validation
+  OperatingTimes Tags
+    -- Migration
+    -- Full unit tests + validation
+    -- Extend OperatingTimes.find to filter by tags
+    -- Extend Places.open? to test delivery/dine-in tags
+  TimePeriods
+    -- Migration
+    -- Full unit tests + validation
+    -- Create integration
+    -- View Integration
+  API Versioning rake Tasks
+    -- Clone for new version and increment version number
+    -- Deprecate old version
 
 
 
