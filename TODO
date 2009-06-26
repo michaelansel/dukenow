@@ -1,0 +1,80 @@
+vim:set syntax=todo:
+
+Database
+  Places
+    -- has_one :dining_extension
+    \- name (string)
+    -- location (lat/long) -- ?GeoKit Plugin?
+    \- phone_number (string)
+  DiningExtensions
+    -- acts_as_taggable_on :dining_tags ## needs work
+    -- **delivery/eat-in** ## operating_time details/tag
+    -- more_info_url
+    -- owner_operator
+    -- payment_methods
+    -- logo_url
+  OperatingTimes
+    \- place_id
+    \- start (midnight offset in seconds)
+    \- length (in seconds)
+    \- startDate (Date)
+    \- endDate (Date)
+    \- details (String)
+    -- override
+    -- days_of_week (bit-wise AND of wday's)
+  OperatingTimesTags
+    -- name
+  OperatingTimesTaggings (clone auto-generated)
+    !- clone Taggings schema
+    -- operating_time_id
+    -- operating_times_tag_id
+  TimePeriods
+    -- name (String)
+    -- startDate (Date)
+    -- endDate (Date)
+
+API
+  Versioning
+    -- Subdirectories
+    -- rake task for adding new versions and deprecating old versions
+  Places
+  OperatingTimes
+    -- Array of DateTime objects for the next N hours/days/etc
+
+
+
+-- Bulk import Excel spreadsheet
+-- What qualifies as a Tag versus an Attribute?
+
+
+
+
+
+
+-- Hosting for web app/file server?
+-- Can I get help with the UI design, or will DukeMobile only be focusing on the iPhone side?
+-- Set "expiration" date; Send reminder emails; Show _nothing_ rather than inaccurate info
+Database
+  Adjust schema to be more flexible
+    !- Late nights: seamless midnight rollover
+      -- Start,End => Start,Length (then, convert to real "Time"s based on @at)
+      -- iCal RRULE (string) and parse with RiCal (pre-release)
+    \- Add "midnight" method to Date, Time
+    -- (?) Multiple "special"/override schedules (e.g. every weekday during Spring Break except Friday)
+    -- Special: "normally open, but closed all day today"
+    -- Semester-style schedules
+    -- List of important dates (likely to be scheduling boundaries)
+Interface
+  Index (Main Page)
+    -- Hide nowIndicator after midnight instead of wrapping around
+    -- JavaScript Tag Filtering
+    -- Status @ DateTime
+  Data Entry
+    -- Bulk import (CSV, XML)
+    -- Duke Dining PDF parser (?) -- Not worth the effort to get consistent data
+    Web Form
+      -- Text entry of times (drop downs, input fields)
+      -- Quickly add/edit all times for a location
+      -- Graphic schedule of current settings
+      -- Show "normal" schedule in background if making an exception
+      -- Drag/Drop/Resize-able blocks on schedule
