@@ -9,24 +9,53 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090616040958) do
+ActiveRecord::Schema.define(:version => 20090626212057) do
+
+  create_table "eateries", :force => true do |t|
+    t.string   "name"
+    t.string   "location"
+    t.string   "phone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "operating_times", :force => true do |t|
     t.integer  "place_id"
     t.integer  "opensAt"
     t.integer  "length"
     t.text     "details"
-    t.integer  "flags"
     t.date     "startDate"
     t.date     "endDate"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "override",     :default => 0, :null => false
+    t.integer  "days_of_week", :default => 0, :null => false
   end
 
   create_table "places", :force => true do |t|
     t.string   "name"
     t.string   "location"
     t.string   "phone"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "regular_operating_times", :force => true do |t|
+    t.integer  "eatery_id"
+    t.integer  "opensAt"
+    t.integer  "closesAt"
+    t.integer  "daysOfWeek"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "special_operating_times", :force => true do |t|
+    t.integer  "eatery_id"
+    t.integer  "opensAt"
+    t.integer  "closesAt"
+    t.integer  "daysOfWeek"
+    t.date     "start"
+    t.date     "end"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
