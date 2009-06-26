@@ -32,14 +32,40 @@ describe Place do
     it "should be open"
   end
 
-  describe "that is closed for the day"
-  describe "that is not open at all today"
+  describe "that is closed, but opens later today" do
+    it_should_behave_like "a Place with OperatingTimes"
 
-  describe "that is open past midnight today"
-  describe "that was open past midnight yesterday"
+    it "should be closed"
+    it "should have a schedule for later today"
+  end
+
+  describe "that is closed for the day" do
+    it_should_behave_like "a Place with OperatingTimes"
+
+    it "should be closed"
+  end
+  describe "that is not open at all today" do
+    it_should_behave_like "a Place with OperatingTimes"
+
+    it "should be closed"
+    it "should not have a schedule for the remainder of today"
+  end
+
+  describe "that is open past midnight today" do
+    it_should_behave_like "a Place with OperatingTimes"
+  end
+  describe "that was open past midnight yesterday" do
+    it_should_behave_like "a Place with OperatingTimes"
+  end
 
 ###### Special Schedules ######
-  describe "that is normally open, but closed all day today"
-  describe "that has special (extended) hours"
-  describe "that has special (shortened) hours"
+  describe "that is normally open, but closed all day today" do
+    it_should_behave_like "a Place with OperatingTimes"
+  end
+  describe "that has special (extended) hours" do
+    it_should_behave_like "a Place with OperatingTimes"
+  end
+  describe "that has special (shortened) hours" do
+    it_should_behave_like "a Place with OperatingTimes"
+  end
 end
