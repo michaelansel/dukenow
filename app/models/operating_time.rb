@@ -32,6 +32,12 @@ class OperatingTime < ActiveRecord::Base
     @at = Time.now
   end
 
+  # Backwards compatibility with old database schema
+  # TODO GET RID OF THIS!!!
+  def flags
+    (override << 7) | days_of_week
+  end
+
   def length
     closesAt - opensAt
   end
