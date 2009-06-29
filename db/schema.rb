@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090626212057) do
+ActiveRecord::Schema.define(:version => 20090629201611) do
 
   create_table "eateries", :force => true do |t|
     t.string   "name"
@@ -28,8 +28,8 @@ ActiveRecord::Schema.define(:version => 20090626212057) do
     t.date     "endDate"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "override",     :default => 0, :null => false
-    t.integer  "days_of_week", :default => 0, :null => false
+    t.integer  "override",   :default => 0, :null => false
+    t.integer  "daysOfWeek", :default => 0, :null => false
   end
 
   create_table "places", :force => true do |t|
