@@ -12,6 +12,7 @@ class OperatingTime < ActiveRecord::Base
   THURSDAY  = 0b00010000
   FRIDAY    = 0b00100000
   SATURDAY  = 0b01000000
+  ALL_DAYS  = (SUNDAY + MONDAY + TUESDAY + WEDNESDAY + THURSDAY + FRIDAY + SATURDAY)
 
   ## Validations ##
   def end_after_start
@@ -39,6 +40,17 @@ class OperatingTime < ActiveRecord::Base
       write_attribute(:override, true)
     elsif mode == false or mode == "false" or mode == 0
       write_attribute(:override, false)
+    else
+      raise ArgumentError, "Invalid override value; Accepts true/false, 1/0"
+    end
+  end
+
+  def daysOfWeek=(newDow)
+    if newDow & ALL_DAYS == newDow
+      write_attribute(:daysOfWeek, newDow & ALL_DAYS)
+    else
+      # Invalid input
+      raise ArgumentError, "Not a valid value for daysOfWeek"
     end
   end
 
@@ -127,7 +139,11 @@ class OperatingTime < ActiveRecord::Base
   # Sets the beginning of this OperatingTime
   # Input: params = { :hour => 12, :minute => 45 }
   def opensAt=(time)
-    @opensAt = relativeTime.openTime = time
+    if time.class == Time
+      @opensAt = relativeTime.openTime = time
+    else
+      super
+    end
   end
 
   # Sets the end of this OperatingTime
