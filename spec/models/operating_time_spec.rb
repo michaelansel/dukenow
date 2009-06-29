@@ -4,7 +4,9 @@ describe OperatingTime do
   before(:each) do
     @place = mock_model(Place)
     @valid_attributes = {
-      :place_id => @place.id
+      :place_id  => @place.id,
+      :startDate => Date.yesterday,
+      :endDate   => Date.tomorrow
     }
   end
 
