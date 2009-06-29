@@ -41,7 +41,7 @@ class OperatingTime < ActiveRecord::Base
     elsif mode == false or mode == "false" or mode == 0
       write_attribute(:override, false)
     else
-      raise ArgumentError, "Invalid override value; Accepts true/false, 1/0"
+      raise ArgumentError, "Invalid override value (#{mode.inspect}); Accepts true/false, 1/0"
     end
   end
 
@@ -50,7 +50,7 @@ class OperatingTime < ActiveRecord::Base
       write_attribute(:daysOfWeek, newDow & ALL_DAYS)
     else
       # Invalid input
-      raise ArgumentError, "Not a valid value for daysOfWeek"
+      raise ArgumentError, "Not a valid value for daysOfWeek (#{newDow.inspect})"
     end
   end
 
