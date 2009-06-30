@@ -17,15 +17,11 @@ class Place < ActiveRecord::Base
     # TODO Handle events starting within the range but ending outside of it?
     regular_times = []
     regular_operating_times.each do |ot|
-      ot.startDate ||= startAt.to_date
-      ot.endDate ||= endAt.to_date
-
       if ot.startDate >= startAt.to_date-1 and ot.endDate <= endAt.to_date+1
-        ot.at = nil
 
         # Yesterday
-        ot.at = (startAt.to_date - 1).midnight
-        if ot.closesAt >= ot.at and ot.flags & 1<<ot.at.wday > 0
+        open,close = ot.to_times((startAt.to_date - 1).midnight)
+        if false and close >= ot.at and ot.flags & 1<<ot.at.wday > 0
           t = ot.dup
           t.opensAt = startAt
           regular_times << t
@@ -33,12 +29,12 @@ class Place < ActiveRecord::Base
         end
 
         # Today
-        ot.at = startAt.to_date.midnight
-        regular_times << ot.dup if ot.opensAt >= startAt and ot.opensAt < endAt and ot.flags & 1<<ot.at.wday > 0
+        open,close = ot.to_times(startAt.to_date.midnight)
+        regular_times << ot.dup if open >= startAt and close < endAt and ot.flags & 1<<startAt.to_date.midnight.wday > 0
 
         # Tomorrow
-        ot.at =    endAt == endAt.midnight ? endAt : endAt.midnight + 1.days
-        if ot.opensAt < endAt and ot.flags & 1<<ot.at.wday > 0
+        open,close  = ot.to_times(endAt == endAt.midnight ? endAt : endAt.midnight + 1.days)
+        if false and open < endAt and ot.flags & 1<<ot.at.wday > 0
           t = ot.dup 
           t.closesAt = endAt
           regular_times << t
