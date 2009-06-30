@@ -100,11 +100,10 @@ class OperatingTime < ActiveRecord::Base
 
   ## End daysOfWeek Helper/Accessors ##
 
-  # TODO Return array of times representing the open and close times at a certain occurence
+  # Return array of times representing the open and close times at a certain occurence
   def to_times(at = Time.now)
-    raise NotImplementedError
-    open = Time.now
-    close = Time.now
+    open = at.midnight + start
+    close = open + length
     [open,close]
   end
 
@@ -152,9 +151,8 @@ class OperatingTime < ActiveRecord::Base
   end
 
 
-
-  def length
-    closesAt - opensAt
+  def start
+    read_attribute(:opensAt)
   end
 
   # Returns a RelativeTime object representing this OperatingTime

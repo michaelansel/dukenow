@@ -112,4 +112,35 @@ describe OperatingTime do
     lambda { @operating_time.daysOfWeek= OperatingTime::MONDAY }.should_not raise_error
     @operating_time.daysOfWeek.should == OperatingTime::MONDAY
   end
+
+  describe "with open and close times" do
+    before(:each) do
+      @now = Time.now
+
+      @open  = @now - 1.hours
+      @close = @now + 1.hours
+
+      start = @open - @open.midnight
+      length = @close - @open
+      @valid_attributes.update({
+        :opensAt => start,
+        :length  => length
+      })
+      @operating_time = OperatingTime.create!(@valid_attributes)
+    end
+
+    it "should return valid open and close times for 'now'" do
+      open,close = @operating_time.to_times()
+      open.to_i.should == @open.to_i
+      close.to_i.should == @close.to_i
+    end
+
+    it "should return valid open and close times for a given time" do
+      @open, @close, @now = [@open,@close,@now].collect{|t| t + 5.days}
+
+      open,close = @operating_time.to_times( @now )
+      open.to_i.should == @open.to_i
+      close.to_i.should == @close.to_i
+    end
+  end
 end
