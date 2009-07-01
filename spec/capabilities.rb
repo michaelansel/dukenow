@@ -4,7 +4,6 @@ require 'spec'
 module Spec
   module Example
     module ExampleGroupMethods
-  
       def it_can(*capabilities)
         capabilities.each do |c|
           include_capability(c)
@@ -17,6 +16,9 @@ module Spec
       end
   
       def in_order_to(*args, &block)
+        raise Spec::Example::NoDescriptionError.new("example group", caller(0)[1]) if args.empty?
+        options = add_options(args)
+        set_location(options, caller(0)[1])
         Spec::Example::CapabilityFactory.create_capability(*args, &block)
       end
       def in_order_to_be(*args, &block)
@@ -42,8 +44,8 @@ module Spec
     end
 
     class CapabilityFactory < ExampleGroupFactory
-      def self.create_capability(*args, &example_group_block) # :nodoc:
-        ::Spec::Example::Capability.register(*args, &example_group_block)
+      def self.create_capability(*args, &capability_block) # :nodoc:
+        ::Spec::Example::Capability.register(*args, &capability_block)
       end 
     end
   end
