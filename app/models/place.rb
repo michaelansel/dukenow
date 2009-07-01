@@ -4,11 +4,11 @@ class Place < ActiveRecord::Base
   validates_presence_of :name
 
   def special_operating_times
-    OperatingTime.find( :all, :conditions => ["place_id = ? and override != 0", id], :order => "startDate ASC, opensAt ASC" )
+    OperatingTime.find( :all, :conditions => {:place_id => id, :override => 1}, :order => "startDate ASC, opensAt ASC" )
   end
 
   def regular_operating_times
-    OperatingTime.find( :all, :conditions => ["place_id = ? and override == 0", id], :order => "startDate ASC, opensAt ASC" )
+    OperatingTime.find( :all, :conditions => {:place_id => id, :override => 0}, :order => "startDate ASC, opensAt ASC" )
   end
 
   # Returns an array of OperatingTimes
@@ -30,7 +30,8 @@ class Place < ActiveRecord::Base
 
         # Today
         open,close = ot.to_times(startAt.to_date.midnight)
-        regular_times << ot.dup if open >= startAt and close < endAt and ot.flags & 1<<startAt.to_date.midnight.wday > 0
+        ## TODO Add all occurances to the array, not just the first one
+        regular_times << ot if open >= startAt and close < endAt and ot.flags & 1<<startAt.to_date.midnight.wday > 0
 
         # Tomorrow
         open,close  = ot.to_times(endAt == endAt.midnight ? endAt : endAt.midnight + 1.days)
@@ -54,7 +55,7 @@ class Place < ActiveRecord::Base
 
     # TODO Handle combinations (i.e. part special, part regular)
     special_times == [] ? regular_times : special_times
-    regular_times
+    regular_times # Ignore, just return regular times
   end
 
   def daySchedule(at = Date.today)
@@ -78,24 +79,18 @@ class Place < ActiveRecord::Base
     # - Are effective on weekday "at.wday"
       schedule = OperatingTime.find( :all, :conditions => ["place_id = ? and (flags & #{OperatingTime::SPECIAL_FLAG}) == 0 and (flags & ?) > 0", id, 1 << at.wday] )
     end
-
-    schedule.sort{|a,b|a.opensAt <=> b.opensAt}
 =end
+
+    schedule.sort{|a,b|a.start <=> b.start}
   end
 
   def currentSchedule(at = Time.now)
     current_schedule = nil
 
-    daySchedule(at).each do |optime|
-      if optime.opensAt  <= at and
-         optime.closesAt >= at
-        #RAILS_DEFAULT_LOGGER.debug "Opens At: #{optime.opensAt.time(at).to_s}"
-        #RAILS_DEFAULT_LOGGER.debug "Closes At: #{optime.closesAt.time(at).to_s}"
-        current_schedule = optime
-      end
-    end
-    
-    current_schedule
+    daySchedule(at).select { |optime|
+      open, close = optime.to_times(at)
+      open <= at and at <= close
+    }[0]
   end
 
   def open?(at = Time.now)
