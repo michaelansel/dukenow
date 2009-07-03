@@ -103,10 +103,20 @@ describe "a Place with scheduling capabilities", :shared => true do
       @place.open(@at).should == true
     end
 
-    it "should be open in the past" do
+    it "should be open \"now\" in the past" do
+      @at += 12.days
+      @place.operating_times.each do |t|
+        t.endDate += 12
+      end
+
+      @place.open(@at).should == true
     end
 
-    it "should be open in the future" do
+    it "should be open \"now\" in the future" do
+      @at -= 12.days
+      @place.operating_times.each do |t|
+        t.startDate -= 12
+      end
     end
   end
 

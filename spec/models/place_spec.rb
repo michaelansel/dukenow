@@ -29,9 +29,6 @@ EOM
     @place.special_operating_times.should == []
   end
 
-  it_should_behave_like "a Place with scheduling capabilities"
-  it_should_behave_like "a Place with valid times"
-
   it "should create a new instance given valid attributes" do
     Place.create!(@valid_attributes)
   end
@@ -41,12 +38,24 @@ EOM
     lambda { Place.create!(@valid_attributes) }.should raise_error
   end
 
+  it "should produce valid XML"
+
+  it "should produce valid JSON"
+
+  ##############################
+  ###                        ###
+  ###       Scheduling       ###
+  ###                        ###
+  ##############################
+
+  it_should_behave_like "a Place with scheduling capabilities"
+  it_should_behave_like "a Place with valid times"
+
   describe "a Place with no times" do
     before(:each) do
+      # Don't allow any times
       add_constraint(@place){ false }
       @at = Time.now.midnight + 7.hours
-      @open_at = @at.midnight + 7.hours
-      @closed_at = @at.midnight + 2.hours
     end
 
     it_can "be closed now", "be closed all day", "be closed for the day"

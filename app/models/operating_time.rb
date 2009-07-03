@@ -103,14 +103,6 @@ class OperatingTime < ActiveRecord::Base
 
   ## End daysOfWeek Helper/Accessors ##
 
-  # Return array of times representing the open and close times at a certain occurence
-  def to_times(at = Time.now)
-    # TODO Verify this is a valid occurrence
-    open = at.midnight + start
-    close = open + length
-    [open,close]
-  end
-
   def to_xml(params)
     super(params.merge({:only => [:id, :place_id, :flags], :methods => [ :opensAt, :closesAt, :startDate, :endDate ]}))
   end
@@ -128,7 +120,9 @@ class OperatingTime < ActiveRecord::Base
     #  after today, all we care about is the date
     if  daysOfWeekArray[at.wday] and
         start >= (at - at.midnight)
-      return to_times(at)
+      open = at.midnight + start
+      close = open + length
+      return [open,close]
     end
 
     # We don't care about the time offset anymore, jump to the next midnight
@@ -151,6 +145,7 @@ class OperatingTime < ActiveRecord::Base
     # Recurse to rerun the validation routines
     return next_times(at)
   end
+  alias :to_times :next_times
 
 
 

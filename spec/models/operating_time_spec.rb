@@ -5,7 +5,7 @@ describe OperatingTime do
     @place = mock_model(Place)
     @valid_attributes = {
       :place_id   => @place.id,
-      :opensAt    => (Time.now - 1.hours).to_i,
+      :start      => (Time.now - 1.hours).to_i,
       :length     => 2.hours,
       :daysOfWeek => OperatingTime::ALL_DAYS,
       :startDate  => Date.yesterday,
@@ -115,32 +115,33 @@ describe OperatingTime do
 
   describe "with open and close times" do
     before(:each) do
-      @now = Time.now
+      @now = Time.now.midnight + 15.minutes
 
-      @open  = @now - 1.hours
-      @close = @now + 1.hours
+      @open  = @now.midnight + 23.hours + 30.minutes
+      @close = @open + 1.hour
 
       start = @open - @open.midnight
       length = @close - @open
       @valid_attributes.update({
-        :opensAt => start,
+        :start => start,
         :length  => length
       })
       @operating_time = OperatingTime.create!(@valid_attributes)
     end
 
     it "should return valid open and close times for 'now'" do
-      open,close = @operating_time.to_times()
-      open.to_i.should == @open.to_i
-      close.to_i.should == @close.to_i
+      open,close = @operating_time.next_times()
+      open.to_s.should == @open.to_s
+      close.to_s.should == @close.to_s
     end
 
     it "should return valid open and close times for a given time" do
       @open, @close, @now = [@open,@close,@now].collect{|t| t + 5.days}
+      @operating_time.endDate += 5
 
-      open,close = @operating_time.to_times( @now )
-      open.to_i.should == @open.to_i
-      close.to_i.should == @close.to_i
+      open,close = @operating_time.next_times( @now )
+      open.to_s.should == @open.to_s
+      close.to_s.should == @close.to_s
     end
   end
 end
