@@ -1,93 +1,110 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
+ConstraintDebugging = defined? ConstraintDebugging ? ConstraintDebugging : false
+
 def add_constraint(place, &block)
   place.constraints ||= []
   place.constraints << block
 end
 
+# Test +time+ against all constraints for +place+
+def acceptable_time(place, time)
+  if ConstraintDebugging
+    puts "Testing Time: #{time.inspect}"
+  end
+
+  matched_all = true
+  place.constraints.each do |c|
+    matched = c.call(time)
+
+    if ConstraintDebugging
+      if matched
+        puts "++ Time accepted by constraint"
+      else
+        puts "-- Time rejected by constraint"
+      end
+      puts "     Constraint: #{c.to_s.sub(/^[^\@]*\@/,'')[0..-2]}"
+    end
+
+    matched_all &= matched
+  end
+
+  if ConstraintDebugging
+    if matched_all
+      puts "++ Time Accepted"
+    else
+      puts "-- Time Rejected"
+    end
+    puts ""
+  end
+
+  matched_all
+end
+
 def add_times(place, times = [])
   times.each do |t|
-    place.constraints.each do |c|
-      if c.call(t) # If it matches the constraint
+    unless t[:start] and t[:length]
+      raise ArgumentError, "Must specify a valid start offset and length"
+    end
 
-        ot = mock_model(OperatingTime)
-        ot.stub(:start).and_return(t[:start])
-        ot.stub(:length).and_return(t[:length])
-        ot.stub(:override).and_return(t[:override] || 0)
-        ot.stub(:startDate).and_return(t[:startDate] || Date.yesterday)
-        ot.stub(:endDate).and_return(t[:endDate] || Date.tomorrow)
-        ot.stub(:flags).and_return(t[:flags] || OperatingTime::ALL_DAYS)
-        ot.stub(:place_id).and_return(place.id)
-        ot.should_receive(:to_times).any_number_of_times do |at|
-          at.should respond_to(:midnight)
+    if acceptable_time(place, t)
+      t[:override]   ||= false
+      t[:startDate]  ||= Date.yesterday
+      t[:endDate]    ||= Date.tomorrow
+      t[:daysOfWeek] ||= OperatingTime::ALL_DAYS
+      t[:place_id]   ||= place.id
+      ot = OperatingTime.new
+      t.each{|k,v| ot.send(k.to_s+'=',v)}
 
-          open = at.midnight + ot.start
-          close = open + ot.length
-          [open,close]
-        end
+      puts "Added time: #{ot.inspect}" if ConstraintDebugging
 
-        if t[:override]
-          place.special_operating_times << ot
-        else
-          place.regular_operating_times << ot
-        end
-
+      if t[:override]
+        place.special_operating_times << ot
+      else
+        place.regular_operating_times << ot
       end
+
     end
   end
+
+  if ConstraintDebugging
+    puts "Regular Times: #{place.regular_operating_times.inspect}"
+    puts "Special Times: #{place.special_operating_times.inspect}"
+  end
+
+  place
 end
 
 def remove_times(place, times = [])
 end
 
-def build_place_from_times(times = [])
-  place = Place.create!(@valid_attributes)
-
-  regularTimes,specialTimes = stub_times(times, place.id)
-
-  place.stub(:operating_times).and_return(regularTimes + specialTimes)
-  place.stub(:regular_operating_times).and_return(regularTimes)
-  place.stub(:special_operating_times).and_return(specialTimes)
-
-  place
-end
-
-def stub_times(times = [], place_id = 0)
-  regularTimes = []
-  specialTimes = []
-
-  times.each do |time|
-    ot = mock_model(OperatingTime)
-    ot.stub(:start).and_return(time[:start])
-    ot.stub(:length).and_return(time[:length])
-    ot.stub(:override).and_return(time[:override] || 0)
-    ot.stub(:startDate).and_return(time[:startDate] || Date.yesterday)
-    ot.stub(:endDate).and_return(time[:endDate] || Date.tomorrow)
-    ot.stub(:flags).and_return(time[:flags] || OperatingTime::ALL_DAYS)
-    ot.stub(:place_id).and_return(place_id)
-    ot.should_receive(:to_times).any_number_of_times do |at|
-      at.should respond_to(:midnight)
-
-      open = at.midnight + ot.start
-      close = open + ot.length
-      [open,close]
-    end
-
-    if time.keys.include?(:override) and time[:override] == 1
-      specialTimes << ot
-    elsif time[:override].nil? or time[:override] == 0
-      regularTimes << ot
-    end
-  end
-
-  [regularTimes,specialTimes]
-end
 
 describe "a Place with scheduling capabilities", :shared => true do
 
   in_order_to "be open now" do
-    it "should be open" do
-      @place.open(@open_at).should == true
+    before(:each) do
+      add_times(@place,[
+        {:start => 6.hours, :length => 2.hours, :override => false},
+        {:start => 6.hours, :length => 2.hours, :override => true}
+      ])
+      @at = Time.now.midnight + 7.hours
+    end
+
+    it "should have a schedule" do
+      @place.operating_times.should_not be_empty
+      @place.schedule(@at.midnight, @at.midnight + 1.day).should_not be_empty
+      @place.daySchedule(@at).should_not be_empty
+      @place.currentSchedule(@at).should_not be_nil
+    end
+
+    it "should be open today" do
+      @place.open(@at).should == true
+    end
+
+    it "should be open in the past" do
+    end
+
+    it "should be open in the future" do
     end
   end
 
@@ -95,6 +112,14 @@ describe "a Place with scheduling capabilities", :shared => true do
   end
 
   in_order_to "be open later in the day" do
+    before(:each) do
+      add_times(@place,[
+        {:start => 16.hours, :length => 2.hours, :override => false},
+        {:start => 16.hours, :length => 2.hours, :override => true}
+      ])
+      @at = Time.now.midnight + 12.hours
+    end
+
     it "should have a schedule between now and midnight" do
       @place.schedule(@at,@at.midnight + 24.hours).size.should > 0
     end
@@ -104,6 +129,9 @@ describe "a Place with scheduling capabilities", :shared => true do
   end
 
   in_order_to "be open past midnight (tonight)" do
+    before(:each) do
+      @at = Time.now.midnight
+    end
   end
 
   in_order_to "be open past midnight (last night)" do
@@ -111,8 +139,18 @@ describe "a Place with scheduling capabilities", :shared => true do
 
 
   in_order_to "be closed now" do
+    before(:each) do
+      #add_constraint(@place) {|t| (  t[:start] > (@at - @at.midnight) ) or
+                                  #( (t[:start] + t[:length]) < (@at - @at.midnight) ) }
+      add_times(@place,[
+        {:start => 6.hours, :length => 2.hours, :override => false},
+        {:start => 6.hours, :length => 2.hours, :override => true}
+      ])
+      @at = Time.now.midnight + 9.hours
+    end
+
     it "should be closed" do
-      @place.open(@closed_at).should == false
+      @place.open(@at).should == false
     end
   end
 
@@ -145,48 +183,70 @@ describe "a Place with all scheduling capabilities", :shared => true do
   it_can "be closed until later in the day"
 end
 
-describe "a Place with no times", :shared => true do
-  before(:each) do
-    add_constraint(@place){ false }
-    @at = Time.now.midnight + 7.hours
-    @open_at = @at.midnight + 7.hours
-    @closed_at = @at.midnight + 2.hours
-  end
-
-  it_should_behave_like "a Place with scheduling capabilities"
-  it_can "be closed now", "be closed all day", "be closed for the day"
-end
-
 describe "a Place with valid times", :shared => true do
   before(:each) do
     add_constraint(@place) { true }
-=begin
-    add_times([{:start => 6.hours, :length => 2.hours}])
-    @at = Time.now.midnight + 7.hours
-    @open_at = @at.midnight + 7.hours
-    @closed_at = @at.midnight + 2.hours
-=end
   end
-
-  it_should_behave_like "a Place with scheduling capabilities"
 
   describe "with only regular times" do
     before(:each) do
-      add_constraint(@place) {|t| not t[:override]}
-      add_times(@place,
-                   [{:start => 6.hours, :length => 2.hours},
-                    {:start => 12.hours, :length => 6.hours},
-                    {:start => 20.hours, :length => 3.hours}]
-      )
-      @open_at = @at.midnight + 7.hours
-      @closed_at = @at.midnight + 2.hours
+      add_constraint(@place) {|t| t[:override] == false }
     end
 
-    it_should_behave_like "a Place with all scheduling capabilities"
+    validate_setup do
+      it "should have regular times" do
+        #puts "Regular Times: #{@place.regular_operating_times.inspect}"
+        @place.regular_operating_times.should_not be_empty
+      end
+
+      it "should not have any special times" do
+        #puts "Special Times: #{@place.special_operating_times.inspect}"
+        @place.special_operating_times.should be_empty
+      end
+    end
+
+    it_can "be open now"
+    #it_can "be open 24 hours"
+    #it_can "be open later in the day"
+    #it_can "be open earlier in the day"
+    #it_can "be open past midnight (tonight)"
+    #it_can "be open past midnight (last night)"
+
+    #it_can "be closed now"
+    #it_can "be closed all day"
+    #it_can "be closed for the day"
+    #it_can "be closed until later in the day"
+
   end
 
   describe "with only special times" do
-    #it_should_behave_like "a Place with all scheduling capabilities"
+    before(:each) do
+      add_constraint(@place) {|t| t[:override] == true }
+    end
+
+
+    validate_setup do
+      it "should not have regular times" do
+        @place.regular_operating_times.should be_empty
+      end
+
+      it "should have special times" do
+        @place.special_operating_times.should_not be_empty
+      end
+    end
+
+    it_can "be open now"
+    #it_can "be open 24 hours"
+    #it_can "be open later in the day"
+    #it_can "be open earlier in the day"
+    #it_can "be open past midnight (tonight)"
+    #it_can "be open past midnight (last night)"
+
+    #it_can "be closed now"
+    #it_can "be closed all day"
+    #it_can "be closed for the day"
+    #it_can "be closed until later in the day"
+
   end
 
   describe "with regular and special times" do
@@ -220,6 +280,8 @@ describe "a Place with valid times", :shared => true do
 end
 
 
+
+
 describe Place do
   before(:each) do
     @valid_attributes = {
@@ -229,13 +291,26 @@ describe Place do
     }
 
     @place = Place.create!(@valid_attributes)
-    @place.class_eval("attr_accessor :constraints")
 
-    @place.stub(:regular_operating_times).and_return([])
-    @place.stub(:special_operating_times).and_return([])
+    @place.class_eval <<EOM
+      attr_accessor :constraints
+
+      def operating_times
+        regular_operating_times + special_operating_times
+      end
+
+      def regular_operating_times
+        @regular_operating_times ||= []
+      end
+      def special_operating_times
+        @special_operating_times ||= []
+      end
+EOM
+    @place.regular_operating_times.should == []
+    @place.special_operating_times.should == []
   end
 
-  it_should_behave_like "a Place with no times"
+  it_should_behave_like "a Place with scheduling capabilities"
   it_should_behave_like "a Place with valid times"
 
   it "should create a new instance given valid attributes" do
@@ -245,6 +320,17 @@ describe Place do
   it "should not create a new instance without a name" do
     @valid_attributes.delete(:name)
     lambda { Place.create!(@valid_attributes) }.should raise_error
+  end
+
+  describe "a Place with no times" do
+    before(:each) do
+      add_constraint(@place){ false }
+      @at = Time.now.midnight + 7.hours
+      @open_at = @at.midnight + 7.hours
+      @closed_at = @at.midnight + 2.hours
+    end
+
+    it_can "be closed now", "be closed all day", "be closed for the day"
   end
 end
 

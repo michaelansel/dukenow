@@ -3,6 +3,12 @@ require 'spec'
 
 module Spec
   module Example
+    class ExampleGroupHierarchy
+      def validation_blocks
+        @validation_blocks ||= collect {|klass| klass.validation_blocks}.flatten
+      end
+    end
+
     module ExampleGroupMethods
       def it_can(*capabilities)
         capabilities.each do |c|
@@ -36,6 +42,18 @@ module Spec
           end
           include(example_group)
         end
+
+        ExampleGroupHierarchy.new(self).validation_blocks.each do |validation_block|
+          describe("set up properly", &validation_block)
+        end
+      end
+
+      def validation_blocks
+        @validation_blocks ||= []
+      end
+
+      def validate_setup(&block)
+        validation_blocks << block
       end
   
     end
@@ -45,7 +63,14 @@ module Spec
 
     class CapabilityFactory < ExampleGroupFactory
       def self.create_capability(*args, &capability_block) # :nodoc:
-        ::Spec::Example::Capability.register(*args, &capability_block)
+=begin
+        ::Spec::Example::Capability.register(*args) do
+          describe("that can",*args) do
+            ::Spec::Example::Capability.register(*args,&capability_block)
+          end
+        end
+=end
+            ::Spec::Example::Capability.register(*args,&capability_block)
       end 
     end
   end

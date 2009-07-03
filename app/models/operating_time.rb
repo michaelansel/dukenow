@@ -46,12 +46,15 @@ class OperatingTime < ActiveRecord::Base
   end
 
   def daysOfWeek=(newDow)
-    if newDow & ALL_DAYS == newDow
-      write_attribute(:daysOfWeek, newDow & ALL_DAYS)
-    else
+    if not ( newDow & ALL_DAYS == newDow )
       # Invalid input
       raise ArgumentError, "Not a valid value for daysOfWeek (#{newDow.inspect})"
     end
+
+    write_attribute(:daysOfWeek, newDow & ALL_DAYS)
+    @daysOfWeekHash = nil
+    @daysOfWeekArray = nil
+    @daysOfWeekString = nil
   end
 
 
@@ -59,20 +62,23 @@ class OperatingTime < ActiveRecord::Base
 
   # Hash mapping day of week (Symbol) to valid(true)/invalid(false)
   def daysOfWeekHash
-    { :sunday    => (daysOfWeek & SUNDAY    ) > 0,
+    @daysOfWeekHash ||= {
+      :sunday    => (daysOfWeek & SUNDAY    ) > 0,
       :monday    => (daysOfWeek & MONDAY    ) > 0,
       :tuesday   => (daysOfWeek & TUESDAY   ) > 0,
       :wednesday => (daysOfWeek & WEDNESDAY ) > 0,
       :thursday  => (daysOfWeek & THURSDAY  ) > 0,
       :friday    => (daysOfWeek & FRIDAY    ) > 0,
-      :saturday  => (daysOfWeek & SATURDAY  ) > 0}
+      :saturday  => (daysOfWeek & SATURDAY  ) > 0
+    }
   end
 
   # Array beginning with Sunday of valid(true)/inactive(false) values
   def daysOfWeekArray
     dow = daysOfWeekHash
 
-    [ dow[:sunday],
+    @daysOfWeekArray ||= [
+      dow[:sunday],
       dow[:monday],
       dow[:tuesday],
       dow[:wednesday],
@@ -85,23 +91,21 @@ class OperatingTime < ActiveRecord::Base
   # Human-readable string of applicable days of week
   def daysOfWeekString
     dow = daysOfWeekHash
-    str = ""
 
-    str += "Su" if dow[:sunday]
-    str += "M"  if dow[:monday]
-    str += "Tu" if dow[:tuesday]
-    str += "W"  if dow[:wednesday]
-    str += "Th" if dow[:thursday]
-    str += "F"  if dow[:friday]
-    str += "Sa" if dow[:saturday]
-
-    str
+    @daysOfWeekString ||= (dow[:sunday]    ? "Su" : "") +
+                          (dow[:monday]    ? "M"  : "") +
+                          (dow[:tuesday]   ? "Tu" : "") +
+                          (dow[:wednesday] ? "W"  : "") +
+                          (dow[:thursday]  ? "Th" : "") +
+                          (dow[:friday]    ? "F"  : "") +
+                          (dow[:saturday]  ? "Sa" : "")
   end
 
   ## End daysOfWeek Helper/Accessors ##
 
   # Return array of times representing the open and close times at a certain occurence
   def to_times(at = Time.now)
+    # TODO Verify this is a valid occurrence
     open = at.midnight + start
     close = open + length
     [open,close]
@@ -109,6 +113,43 @@ class OperatingTime < ActiveRecord::Base
 
   def to_xml(params)
     super(params.merge({:only => [:id, :place_id, :flags], :methods => [ :opensAt, :closesAt, :startDate, :endDate ]}))
+  end
+
+
+  # Returns the next full occurrence of these operating time rule.
+  # If we are currently within a valid time range, it will look forward for the
+  # <em>next</em> opening time
+  def next_times(at = Time.now)
+    return nil if at > endDate # This schedule has ended
+    at = startDate.midnight if at < startDate # This schedule hasn't started yet, skip to startDate
+
+    # Next occurrence is later today
+    # This is the only time the "time" actually matters;
+    #  after today, all we care about is the date
+    if  daysOfWeekArray[at.wday] and
+        start >= (at - at.midnight)
+      return to_times(at)
+    end
+
+    # We don't care about the time offset anymore, jump to the next midnight
+    at = at.midnight + 1.day
+
+    # TODO Test for Sun, Sat, and one of M-F
+    dow = daysOfWeekArray[at.wday..-1] + daysOfWeekArray[0..at.wday]
+
+    # Next day of the week this schedule is valid for
+    shift = dow.index(true)
+    if shift
+      # Skip forward
+      at = at + shift.days
+    else
+      # Give up, there are no more occurrences
+      # TODO Test edge case: valid for 1 day/week
+      return nil
+    end
+
+    # Recurse to rerun the validation routines
+    return next_times(at)
   end
 
 
@@ -153,6 +194,10 @@ class OperatingTime < ActiveRecord::Base
 
   def start
     read_attribute(:opensAt)
+  end
+
+  def start=(offset)
+    write_attribute(:opensAt,offset)
   end
 
   # Returns a RelativeTime object representing this OperatingTime

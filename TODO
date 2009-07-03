@@ -20,8 +20,8 @@ Database
     \- startDate (Date)
     \- endDate (Date)
     \- details (String)
-    -- override
-    -- days_of_week (bit-wise AND of wday's)
+    \- override
+    \- days_of_week (bit-wise AND of wday's)
   OperatingTimesTags
     -- name
   OperatingTimesTaggings (clone auto-generated)
@@ -48,7 +48,7 @@ API
 
 
 
-Milestones
+Timeline
   OperatingTimes StartLengthSchema
     \- Migration
     Feature-parity
@@ -56,10 +56,13 @@ Milestones
       -- daySchedule(date)
       -- currentSchedule(at)
       -- open?(at)
-      -- Full unit tests + validation
-          -- Prevent overlapping time periods without "override" flag
+    Testing
+      Unit Tests
+        -- Database accessors
+      Model Validations
+        -- Prevent overlapping time periods without "override" flag
     Extend API
-      -- Generate Time objects
+      \- Generate Time objects (Enumerable?)
       -- Add versioning
   DiningExtensions
     -- Migration

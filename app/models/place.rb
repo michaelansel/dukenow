@@ -1,4 +1,6 @@
 class Place < ActiveRecord::Base
+  DEBUG = defined? DEBUG ? DEBUG : false
+
   has_many :operating_times
   acts_as_taggable_on :tags
   validates_presence_of :name
@@ -15,47 +17,65 @@ class Place < ActiveRecord::Base
   def schedule(startAt,endAt)
     # TODO Returns the schedule for a specified time window
     # TODO Handle events starting within the range but ending outside of it?
-    regular_times = []
-    regular_operating_times.each do |ot|
-      if ot.startDate >= startAt.to_date-1 and ot.endDate <= endAt.to_date+1
 
-        # Yesterday
-        open,close = ot.to_times((startAt.to_date - 1).midnight)
-        if false and close >= ot.at and ot.flags & 1<<ot.at.wday > 0
-          t = ot.dup
-          t.opensAt = startAt
-          regular_times << t
-          t=nil
+    # TODO Offload this selection to the database; okay for testing
+    regular_operating_times = regular_operating_times().select{|t| t.startDate <= endAt.to_date and t.endDate >= startAt.to_date}
+    special_operating_times = special_operating_times().select{|t| t.startDate <= endAt.to_date and t.endDate >= startAt.to_date}
+
+    regular_times  = []
+    special_times  = []
+    special_ranges = []
+
+    special_operating_times.each do |ot|
+      puts "\nSpecial Scheduling: #{ot.inspect}" if DEBUG
+
+      open,close = ot.next_times(startAt-1.day)
+      next if open.nil? # No valid occurrences in the future
+
+      while not open.nil? and open <= endAt do
+        if DEBUG
+          puts "Open: #{open}"
+          puts "Close: #{close}"
+          puts "Start Date: #{ot.startDate} (#{ot.startDate.class})"
+          puts "End Date: #{ot.endDate} (#{ot.endDate.class})"
         end
 
-        # Today
-        open,close = ot.to_times(startAt.to_date.midnight)
-        ## TODO Add all occurances to the array, not just the first one
-        regular_times << ot if open >= startAt and close < endAt and ot.flags & 1<<startAt.to_date.midnight.wday > 0
-
-        # Tomorrow
-        open,close  = ot.to_times(endAt == endAt.midnight ? endAt : endAt.midnight + 1.days)
-        if false and open < endAt and ot.flags & 1<<ot.at.wday > 0
-          t = ot.dup 
-          t.closesAt = endAt
-          regular_times << t
-          t=nil
-        end
-
+        special_times << [open,close]
+        special_ranges << Range.new(ot.startDate,ot.endDate)
+        open,close = ot.next_times(close)
       end
+
     end
 
-    special_times = special_operating_times.select do |ot|
-      ot.at = startAt
-      ot.startDate ||= startAt.to_date
-      ot.endDate ||= endAt.to_date
-      (ot.startDate <= startAt.to_date and ot.endDate >= endAt.to_date) and
-        ((ot.opensAt >= startAt and ot.opensAt <= endAt) or (ot.closesAt >= startAt and ot.closesAt <= endAt))
+    puts "\nSpecial Times: #{special_times.inspect}" if DEBUG
+    puts "\nSpecial Ranges: #{special_ranges.inspect}" if DEBUG
+
+    regular_operating_times.each do |ot|
+      puts "\nRegular Scheduling: #{ot.inspect}" if DEBUG
+
+      open,close = ot.next_times(startAt-1.day)
+      next if open.nil? # No valid occurrences in the future
+
+      while not open.nil? and open <= endAt do
+        puts "Open: #{open}" if DEBUG
+        puts "Close: #{close}" if DEBUG
+
+        special_ranges.each do |sr|
+          next if sr.member?(open)
+        end
+
+        regular_times << [open,close]
+        open,close = ot.next_times(close)
+      end
+
     end
 
+    puts "\nRegular Times: #{regular_times.inspect}" if DEBUG
+
+    # TODO Handle schedule overrides
     # TODO Handle combinations (i.e. part special, part regular)
-    special_times == [] ? regular_times : special_times
-    regular_times # Ignore, just return regular times
+
+    (regular_times+special_times).sort{|a,b|a[0] <=> b[0]}
   end
 
   def daySchedule(at = Date.today)
@@ -81,14 +101,13 @@ class Place < ActiveRecord::Base
     end
 =end
 
-    schedule.sort{|a,b|a.start <=> b.start}
+    schedule.sort{|a,b|a[0] <=> b[0]}
   end
 
   def currentSchedule(at = Time.now)
-    current_schedule = nil
-
-    daySchedule(at).select { |optime|
-      open, close = optime.to_times(at)
+    daySchedule(at).select { |open,close|
+      puts "Open(cS): #{open}" if DEBUG
+      puts "Close(cS): #{close}" if DEBUG
       open <= at and at <= close
     }[0]
   end
