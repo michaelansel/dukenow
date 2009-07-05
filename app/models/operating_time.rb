@@ -3,6 +3,7 @@ class OperatingTime < ActiveRecord::Base
   validates_presence_of :place_id
   validates_associated :place
   validate :end_after_start, :daysOfWeek_valid
+  validate {|ot| 0 <= ot.length and ot.length <= 1.days }
 
   ## DaysOfWeek Constants ##
   SUNDAY    = 0b00000001
@@ -112,14 +113,15 @@ class OperatingTime < ActiveRecord::Base
   # If we are currently within a valid time range, it will look forward for the
   # <em>next</em> opening time
   def next_times(at = Time.now)
-    return nil if at > endDate # This schedule has ended
+    return nil if length == 0
+    return nil if at.to_date > endDate # Schedules end at 23:59 of the stored endDate
     at = startDate.midnight if at < startDate # This schedule hasn't started yet, skip to startDate
 
     # Next occurrence is later today
     # This is the only time the "time" actually matters;
     #  after today, all we care about is the date
     if  daysOfWeekArray[at.wday] and
-        start >= (at - at.midnight)
+        start >= at.offset
       open = at.midnight + start
       close = open + length
       return [open,close]

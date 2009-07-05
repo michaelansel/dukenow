@@ -34,14 +34,14 @@ describe Place do
   it_should_behave_like "a Place with scheduling capabilities"
   it_should_behave_like "a Place with valid times"
 
-  describe "a Place with no times" do
+  describe "with no times" do
     before(:each) do
       # Don't allow any times
       @place.add_constraint { false }
       @at = Time.now.midnight + 7.hours
     end
 
-    it_can "be closed now", "be closed all day", "be closed for the day"
+    it_can "be closed now", "be closed all day"
   end
 end
 

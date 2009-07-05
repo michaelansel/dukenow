@@ -1,5 +1,5 @@
 class Place < ActiveRecord::Base
-  DEBUG = defined? DEBUG ? DEBUG : false
+  DEBUG = false
 
   has_many :operating_times
   acts_as_taggable_on :tags
@@ -19,17 +19,25 @@ class Place < ActiveRecord::Base
     # TODO Handle events starting within the range but ending outside of it?
 
     # TODO Offload this selection to the database; okay for testing
-    regular_operating_times = regular_operating_times().select{|t| t.startDate <= endAt.to_date and t.endDate >= startAt.to_date}
-    special_operating_times = special_operating_times().select{|t| t.startDate <= endAt.to_date and t.endDate >= startAt.to_date}
+    # Select all relevant times (1 day buffer on each end)
+    # NOTE Make sure to use generous date comparisons to allow for midnight rollovers
+    regular_operating_times = regular_operating_times().select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
+    special_operating_times = special_operating_times().select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
+
+    puts "\nRegular OperatingTimes: #{regular_operating_times.inspect}" if DEBUG
+    puts "\nSpecial OperatingTimes: #{special_operating_times.inspect}" if DEBUG
 
     regular_times  = []
     special_times  = []
     special_ranges = []
 
     special_operating_times.each do |ot|
-      puts "\nSpecial Scheduling: #{ot.inspect}" if DEBUG
+      puts "\nSpecial Scheduling for: #{ot.inspect}" if DEBUG
 
-      open,close = ot.next_times(startAt-1.day)
+      # Start a day early if possible
+      earlyStart = startAt-1.day < ot.startDate.midnight ? startAt : startAt - 1.day
+      # Calculate the next set up open/close times
+      open,close = ot.next_times(earlyStart)
       next if open.nil? # No valid occurrences in the future
 
       while not open.nil? and open <= endAt do
@@ -56,9 +64,12 @@ class Place < ActiveRecord::Base
     puts "\nSpecial Ranges: #{special_ranges.inspect}" if DEBUG
 
     regular_operating_times.each do |ot|
-      puts "\nRegular Scheduling: #{ot.inspect}" if DEBUG
+      puts "\nRegular Scheduling for: #{ot.inspect}" if DEBUG
 
-      open,close = ot.next_times(startAt-1.day)
+      # Start a day early if possible
+      earlyStart = startAt-1.day < ot.startDate.midnight ? startAt : startAt - 1.day
+      # Calculate the next set up open/close times
+      open,close = ot.next_times(earlyStart)
       next if open.nil? # No valid occurrences in the future
 
       while not open.nil? and open <= endAt do

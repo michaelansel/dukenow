@@ -143,6 +143,17 @@ describe OperatingTime do
       open.to_s.should == @open.to_s
       close.to_s.should == @close.to_s
     end
+
+    it "should return valid open/close times if open past midnight, but ending today" do
+      @operating_time.endDate = @now.to_date
+      open = @now.midnight + @operating_time.start
+      close = open + @operating_time.length
+
+      open,close = @operating_time.next_times()
+      close.should > (@now.to_date + 1).midnight
+      open.to_s.should == @open.to_s
+      close.to_s.should == @close.to_s
+    end
   end
 end
 

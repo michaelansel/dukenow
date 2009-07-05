@@ -33,18 +33,19 @@ module Spec
   
   
       def include_capability(capability)
-        case capability
-        when Capability
-          include capability
-        else
-          unless example_group = Capability.find(capability)
-            raise RuntimeError.new("Capability '#{capability}' can not be found")
-          end
-          include(example_group)
+
+        unless example_group = Capability.find(capability)
+          raise RuntimeError.new("Capability '#{capability}' can not be found")
         end
 
-        ExampleGroupHierarchy.new(self).validation_blocks.each do |validation_block|
-          describe("set up properly", &validation_block)
+        subclass("can",capability,"therefore") do
+          include example_group
+
+          describe("when set up properly") do
+            ExampleGroupHierarchy.new(self).validation_blocks.each do |validation_block|
+              self.module_eval(&validation_block)
+            end
+          end
         end
       end
 
@@ -63,14 +64,7 @@ module Spec
 
     class CapabilityFactory < ExampleGroupFactory
       def self.create_capability(*args, &capability_block) # :nodoc:
-=begin
-        ::Spec::Example::Capability.register(*args) do
-          describe("that can",*args) do
-            ::Spec::Example::Capability.register(*args,&capability_block)
-          end
-        end
-=end
-            ::Spec::Example::Capability.register(*args,&capability_block)
+        ::Spec::Example::Capability.register(*args,&capability_block)
       end 
     end
   end

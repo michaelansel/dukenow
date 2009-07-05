@@ -118,7 +118,7 @@ def add_scheduling_spec_helpers(place)
       times.concat(new_times)
     end
 
-    def build
+    def build(at = Time.now)
       if ConstraintDebugging
         puts "Rebuilding #{self}"
         puts "Constraints:"
@@ -139,8 +139,8 @@ def add_scheduling_spec_helpers(place)
         t=t.dup
         if acceptable_time(t)
           t[:override]   ||= false
-          t[:startDate]  ||= Date.yesterday
-          t[:endDate]    ||= Date.tomorrow
+          t[:startDate]  ||= at.to_date - 2
+          t[:endDate]    ||= at.to_date + 2
           t[:daysOfWeek] ||= OperatingTime::ALL_DAYS
           t[:place_id]   ||= self.id
           ot = OperatingTime.new

@@ -9,6 +9,12 @@ describe "a Place with scheduling capabilities", :shared => true do
     add_scheduling_spec_helpers(@place)
   end
 
+  validate_setup do
+    before(:each) do
+      @place.build
+    end
+  end
+
   it "should be clean" do
     @place.regular_operating_times.should == []
     @place.special_operating_times.should == []
@@ -17,55 +23,63 @@ describe "a Place with scheduling capabilities", :shared => true do
   end
 
   in_order_to "be open now" do
-    describe "can be open now, so" do
     before(:each) do
       @place.add_times([
         {:start => 6.hours, :length => 2.hours, :override => false},
         {:start => 6.hours, :length => 2.hours, :override => true}
       ])
       @at = (@at || Time.now).midnight + 7.hours
-
-      @place.build
     end
 
     it "should have operating times" do
+      @place.build(@at)
       @place.operating_times.should_not be_empty
     end
 
     it "should have a schedule" do
+      @place.build(@at)
       @place.schedule(@at.midnight, @at.midnight + 1.day).should_not be_empty
     end
 
     it "should have a daySchedule" do
+      @place.build(@at)
       @place.daySchedule(@at).should_not be_empty
     end
 
     it "should have a currentSchedule" do
-      #puts "\n\n\n\n\n\nDay Schedule: \n#{@place.daySchedule(@at).collect{|a,b| a.inspect + " to " + b.inspect}.join("\n")}\n\n\n\n\n\n"
+      @place.build(@at)
       @place.currentSchedule(@at).should_not be_nil
     end
 
-    it "should be open today" do
+    it "should be open on Sunday" do
+      @at = @at - @at.wday.days # Set to previous Sunday
+      @place.rebuild
+
       @place.open(@at).should == true
     end
 
-    it "should be open \"now\" in the past" do
-      @at -= 12.days
-      @place.operating_times.each do |t|
-        t.startDate -= 12
+    it "should be open on Wednesday" do
+      @at = @at - @at.wday.days + 3.days # Set to Wednesday after last Sunday
+      @place.rebuild(@at)
+
+      begin
+        @place.open(@at).should == true
+      rescue Exception => e
+        puts ""
+        puts "At: #{@at}"
+        puts "Times: #{@place.times.inspect}"
+        puts "OperatingTimes: #{@place.operating_times.inspect}"
+        puts "daySchedule: #{@place.daySchedule(@at)}"
+
+        raise e
       end
-
-      @place.open(@at).should == true
     end
 
-    it "should be open \"now\" in the future" do
-      @at += 12.days
-      @place.operating_times.each do |t|
-        t.endDate += 12
-      end
+    it "should be open on Saturday" do
+      @at = @at - @at.wday.days + 6.days# Set to Saturday after last Sunday
+      @place.rebuild(@at)
 
       @place.open(@at).should == true
-    end
     end
   end
 
@@ -75,9 +89,9 @@ describe "a Place with scheduling capabilities", :shared => true do
         {:start => 0, :length => 24.hours, :override => false},
         {:start => 0, :length => 24.hours, :override => true}
       ])
-      @at = Time.now.midnight + 12.hours
+      @at = (@at || Time.now).midnight + 12.hours
 
-      @place.build
+      @place.build(@at)
     end
 
     it "should be open during the day" do
@@ -95,30 +109,76 @@ describe "a Place with scheduling capabilities", :shared => true do
         {:start => 16.hours, :length => 2.hours, :override => false},
         {:start => 16.hours, :length => 2.hours, :override => true}
       ])
-      @at = Time.now.midnight + 12.hours
+      @at = (@at || Time.now).midnight + 12.hours
 
-      @place.build
+      @place.build(@at)
     end
 
-    it "should have a schedule between now and midnight" do
-      @place.schedule(@at,@at.midnight + 24.hours).size.should > 0
+    it "should be closed now" do
+      @place.open(@at).should == false
+    end
+
+    it "should have a schedule later in the day" do
+      @place.schedule(@at,@at.midnight + 24.hours).should_not be_empty
+    end
+
+    it "should not have a schedule earlier in the day" do
+      @place.schedule(@at.midnight,@at).should be_empty
     end
   end
 
-  in_order_to "be open earlier in the day" do
-  end
-
-  in_order_to "be open past midnight (tonight)" do
+  in_order_to "be closed for the day" do
     before(:each) do
-      @at = Time.now.midnight
+      @place.add_times([
+        {:start => 4.hours, :length => 2.hours, :override => false},
+        {:start => 4.hours, :length => 2.hours, :override => false}
+      ])
+      @at = (@at || Time.now).midnight + 12.hours
+      @place.build(@at)
+    end
 
-      @place.build
+    it "should be closed now" do
+      @place.open(@at).should == false
+    end
+
+    it "should have a schedule earlier in the day" do
+      @place.schedule(@at.midnight,@at).should_not be_empty
+    end
+
+    it "should not have a schedule later in the day" do
+      @place.schedule(@at, @at.midnight + 24.hours).should be_empty
     end
   end
 
-  in_order_to "be open past midnight (last night)" do
-  end
+  in_order_to "be open past midnight" do
+    before(:each) do
+      @at = (@at || Time.now).midnight + 12.hours
 
+      @place.add_times([
+        {:start => 23.hours, :length => 4.hours, :override => true},
+        {:start => 23.hours, :length => 4.hours, :override => false}
+      ])
+
+      @place.times.each do |t|
+        t[:startDate] = @at.to_date
+        t[:endDate] = @at.to_date
+      end
+
+      @place.build(@at)
+    end
+
+    it "should be open early the next morning" do
+      @place.open(@at.midnight + 1.days + 2.hours).should == true
+    end
+
+    it "should not be open early that morning" do
+      @place.open(@at.midnight + 2.hours).should == false
+    end
+
+    it "should not be open late the next night" do
+      @place.open(@at.midnight + 2.days + 2.hours).should == false
+    end
+  end
 
   in_order_to "be closed now" do
     before(:each) do
@@ -139,32 +199,38 @@ describe "a Place with scheduling capabilities", :shared => true do
   end
 
   in_order_to "be closed all day" do
-  end
+    before(:each) do
+      @at ||= Time.now
 
-  in_order_to "be closed for the day" do
-  end
+      @place.add_times([
+        {:start => 0, :length => 0, :startDate => @at.to_date, :endDate => @at.to_date, :override => false},
+        {:start => 0, :length => 0, :startDate => @at.to_date, :endDate => @at.to_date, :override => false}
+      ])
 
-  in_order_to "be closed until later in the day" do
+      @place.build(@at)
+    end
+
+    it "should be closed now" do
+      @place.open(@at).should == false
+    end
+
+    it "should not have a schedule earlier in the day" do
+      @place.schedule(@at.midnight,@at).should be_empty
+    end
+
+    it "should not have a schedule later in the day" do
+      @place.schedule(@at, @at.midnight + 24.hours).should be_empty
+    end
+
+    it "should not have a schedule at all for the day" do
+      @place.daySchedule(@at).should be_empty
+    end
   end
 
   in_order_to "have a valid schedule" do
     it "should not have any overlapping times"
     it "should have all times within the specified time range"
   end
-end
-
-describe "a Place with all scheduling capabilities", :shared => true do
-  it_can "be open now"
-  it_can "be open 24 hours"
-  it_can "be open later in the day"
-  it_can "be open earlier in the day"
-  it_can "be open past midnight (tonight)"
-  it_can "be open past midnight (last night)"
-
-  it_can "be closed now"
-  it_can "be closed all day"
-  it_can "be closed for the day"
-  it_can "be closed until later in the day"
 end
 
 describe "a Place with valid times", :shared => true do
@@ -189,18 +255,15 @@ describe "a Place with valid times", :shared => true do
 
     it_can "be open now"
     it_can "be open 24 hours"
+    it_can "be open past midnight"
     it_can "be open later in the day"
-    it_can "be open earlier in the day"
-    it_can "be open past midnight (tonight)"
-    it_can "be open past midnight (last night)"
-
+    it_can "be closed for the day"
     it_can "be closed now"
     it_can "be closed all day"
-    it_can "be closed for the day"
-    it_can "be closed until later in the day"
 
   end
 
+=begin
   describe "with only special times" do
     before(:each) do
       @place.add_constraint {|t| t[:override] == true }
@@ -221,15 +284,11 @@ describe "a Place with valid times", :shared => true do
 
     it_can "be open now"
     it_can "be open 24 hours"
+    it_can "be open past midnight"
     it_can "be open later in the day"
-    it_can "be open earlier in the day"
-    it_can "be open past midnight (tonight)"
-    it_can "be open past midnight (last night)"
-
+    it_can "be closed for the day"
     it_can "be closed now"
     it_can "be closed all day"
-    it_can "be closed for the day"
-    it_can "be closed until later in the day"
 
   end
 
@@ -271,4 +330,5 @@ describe "a Place with valid times", :shared => true do
       #it_should_behave_like "a Place with all scheduling capabilities"
     end
   end
+=end
 end
