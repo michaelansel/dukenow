@@ -145,3 +145,47 @@ describe OperatingTime do
     end
   end
 end
+
+
+
+### Midnight Module Specs ###
+
+describe Date do
+  before(:each) do
+    @date = Date.today
+  end
+
+  it "should have a valid midnight" do
+    @date.should respond_to(:midnight)
+    @date.midnight.should == Time.mktime(@date.year, @date.month, @date.day, 0, 0, 0)
+  end
+end
+
+describe Time do
+  before(:each) do
+    @time = Time.now
+  end
+
+  it "should have a valid midnight" do
+    @time.should respond_to(:midnight)
+    @time.midnight.should == Time.mktime(@time.year, @time.month, @time.day, 0, 0, 0)
+  end
+
+  it "should have a valid midnight offset" do
+    @time.should respond_to(:offset)
+    @time.offset.should == @time.hour.hours + @time.min.minutes + @time.sec
+  end
+end
+
+describe DateTime do
+  before(:each) do
+    @dt = DateTime.now
+  end
+
+  it "should have a valid midnight" do
+    @dt.should respond_to(:midnight)
+    @dt.midnight.should == Time.mktime(@dt.year, @dt.month, @dt.day, 0, 0, 0)
+  end
+end
+
+### End Midnight Module Specs ###

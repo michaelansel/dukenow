@@ -4,6 +4,10 @@ module Midnight
   def midnight
     Time.mktime(year, month, day, 0, 0, 0);
   end
+
+  def offset
+    @midnight_offset || (@midnight_offset = (self - self.midnight).to_i)
+  end
 end
 
 

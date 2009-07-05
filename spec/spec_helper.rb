@@ -46,3 +46,127 @@ Spec::Runner.configure do |config|
   # 
   # For more information take a look at Spec::Runner::Configuration and Spec::Runner
 end
+
+
+ConstraintDebugging = false
+def add_scheduling_spec_helpers(place)
+  place.instance_eval do
+
+    def operating_times
+      regular_operating_times + special_operating_times
+    end
+
+    def regular_operating_times
+      @regular_operating_times ||= []
+    end
+    def special_operating_times
+      @special_operating_times ||= []
+    end
+    def constraints
+      @constraints ||= []
+    end
+    def times
+      @times ||= []
+    end
+
+
+    def add_constraint(&block)
+      puts "Adding constraint: #{block.to_s.sub(/^[^\@]*\@/,'')[0..-2]}" if ConstraintDebugging
+      self.constraints << block
+    end
+
+    # Test +time+ against all constraints for +place+
+    def acceptable_time(time)
+      if ConstraintDebugging
+        puts "Testing Time: #{time.inspect}"
+      end
+
+      matched_all = true
+      self.constraints.each do |c|
+        matched = c.call(time)
+
+        if ConstraintDebugging
+          if matched
+            puts "++ Time accepted by constraint"
+          else
+            puts "-- Time rejected by constraint"
+          end
+          puts "     Constraint: #{c.to_s.sub(/^[^\@]*\@/,'')[0..-2]}"
+        end
+
+        matched_all &= matched
+      end
+
+      if ConstraintDebugging
+        if matched_all
+          puts "++ Time Accepted"
+        else
+          puts "-- Time Rejected"
+        end
+        puts ""
+      end
+
+      matched_all
+    end
+
+    def add_times(new_times = [])
+      new_times.each do |t|
+        unless t[:start] and t[:length]
+          raise ArgumentError, "Must specify a valid start offset and length"
+        end
+      end
+      times.concat(new_times)
+    end
+
+    def build
+      if ConstraintDebugging
+        puts "Rebuilding #{self}"
+        puts "Constraints:"
+          constraints.each do |c|
+            puts "  #{c.to_s.sub(/^[^\@]*\@/,'')[0..-2]}"
+          end
+        puts "Times:"
+          times.each do |t|
+            puts "  #{t.inspect}"
+          end
+      end
+
+      regular_operating_times.clear
+      special_operating_times.clear
+      operating_times.clear
+
+      self.times.each do |t|
+        t=t.dup
+        if acceptable_time(t)
+          t[:override]   ||= false
+          t[:startDate]  ||= Date.yesterday
+          t[:endDate]    ||= Date.tomorrow
+          t[:daysOfWeek] ||= OperatingTime::ALL_DAYS
+          t[:place_id]   ||= self.id
+          ot = OperatingTime.new
+          t.each{|k,v| ot.send(k.to_s+'=',v)}
+
+          puts "Added time: #{ot.inspect}" if ConstraintDebugging
+
+          if t[:override]
+            self.special_operating_times << ot
+          else
+            self.regular_operating_times << ot
+          end
+
+        end
+      end
+
+      if ConstraintDebugging
+        puts "Regular Times: #{self.regular_operating_times.inspect}"
+        puts "Special Times: #{self.special_operating_times.inspect}"
+      end
+
+      self
+    end
+    alias :build! :build
+    alias :rebuild :build
+    alias :rebuild! :build
+
+  end
+end # add_scheduling_spec_helpers(place)

@@ -40,6 +40,11 @@ class Place < ActiveRecord::Base
           puts "End Date: #{ot.endDate} (#{ot.endDate.class})"
         end
 
+        if close < startAt # Skip forward to the first occurrance in our time range
+          open,close = ot.next_times(close)
+          next
+        end
+
         special_times << [open,close]
         special_ranges << Range.new(ot.startDate,ot.endDate)
         open,close = ot.next_times(close)
@@ -59,6 +64,11 @@ class Place < ActiveRecord::Base
       while not open.nil? and open <= endAt do
         puts "Open: #{open}" if DEBUG
         puts "Close: #{close}" if DEBUG
+
+        if close < startAt # Skip forward to the first occurrance in our time range
+          open,close = ot.next_times(close)
+          next
+        end
 
         special_ranges.each do |sr|
           next if sr.member?(open)
@@ -105,6 +115,7 @@ class Place < ActiveRecord::Base
   end
 
   def currentSchedule(at = Time.now)
+    puts "At(cS): #{at}" if DEBUG
     daySchedule(at).select { |open,close|
       puts "Open(cS): #{open}" if DEBUG
       puts "Close(cS): #{close}" if DEBUG

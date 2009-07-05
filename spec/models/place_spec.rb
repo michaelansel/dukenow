@@ -10,27 +10,10 @@ describe Place do
     }
 
     @place = Place.create!(@valid_attributes)
-
-    @place.class_eval <<EOM
-      attr_accessor :constraints
-
-      def operating_times
-        regular_operating_times + special_operating_times
-      end
-
-      def regular_operating_times
-        @regular_operating_times ||= []
-      end
-      def special_operating_times
-        @special_operating_times ||= []
-      end
-EOM
-    @place.regular_operating_times.should == []
-    @place.special_operating_times.should == []
   end
 
-  it "should create a new instance given valid attributes" do
-    Place.create!(@valid_attributes)
+  it "should create a new, valid instance given valid attributes" do
+    Place.create!(@valid_attributes).should be_valid
   end
 
   it "should not create a new instance without a name" do
@@ -54,7 +37,7 @@ EOM
   describe "a Place with no times" do
     before(:each) do
       # Don't allow any times
-      add_constraint(@place){ false }
+      @place.add_constraint { false }
       @at = Time.now.midnight + 7.hours
     end
 
@@ -94,15 +77,6 @@ describe Place do
     }
   end
 
-  it "should create a new instance given valid attributes" do
-    Place.create!(@valid_attributes)
-  end
-
-  it "should not create a new instance without a name" do
-    @valid_attributes.delete(:name)
-    lambda { Place.create!(@valid_attributes) }.should raise_error
-  end
-
   it "should build a valid dailySchedule" do
     #TODO Test against a valid schedule as well
     place = Place.create!(@valid_attributes)
@@ -110,67 +84,6 @@ describe Place do
     place.daySchedule(Date.today).should == []
   end
 
-  describe "with only special OperatingTimes" do
-  end
-  describe "with only regular OperatingTimes" do
-  end
-  describe "with special OperatingTimes overriding regular OperatingTimes" do
-  end
-
-  describe "that is currently open" do
-    it_should_behave_like "a Place with OperatingTimes"
-
-    before(:each) do
-      @at = Time.now.midnight + 7.hours
-      @currentSchedule = stub_times([{:start =>  6.hours, :length => 2.hours}])
-      @daySchedule = [@currentSchedule]
-
-      @place = Place.create!(@valid_attributes)
-      @place.stub(:operating_times).and_return(@currentSchedule)
-      @place.stub(:regular_operating_times).and_return(@currentSchedule)
-      @place.stub(:special_operating_times).and_return(@currentSchedule)
-    end
-
-    it "should produce a valid daySchedule" do
-    end
-
-    it "should produce a valid currentSchedule" do
-    end
-
-    it "should be open" do
-      @place.should_receive(:currentSchedule).
-             with(duck_type(:midnight)).
-             and_return(@currentSchedule)
-
-      @place.open?(@at).should == true
-    end
-  end
-
-  describe "that is closed, but opens later today" do
-    it_should_behave_like "a Place with OperatingTimes"
-
-    it "should be closed"
-    it "should have a schedule for later today"
-  end
-
-  describe "that is closed for the day" do
-    it_should_behave_like "a Place with OperatingTimes"
-
-    it "should be closed"
-  end
-  describe "that is not open at all today" do
-    it_should_behave_like "a Place with OperatingTimes"
-
-    it "should be closed"
-    it "should not have a schedule for the remainder of today"
-  end
-
-  describe "that is open past midnight today" do
-    it_should_behave_like "a Place with OperatingTimes"
-  end
-  describe "that was open past midnight yesterday" do
-    it_should_behave_like "a Place with OperatingTimes"
-  end
 
 ###### Special Schedules ######
   describe "that is normally open, but closed all day today" do
@@ -182,84 +95,5 @@ describe Place do
   describe "that has special (shortened) hours" do
     it_should_behave_like "a Place with OperatingTimes"
   end
-end
-
-
-
-
-describe "a capable Place", :shared => true do
-  it_can_be "closed all day", "closed for the day", "closed until later today"
-  #it_can_be "open past midnight tonight", "open past midnight last night"
-  #it_can_be "open now", "closed now"
-end
-
-describe "a happy Place" do
-  in_order_to_be "closed all day" do
-
-    it "should be closed right now" do
-      pending("There ain't no @place to test!") { @place.open?(@at) }
-      @place.open?(@at).should == false
-    end
-
-    it "should have an empty schedule for the day"
-    it "should not have a current schedule"
-  end
-
-  in_order_to_be "closed for the day" do
-    before(:each) do
-    end
-
-    it "should be closed right now"
-    it "should not have a current schedule"
-    it_can "have no schedule elements later in the day"
-    it_can "have schedule elements earlier in the day", "have no schedule elements earlier in the day"
-  end
-
-  in_order_to_be "closed until later today" do
-    before(:each) do
-    end
-
-  end
-
-  in_order_to "have schedule elements earlier in the day" do
-  end
-
-  in_order_to "have no schedule elements earlier in the day" do
-  end
-
-  in_order_to "have schedule elements later in the day" do
-  end
-
-  in_order_to "have no schedule elements later in the day" do
-  end
-
-  it_can_be "closed all day", "closed for the day", "closed until later today"
-
-  describe "that has regular times" do
-    describe "without special times" do
-      it_should_behave_like "a capable Place"
-    end
-
-    describe "with special times" do
-      describe "overriding the regular times" do
-        it_should_behave_like "a capable Place"
-      end
-
-      describe "not overriding the regular times" do
-        it_should_behave_like "a capable Place"
-      end
-    end
-  end
-
-  describe "that has no regular times" do
-    describe "and no special times" do
-      it_should_behave_like "a capable Place"
-    end
-
-    describe "but has special times" do
-      it_should_behave_like "a capable Place"
-    end
-  end
-
 end
 =end
