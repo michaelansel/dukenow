@@ -7,11 +7,11 @@ class Place < ActiveRecord::Base
   validates_presence_of :name
 
   def special_operating_times
-    OperatingTime.find( :all, :conditions => {:place_id => id, :override => 1}, :order => "startDate ASC, opensAt ASC" )
+    OperatingTime.find( :all, :conditions => {:place_id => id, :override => 1})
   end
 
   def regular_operating_times
-    OperatingTime.find( :all, :conditions => {:place_id => id, :override => 0}, :order => "startDate ASC, opensAt ASC" )
+    OperatingTime.find( :all, :conditions => {:place_id => id, :override => 0})
   end
 
   # Returns an array of Times representing the opening and closing times
