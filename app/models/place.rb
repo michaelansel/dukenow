@@ -182,7 +182,7 @@ class Place < ActiveRecord::Base
         end
       end
 
-      self.dining_extension.to_xml(options) unless self.dining_extension.nil?
+      self.dining_extension.to_xml(options.merge({:skip_instruct => true})) unless self.dining_extension.nil?
 
       xml.open(self.open?)
 

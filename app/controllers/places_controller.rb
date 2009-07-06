@@ -9,7 +9,7 @@ class PlacesController < ApplicationController
   end
 
   def map_params
-    map  = {:from => :schedule_from, :to => :schedule_to, :at => :schedule_for_date}
+    map  = {:from => :schedule_from, :to => :schedule_to, :on => :schedule_for_date, :at => :schedule_for_date}
     params.each{|k,v| params[map[k.to_sym]] = v if map.has_key?(k.to_sym) }
   end
 
