@@ -108,7 +108,7 @@ class OperatingTime < ActiveRecord::Base
   # If we are currently within a valid time range, it will look forward for the
   # <em>next</em> opening time
   def next_times(at = Time.now)
-    at = at.midnight unless respond_to? :offset
+    at = at.midnight unless at.respond_to? :offset
     return nil if length == 0
     return nil if at.to_date > endDate # Schedules end at 23:59 of the stored endDate
     at = startDate.midnight if at < startDate # This schedule hasn't started yet, skip to startDate
