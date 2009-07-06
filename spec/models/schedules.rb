@@ -81,6 +81,20 @@ describe "a Place with scheduling capabilities", :shared => true do
 
       @place.open(@at).should == true
     end
+
+    it "should be open on only one day every week" do
+      @at = @at - @at.wday.days + 6.days# Set to Saturday after last Sunday
+      @place.times.each do |t|
+        t[:daysOfWeek] = OperatingTime::SATURDAY
+        t[:startDate]  = @at.to_date - 2.days
+        t[:endDate]  = @at.to_date + 3.weeks
+      end
+      @place.rebuild(@at)
+
+      puts @place.schedule(@at-1.day, @at+15.days).inspect
+      @place.schedule(@at-1.day, @at+15.days).should have(3).times
+      @place.schedule(@at-1.day, @at+15.days).collect{|a,b|[a.xmlschema,b.xmlschema]}.uniq.should have(3).unique_times
+    end
   end
 
   in_order_to "be open 24 hours" do
@@ -131,7 +145,7 @@ describe "a Place with scheduling capabilities", :shared => true do
     before(:each) do
       @place.add_times([
         {:start => 4.hours, :length => 2.hours, :override => false},
-        {:start => 4.hours, :length => 2.hours, :override => false}
+        {:start => 4.hours, :length => 2.hours, :override => true}
       ])
       @at = (@at || Time.now).midnight + 12.hours
       @place.build(@at)
@@ -204,7 +218,7 @@ describe "a Place with scheduling capabilities", :shared => true do
 
       @place.add_times([
         {:start => 0, :length => 0, :startDate => @at.to_date, :endDate => @at.to_date, :override => false},
-        {:start => 0, :length => 0, :startDate => @at.to_date, :endDate => @at.to_date, :override => false}
+        {:start => 0, :length => 0, :startDate => @at.to_date, :endDate => @at.to_date, :override => true}
       ])
 
       @place.build(@at)
@@ -263,14 +277,12 @@ describe "a Place with valid times", :shared => true do
 
   end
 
-=begin
   describe "with only special times" do
     before(:each) do
       @place.add_constraint {|t| t[:override] == true }
 
       @place.build
     end
-
 
     validate_setup do
       it "should not have regular times" do
@@ -304,31 +316,66 @@ describe "a Place with valid times", :shared => true do
     end
 
     describe "where the special times are overriding the regular times" do
-      #it_should_behave_like "a Place with all scheduling capabilities"
+      #it_can "be open now"
+      #it_can "be open 24 hours"
+      #it_can "be open past midnight"
+      #it_can "be open later in the day"
+      #it_can "be closed for the day"
+      #it_can "be closed now"
+      #it_can "be closed all day"
     end
 
     describe "where the special times are not overriding the regular times" do
-      #it_should_behave_like "a Place with all scheduling capabilities"
+      #it_can "be open now"
+      #it_can "be open 24 hours"
+      #it_can "be open past midnight"
+      #it_can "be open later in the day"
+      #it_can "be closed for the day"
+      #it_can "be closed now"
+      #it_can "be closed all day"
     end
   end
 
 
   describe "with special times" do
     describe "extending normal hours" do
-      #it_should_behave_like "a Place with all scheduling capabilities"
+      #it_can "be open now"
+      #it_can "be open 24 hours"
+      #it_can "be open past midnight"
+      #it_can "be open later in the day"
+      #it_can "be closed for the day"
+      #it_can "be closed now"
+      #it_can "be closed all day"
     end
 
     describe "reducing normal hours" do
-      #it_should_behave_like "a Place with all scheduling capabilities"
+      #it_can "be open now"
+      #it_can "be open 24 hours"
+      #it_can "be open past midnight"
+      #it_can "be open later in the day"
+      #it_can "be closed for the day"
+      #it_can "be closed now"
+      #it_can "be closed all day"
     end
 
     describe "removing all hours" do
-      #it_should_behave_like "a Place with all scheduling capabilities"
+      #it_can "be open now"
+      #it_can "be open 24 hours"
+      #it_can "be open past midnight"
+      #it_can "be open later in the day"
+      #it_can "be closed for the day"
+      #it_can "be closed now"
+      #it_can "be closed all day"
     end
 
     describe "moving normal hours (extending and reducing)" do
-      #it_should_behave_like "a Place with all scheduling capabilities"
+      #it_can "be open now"
+      #it_can "be open 24 hours"
+      #it_can "be open past midnight"
+      #it_can "be open later in the day"
+      #it_can "be closed for the day"
+      #it_can "be closed now"
+      #it_can "be closed all day"
     end
   end
-=end
 end

@@ -104,15 +104,11 @@ class OperatingTime < ActiveRecord::Base
 
   ## End daysOfWeek Helper/Accessors ##
 
-  def to_xml(params)
-    super(params.merge({:only => [:id, :place_id, :flags], :methods => [ :opensAt, :closesAt, :startDate, :endDate ]}))
-  end
-
-
   # Returns the next full occurrence of these operating time rule.
   # If we are currently within a valid time range, it will look forward for the
   # <em>next</em> opening time
   def next_times(at = Time.now)
+    at = at.midnight unless respond_to? :offset
     return nil if length == 0
     return nil if at.to_date > endDate # Schedules end at 23:59 of the stored endDate
     at = startDate.midnight if at < startDate # This schedule hasn't started yet, skip to startDate
@@ -129,11 +125,17 @@ class OperatingTime < ActiveRecord::Base
 
     # We don't care about the time offset anymore, jump to the next midnight
     at = at.midnight + 1.day
+    # NOTE This also has the added benefit of preventing an infinite loop
+    # from occurring if +at+ gets shifted by 0.days further down.
 
-    # TODO Test for Sun, Sat, and one of M-F
-    dow = daysOfWeekArray[at.wday..-1] + daysOfWeekArray[0..at.wday]
+    # Shift daysOfWeekArray so that +at+ is first element
+    dow = daysOfWeekArray[at.wday..-1] + daysOfWeekArray[0..(at.wday-1)]
+    # NOTE The above call does something a little quirky:
+    # In the event that at.wday = 0, it concatenates the array with itself.
+    # Since we are only interested in the first true value, this does not
+    # cause a problem, but could probably be cleaned up if done so carefully.
 
-    # Next day of the week this schedule is valid for
+    # Next day of the week this schedule is valid for (relative to current day)
     shift = dow.index(true)
     if shift
       # Skip forward
@@ -149,6 +151,38 @@ class OperatingTime < ActiveRecord::Base
   end
   alias :to_times :next_times
 
+
+
+  def to_xml(options)
+    #super(params.merge({:only => [:id, :place_id], :methods => [ {:times => :next_times}, :start, :length, :startDate, :endDate ]}))
+    options[:indent] ||= 2
+    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+    xml.instruct! unless options[:skip_instruct]
+    xml.place do
+
+      xml.id(self.id)
+      xml.place_id(self.place_id)
+      #xml.place_name(self.place.name)
+      #xml.place_location(self.place.location)
+      #xml.place_phone(self.place.phone)
+
+      xml.start(self.start)
+      xml.length(self.length)
+      xml.startDate(self.startDate)
+      xml.endDate(self.endDate)
+
+      open,close = self.next_times(Date.today)
+      if open.nil? or close.nil?
+        xml.next_times(:for => Date.today)
+      else
+        xml.next_times(:for => Date.today) do |xml|
+          xml.open(open.xmlschema)
+          xml.close(close.xmlschema)
+        end
+      end
+
+    end
+  end
 
 
 

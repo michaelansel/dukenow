@@ -13,25 +13,33 @@ class Place < ActiveRecord::Base
     OperatingTime.find( :all, :conditions => {:place_id => id, :override => 0}, :order => "startDate ASC, opensAt ASC" )
   end
 
-  # Returns an array of OperatingTimes
+  # Returns an array of Times representing the opening and closing times
+  # of this Place between +startAt+ and +endAt+
   def schedule(startAt,endAt)
-    # TODO Returns the schedule for a specified time window
+    ## Caching ##
+    @schedules ||= {}
+    if @schedules[startAt.xmlschema] and
+       @schedules[startAt.xmlschema][endAt.xmlschema]
+      return @schedules[startAt.xmlschema][endAt.xmlschema]
+    end
+    ## End Caching ##
+
     # TODO Handle events starting within the range but ending outside of it?
 
-    # TODO Offload this selection to the database; okay for testing
+    # TODO Offload this selection to the database; okay for testing though
     # Select all relevant times (1 day buffer on each end)
     # NOTE Make sure to use generous date comparisons to allow for midnight rollovers
-    regular_operating_times = regular_operating_times().select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
-    special_operating_times = special_operating_times().select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
+    all_regular_operating_times = regular_operating_times().select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
+    all_special_operating_times = special_operating_times().select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
 
-    puts "\nRegular OperatingTimes: #{regular_operating_times.inspect}" if DEBUG
-    puts "\nSpecial OperatingTimes: #{special_operating_times.inspect}" if DEBUG
+    puts "\nRegular OperatingTimes: #{all_regular_operating_times.inspect}" if DEBUG
+    puts "\nSpecial OperatingTimes: #{all_special_operating_times.inspect}" if DEBUG
 
     regular_times  = []
     special_times  = []
     special_ranges = []
 
-    special_operating_times.each do |ot|
+    all_special_operating_times.each do |ot|
       puts "\nSpecial Scheduling for: #{ot.inspect}" if DEBUG
 
       # Start a day early if possible
@@ -63,7 +71,7 @@ class Place < ActiveRecord::Base
     puts "\nSpecial Times: #{special_times.inspect}" if DEBUG
     puts "\nSpecial Ranges: #{special_ranges.inspect}" if DEBUG
 
-    regular_operating_times.each do |ot|
+    all_regular_operating_times.each do |ot|
       puts "\nRegular Scheduling for: #{ot.inspect}" if DEBUG
 
       # Start a day early if possible
@@ -96,13 +104,21 @@ class Place < ActiveRecord::Base
     # TODO Handle schedule overrides
     # TODO Handle combinations (i.e. part special, part regular)
 
-    (regular_times+special_times).sort{|a,b|a[0] <=> b[0]}
+    final_schedule = (regular_times+special_times).sort{|a,b|a[0] <=> b[0]}
+
+    ## Caching ##
+    @schedules ||= {}
+    @schedules[startAt.xmlschema] ||= {}
+    @schedules[startAt.xmlschema][endAt.xmlschema] = final_schedule
+    ## End Caching ##
+
+    final_schedule
   end
 
   def daySchedule(at = Date.today)
     at = at.to_date if at.class == Time or at.class == DateTime
 
-    schedule = schedule(at.midnight,(at+1).midnight)
+    day_schedule = schedule(at.midnight,(at+1).midnight)
     #schedule = schedule.select {|ot| (ot.flags & 1<<at.wday) > 0 }
     #schedule.each {|t| t.at = at }
 
@@ -122,7 +138,7 @@ class Place < ActiveRecord::Base
     end
 =end
 
-    schedule.sort{|a,b|a[0] <=> b[0]}
+    day_schedule.sort{|a,b|a[0] <=> b[0]}
   end
 
   def currentSchedule(at = Time.now)
@@ -138,14 +154,34 @@ class Place < ActiveRecord::Base
     a = currentSchedule(at)
     return a ? true : false
   end
-
-  # Alias for <tt>open?</tt>
-  def open(at = Time.now); open? at ; end
+  alias :open :open?
 
   def to_json(params)
     super(params.merge({:only => [:id, :name, :location, :phone], :methods => [ :open ]}))
   end
-  def to_xml(params)
-    super(params.merge({:only => [:id, :name, :location, :phone], :methods => [ :open ]}))
+  def to_xml(options)
+    #super(options.merge({:only => [:id, :name, :location, :phone], :methods => [ :open, :daySchedule ] }))
+    options[:indent] ||= 2
+    xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+    xml.instruct! unless options[:skip_instruct]
+    xml.place do
+
+      xml.id(self.id)
+      xml.name(self.name)
+      xml.location(self.location)
+      xml.phone(self.phone)
+
+      xml.open(self.open?)
+
+      if daySchedule.nil? or daySchedule.empty?
+        xml.daySchedule
+      else
+        xml.daySchedule(:for => Date.today) do |xml|; daySchedule.each do |open,close|
+            xml.open(open.xmlschema)
+            xml.close(close.xmlschema)
+        end; end
+      end
+
+    end
   end
 end

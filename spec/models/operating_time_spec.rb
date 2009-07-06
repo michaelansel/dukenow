@@ -154,6 +154,12 @@ describe OperatingTime do
       open.to_s.should == @open.to_s
       close.to_s.should == @close.to_s
     end
+
+    it "should return valid open/close times if open one day per week" do
+      @operating_time.endDate = @now.to_date + 21
+      open = @now.midnight
+      pending("Look at next_times daysOfWeek array shifting")
+    end
   end
 end
 
