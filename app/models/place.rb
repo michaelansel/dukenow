@@ -186,13 +186,27 @@ class Place < ActiveRecord::Base
 
       xml.open(self.open?)
 
-      if daySchedule.nil? or daySchedule.empty?
-        xml.daySchedule
+      if options[:schedule_from] and options[:schedule_to]
+        sched = schedule(options[:schedule_from],options[:schedule_to])
+        sched_opts = {:from => options[:schedule_from],
+                      :to => options[:schedule_to] }
+      elsif options[:schedule_for_date]
+        sched = daySchedule(options[:schedule_for_date])
+        sched_opts = {:on => options[:schedule_for_date]}
       else
-        xml.daySchedule(:for => Date.today) do |xml|; daySchedule.each do |open,close|
+        sched = daySchedule(Date.today)
+        sched_opts = {:on => Date.today}
+      end
+
+      if sched.nil? or sched.empty?
+        xml.schedule(sched_opts)
+      else
+        xml.schedule(sched_opts) do |xml|
+          sched.each do |open,close|
             xml.open(open.xmlschema)
             xml.close(close.xmlschema)
-        end; end
+          end
+        end
       end
 
     end

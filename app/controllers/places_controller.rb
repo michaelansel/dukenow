@@ -1,11 +1,31 @@
 class PlacesController < ApplicationController
   ActionView::Base.send :include, TagsHelper
 
-  before_filter :get_at_date
+  before_filter :map_params, :parse_dates_and_times, :filter_xml_params
 
   def get_at_date
     params[:at] = Date.today.to_s if params[:at].nil?
     @at = Date.parse(params[:at])
+  end
+
+  def map_params
+    map  = {:from => :schedule_from, :to => :schedule_to, :at => :schedule_for_date}
+    params.each{|k,v| params[map[k.to_sym]] = v if map.has_key?(k.to_sym) }
+  end
+
+  def parse_dates_and_times
+    times = [:schedule_from, :schedule_to, :schedule_for_date]
+    params[:schedule_from] = Time.parse(params[:schedule_from]) if params[:schedule_from]
+    params[:schedule_to] = Time.parse(params[:schedule_to]) if params[:schedule_to]
+    params[:schedule_for_date] = Date.parse(params[:schedule_for_date]) if params[:schedule_for_date]
+  end
+
+  def filter_xml_params
+    safe = [:schedule_from, :schedule_to, :schedule_for_date]
+    @xml_params ||= {}
+
+    params.each{|k,v| @xml_params[k.to_sym] = v if safe.include?(k.to_sym) }
+    RAILS_DEFAULT_LOGGER.info "XML Params: #{@xml_params.inspect}"
   end
 
   # GET /places
@@ -62,7 +82,7 @@ class PlacesController < ApplicationController
       format.html # index.html.erb
       format.iphone # index.iphone.erb
       format.json { render :json => @places }
-      format.xml  { render :xml => @places }
+      format.xml  { render :xml => @places.to_xml(@xml_params) }
     end
   end
 
