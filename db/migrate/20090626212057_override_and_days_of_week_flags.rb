@@ -7,7 +7,7 @@ class OverrideAndDaysOfWeekFlags < ActiveRecord::Migration
     OperatingTime.find(:all).each do |ot|
       ot.write_attribute(:override, ot.read_attribute(:flags) & 128) # 128 == Special Flag
       ot.write_attribute(:days_of_week, ot.read_attribute(:flags) & (1+2+4+8+16+32+64) ) # Sum == Flag for each day of the week
-      ot.save
+      ot.save_without_validation
     end
 
     remove_column("operating_times", "flags")
@@ -19,7 +19,7 @@ class OverrideAndDaysOfWeekFlags < ActiveRecord::Migration
     OperatingTime.reset_column_information
     OperatingTime.find(:all).each do |ot|
       ot.write_attribute(:flags, (ot.read_attribute(:override) << 7) | ot.read_attribute(:days_of_week) )
-      ot.save
+      ot.save_without_validation
     end
 
     remove_column("operating_times", "override")

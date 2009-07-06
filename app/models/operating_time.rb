@@ -1,6 +1,6 @@
 class OperatingTime < ActiveRecord::Base
   belongs_to :place
-  validates_presence_of :place_id
+  validates_presence_of :place_id, :endDate, :startDate
   validates_associated :place
   validate :end_after_start, :daysOfWeek_valid
   validate {|ot| 0 <= ot.length and ot.length <= 1.days }
