@@ -93,6 +93,10 @@ class Place < ActiveRecord::Base
           next if sr.member?(open)
         end
 
+        # FIXME Causing an infinite loop; would be nice if this worked
+        #open = startAt if open < startAt
+        #close = endAt if close > endAt
+
         regular_times << [open,close]
         open,close = ot.next_times(close)
       end
@@ -169,6 +173,7 @@ class Place < ActiveRecord::Base
       xml.id(self.id)
       xml.name(self.name)
       xml.location(self.location)
+      xml.building_id(self.building_id)
       xml.phone(self.phone)
       xml.tags do |xml|
         self.tag_list.each do |tag|
