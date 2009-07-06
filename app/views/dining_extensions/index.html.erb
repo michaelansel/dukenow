@@ -1,0 +1,18 @@
+<h1>Listing dining_extensions</h1>
+
+<table>
+  <tr>
+  </tr>
+
+<% for dining_extension in @dining_extensions %>
+  <tr>
+    <td><%= link_to 'Show', dining_extension %></td>
+    <td><%= link_to 'Edit', edit_dining_extension_path(dining_extension) %></td>
+    <td><%= link_to 'Destroy', dining_extension, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New dining_extension', new_dining_extension_path %>

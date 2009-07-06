@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :dining_extensions
+
   map.resources :places
   map.resources :operating_times
   map.connect 'operating_times/place/:place_id', :controller => 'operating_times', :action => 'index'

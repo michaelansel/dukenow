@@ -1,0 +1,12 @@
+<h1>Editing dining_extension</h1>
+
+<% form_for(@dining_extension) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @dining_extension %> |
+<%= link_to 'Back', dining_extensions_path %>

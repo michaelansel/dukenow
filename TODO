@@ -23,11 +23,11 @@ Database
     \- override
     \- days_of_week (bit-wise AND of wday's)
   OperatingTimesTags
-    -- name
+    \- name
   OperatingTimesTaggings (clone auto-generated)
-    !- clone Taggings schema
-    -- operating_time_id
-    -- operating_times_tag_id
+    \- clone Taggings schema
+    \- operating_time_id
+    \- operating_times_tag_id
   TimePeriods
     -- name (String)
     -- startDate (Date)
@@ -52,10 +52,10 @@ Timeline
   OperatingTimes StartLengthSchema
     \- Migration
     Feature-parity
-      -- schedule(from,to)
-      -- daySchedule(date)
-      -- currentSchedule(at)
-      -- open?(at)
+      \- schedule(from,to)
+      \- daySchedule(date)
+      \- currentSchedule(at)
+      \- open?(at)
     Testing
       Unit Tests
         -- Database accessors
@@ -71,7 +71,7 @@ Timeline
     -- Migrations
     -- Full unit tests + validation
   OperatingTimes Tags
-    -- Migration
+    \- Migration
     -- Full unit tests + validation
     -- Extend OperatingTimes.find to filter by tags
     -- Extend Places.open? to test delivery/dine-in tags

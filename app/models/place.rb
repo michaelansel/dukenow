@@ -2,6 +2,7 @@ class Place < ActiveRecord::Base
   DEBUG = false
 
   has_many :operating_times
+  has_one :dining_extension
   acts_as_taggable_on :tags
   validates_presence_of :name
 
@@ -180,6 +181,8 @@ class Place < ActiveRecord::Base
           xml.tag(tag)
         end
       end
+
+      self.dining_extension.to_xml(options) unless self.dining_extension.nil?
 
       xml.open(self.open?)
 
