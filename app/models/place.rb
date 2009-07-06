@@ -159,7 +159,7 @@ class Place < ActiveRecord::Base
   def to_json(params)
     super(params.merge({:only => [:id, :name, :location, :phone], :methods => [ :open ]}))
   end
-  def to_xml(options)
+  def to_xml(options = {})
     #super(options.merge({:only => [:id, :name, :location, :phone], :methods => [ :open, :daySchedule ] }))
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
@@ -170,6 +170,11 @@ class Place < ActiveRecord::Base
       xml.name(self.name)
       xml.location(self.location)
       xml.phone(self.phone)
+      xml.tags do |xml|
+        self.tag_list.each do |tag|
+          xml.tag(tag)
+        end
+      end
 
       xml.open(self.open?)
 

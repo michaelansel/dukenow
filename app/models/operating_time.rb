@@ -36,18 +36,7 @@ class OperatingTime < ActiveRecord::Base
   # Tag Helpers
   %w{tag_list tags tag_counts tag_ids tag_tagging_ids tag_taggings}.each do |m| [m,m+"="].each do |m|
     if self.instance_methods.include?("operating_time_"+m)
-      definition = ""
-      definition += "def #{m}("
-      definition += "arg" if self.instance_method("operating_time_"+m).arity == 1
-      definition += "*args" if self.instance_method("operating_time_"+m).arity > 1
-      definition += ")\n"
-        definition += "operating_time_#{m}("
-        definition += "arg" if self.instance_method("operating_time_"+m).arity == 1
-        definition += "*args" if self.instance_method("operating_time_"+m).arity > 1
-        definition += ")\n"
-      definition += "end"
-
-      self.class_eval(definition)
+      self.class_eval "alias #{m.to_sym} #{"operating_time_#{m}".to_sym}"
     end
   end ; end
   def tags_from ; operating_time_tags_from ; end
@@ -178,7 +167,7 @@ class OperatingTime < ActiveRecord::Base
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.place do
+    xml.tag!("operating-time".to_sym) do
 
       xml.id(self.id)
       xml.place_id(self.place_id)
@@ -186,7 +175,11 @@ class OperatingTime < ActiveRecord::Base
       #xml.place_location(self.place.location)
       #xml.place_phone(self.place.phone)
       xml.details(self.details)
-      xml.tags(self.tag_list)
+      xml.tags do |xml|
+        self.tag_list.each do |tag|
+          xml.tag(tag)
+        end
+      end
 
       xml.start(self.start)
       xml.length(self.length)
