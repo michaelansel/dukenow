@@ -91,7 +91,6 @@ describe "a Place with scheduling capabilities", :shared => true do
       end
       @place.rebuild(@at)
 
-      puts @place.schedule(@at-1.day, @at+15.days).inspect
       @place.schedule(@at-1.day, @at+15.days).should have(3).times
       @place.schedule(@at-1.day, @at+15.days).collect{|a,b|[a.xmlschema,b.xmlschema]}.uniq.should have(3).unique_times
     end

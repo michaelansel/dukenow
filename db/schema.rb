@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090629201611) do
+ActiveRecord::Schema.define(:version => 20090706033509) do
 
   create_table "eateries", :force => true do |t|
     t.string   "name"
@@ -17,6 +17,23 @@ ActiveRecord::Schema.define(:version => 20090629201611) do
     t.string   "phone"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "operating_time_taggings", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "taggable_type"
+    t.string   "context"
+    t.datetime "created_at"
+  end
+
+  add_index "operating_time_taggings", ["tag_id"], :name => "index_operating_time_taggings_on_tag_id"
+  add_index "operating_time_taggings", ["taggable_id", "taggable_type", "context"], :name => "index_operating_time_taggings_on_taggable_id_and_taggable_type_and_context"
+
+  create_table "operating_time_tags", :force => true do |t|
+    t.string "name"
   end
 
   create_table "operating_times", :force => true do |t|

@@ -1,5 +1,6 @@
 class OperatingTime < ActiveRecord::Base
   belongs_to :place
+  acts_as_taggable_on :operating_time_tags
   validates_presence_of :place_id, :endDate, :startDate
   validates_associated :place
   validate :end_after_start, :daysOfWeek_valid
@@ -31,6 +32,25 @@ class OperatingTime < ActiveRecord::Base
   def valid_at(time=Time.now)
     raise NotImplementedError
   end
+
+  # Tag Helpers
+  %w{tag_list tags tag_counts tag_ids tag_tagging_ids tag_taggings}.each do |m| [m,m+"="].each do |m|
+    if self.instance_methods.include?("operating_time_"+m)
+      definition = ""
+      definition += "def #{m}("
+      definition += "arg" if self.instance_method("operating_time_"+m).arity == 1
+      definition += "*args" if self.instance_method("operating_time_"+m).arity > 1
+      definition += ")\n"
+        definition += "operating_time_#{m}("
+        definition += "arg" if self.instance_method("operating_time_"+m).arity == 1
+        definition += "*args" if self.instance_method("operating_time_"+m).arity > 1
+        definition += ")\n"
+      definition += "end"
+
+      self.class_eval(definition)
+    end
+  end ; end
+  def tags_from ; operating_time_tags_from ; end
 
 
   def override
@@ -165,11 +185,15 @@ class OperatingTime < ActiveRecord::Base
       #xml.place_name(self.place.name)
       #xml.place_location(self.place.location)
       #xml.place_phone(self.place.phone)
+      xml.details(self.details)
+      xml.tags(self.tag_list)
 
       xml.start(self.start)
       xml.length(self.length)
+      xml.daysOfWeek(self.daysOfWeek)
       xml.startDate(self.startDate)
       xml.endDate(self.endDate)
+      xml.override(self.override)
 
       open,close = self.next_times(Date.today)
       if open.nil? or close.nil?

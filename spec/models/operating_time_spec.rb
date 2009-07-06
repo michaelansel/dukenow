@@ -130,6 +130,7 @@ describe OperatingTime do
     end
 
     it "should return valid open and close times for 'now'" do
+      Time.stub(:now).and_return(@now)
       open,close = @operating_time.next_times()
       open.to_s.should == @open.to_s
       close.to_s.should == @close.to_s
@@ -149,7 +150,7 @@ describe OperatingTime do
       open = @now.midnight + @operating_time.start
       close = open + @operating_time.length
 
-      open,close = @operating_time.next_times()
+      open,close = @operating_time.next_times(@now)
       close.should > (@now.to_date + 1).midnight
       open.to_s.should == @open.to_s
       close.to_s.should == @close.to_s
