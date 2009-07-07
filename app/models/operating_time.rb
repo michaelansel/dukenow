@@ -163,7 +163,7 @@ class OperatingTime < ActiveRecord::Base
 
 
 
-  def to_xml(options)
+  def to_xml(options = {})
     #super(params.merge({:only => [:id, :place_id], :methods => [ {:times => :next_times}, :start, :length, :startDate, :endDate ]}))
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
