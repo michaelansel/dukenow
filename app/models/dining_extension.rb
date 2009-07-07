@@ -5,12 +5,20 @@ class DiningExtension < ActiveRecord::Base
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.tag!(self.class.to_s.underscore.dasherize) do |xml|
-      xml.tag!(:place_id.to_s.dasherize, place_id) unless options[:no_id]
-      xml.tag!(:logo_url.to_s.dasherize, logo_url)
-      xml.tag!(:more_info_url.to_s.dasherize, more_info_url)
-      xml.tag!(:owner_operator.to_s.dasherize, owner_operator)
-      xml.tag!(:payment_methods.to_s.dasherize, payment_methods)
+    xml.tag!(self.class.to_s.pluralize.underscore.dasherize) do |xml|
+      attrs = self.attributes()
+
+      # Remove attributes we don't want to include
+      attrs.delete(:id.to_s)
+      attrs.delete(:created_at.to_s)
+      attrs.delete(:updated_at.to_s)
+
+      attrs.delete(:place_id.to_s) if options[:no_id]
+
+      # Build dining-extensions tag
+      attrs.each do |attr,val|
+        xml.tag!(attr.to_s.dasherize, {:label => attr.titleize}, val)
+      end
     end
   end
 end

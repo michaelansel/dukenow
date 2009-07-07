@@ -168,6 +168,7 @@ class OperatingTime < ActiveRecord::Base
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
+    options[:skip_instruct] = true
     xml.tag!(self.class.to_s.underscore.dasherize) do
 
       xml.id(self.id)

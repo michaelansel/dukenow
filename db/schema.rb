@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090707155143) do
+ActiveRecord::Schema.define(:version => 20090707194216) do
 
   create_table "dining_extensions", :force => true do |t|
     t.integer  "place_id"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20090707155143) do
     t.string   "payment_methods"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "menu_url"
   end
 
   create_table "eateries", :force => true do |t|
