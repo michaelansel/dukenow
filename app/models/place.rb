@@ -43,8 +43,17 @@ class Place < ActiveRecord::Base
     all_special_operating_times.each do |ot|
       puts "\nSpecial Scheduling for: #{ot.inspect}" if DEBUG
 
+      # Special Case: Overriding with NO times (e.g. closed all day)
+      if ot.start == 0 and ot.length == 0 and startAt.to_date <= ot.startDate
+        # Block out the range, but don't add the "null Times"
+        special_ranges << Range.new(ot.startDate,ot.endDate)
+        next
+      end
+
       # Start a day early if possible
-      earlyStart = startAt-1.day < ot.startDate.midnight ? startAt : startAt - 1.day
+      earlyStart = startAt-1.day < ot.startDate.midnight ? startAt.midnight : startAt - 1.day
+      puts "EarlyStart: #{earlyStart.inspect}" if DEBUG
+
       # Calculate the next set up open/close times
       open,close = ot.next_times(earlyStart)
       next if open.nil? # No valid occurrences in the future
@@ -58,6 +67,7 @@ class Place < ActiveRecord::Base
         end
 
         if close < startAt # Skip forward to the first occurrance in our time range
+          puts "Seeking: #{close} < #{startAt}" if DEBUG
           open,close = ot.next_times(close)
           next
         end
@@ -82,16 +92,26 @@ class Place < ActiveRecord::Base
       next if open.nil? # No valid occurrences in the future
 
       while not open.nil? and open <= endAt do
-        puts "Open: #{open}" if DEBUG
-        puts "Close: #{close}" if DEBUG
+        if DEBUG
+          puts ""
+          puts "Open: #{open}"
+          puts "Close: #{close}"
+        end
 
         if close < startAt # Skip forward to the first occurrance in our time range
+          puts "Seeking: #{close} < #{startAt}" if DEBUG
           open,close = ot.next_times(close)
           next
         end
 
+        overridden = false
         special_ranges.each do |sr|
-          next if sr.member?(open)
+          overridden ||= sr.member?(open.to_date)
+        end
+        if overridden
+          puts "Overridden" if DEBUG
+          open,close = ot.next_times(close)
+          next
         end
 
         # FIXME Causing an infinite loop; would be nice if this worked

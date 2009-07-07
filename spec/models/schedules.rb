@@ -28,7 +28,7 @@ describe "a Place with scheduling capabilities", :shared => true do
         {:start => 6.hours, :length => 2.hours, :override => false},
         {:start => 6.hours, :length => 2.hours, :override => true}
       ])
-      @at = (@at || Time.now).midnight + 7.hours
+      @at = @at || (Time.now.midnight + 7.hours)
     end
 
     it "should have operating times" do
@@ -102,7 +102,7 @@ describe "a Place with scheduling capabilities", :shared => true do
         {:start => 0, :length => 24.hours, :override => false},
         {:start => 0, :length => 24.hours, :override => true}
       ])
-      @at = (@at || Time.now).midnight + 12.hours
+      @at = @at || (Time.now.midnight + 12.hours)
 
       @place.build(@at)
     end
@@ -122,7 +122,7 @@ describe "a Place with scheduling capabilities", :shared => true do
         {:start => 16.hours, :length => 2.hours, :override => false},
         {:start => 16.hours, :length => 2.hours, :override => true}
       ])
-      @at = (@at || Time.now).midnight + 12.hours
+      @at = @at || (Time.now.midnight + 12.hours)
 
       @place.build(@at)
     end
@@ -146,7 +146,7 @@ describe "a Place with scheduling capabilities", :shared => true do
         {:start => 4.hours, :length => 2.hours, :override => false},
         {:start => 4.hours, :length => 2.hours, :override => true}
       ])
-      @at = (@at || Time.now).midnight + 12.hours
+      @at = @at || (Time.now.midnight + 12.hours)
       @place.build(@at)
     end
 
@@ -165,7 +165,7 @@ describe "a Place with scheduling capabilities", :shared => true do
 
   in_order_to "be open past midnight" do
     before(:each) do
-      @at = (@at || Time.now).midnight + 12.hours
+      @at = @at || (Time.now.midnight + 12.hours)
 
       @place.add_times([
         {:start => 23.hours, :length => 4.hours, :override => true},
@@ -201,7 +201,7 @@ describe "a Place with scheduling capabilities", :shared => true do
         {:start => 6.hours, :length => 2.hours, :override => false},
         {:start => 6.hours, :length => 2.hours, :override => true}
       ])
-      @at = Time.now.midnight + 12.hours
+      @at = @at || (Time.now.midnight + 12.hours)
 
       @place.build
     end
@@ -358,13 +358,18 @@ describe "a Place with valid times", :shared => true do
     end
 
     describe "removing all hours" do
-      #it_can "be open now"
-      #it_can "be open 24 hours"
-      #it_can "be open past midnight"
-      #it_can "be open later in the day"
-      #it_can "be closed for the day"
-      #it_can "be closed now"
-      #it_can "be closed all day"
+      before(:each) do
+        @at = @at || (Time.now.midnight + 8.hours)
+
+        @place.add_times([
+          {:start => 6.hours, :length => 9.hours, :override => false},
+          {:start => 0, :length => 0, :override => true, :startDate => @at.to_date, :endDate => @at.to_date}
+        ])
+
+        @place.build
+      end
+      it_can "be closed now"
+      it_can "be closed all day"
     end
 
     describe "moving normal hours (extending and reducing)" do
