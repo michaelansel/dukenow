@@ -117,17 +117,17 @@ class OperatingTimesController < ApplicationController
       params[:regular_operating_time].delete('closesAtMinute') * 60
 =end
 
-    if operatingTimesParams[:daysOfWeekHash] != nil
-      daysOfWeek = 0
+    if operatingTimesParams[:days_of_week_hash] != nil
+      days_of_week = 0
 
-      operatingTimesParams[:daysOfWeekHash].each do |dayOfWeek|
-        daysOfWeek += 1 << Date::DAYNAMES.index(dayOfWeek.capitalize)
+      operatingTimesParams[:days_of_week_hash].each do |days_of_week|
+        days_of_week += 1 << Date::DAYNAMES.index(days_of_week.capitalize)
       end
-      operatingTimesParams.delete('daysOfWeekHash')
+      operatingTimesParams.delete('days_of_week_hash')
 
       operatingTimesParams[:flags] = 0 if operatingTimesParams[:flags].nil?
       operatingTimesParams[:flags] = operatingTimesParams[:flags] & ~OperatingTime::ALLDAYS_FLAG
-      operatingTimesParams[:flags] = operatingTimesParams[:flags] |  daysOfWeek
+      operatingTimesParams[:flags] = operatingTimesParams[:flags] |  days_of_week
     end
 
 

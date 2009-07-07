@@ -169,6 +169,7 @@ class Place < ActiveRecord::Base
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
+    options[:skip_instruct] = true
     xml.place do
 
       xml.id(self.id)
@@ -182,7 +183,7 @@ class Place < ActiveRecord::Base
         end
       end
 
-      self.dining_extension.to_xml(options.merge({:skip_instruct => true})) unless self.dining_extension.nil?
+      self.dining_extension.to_xml(options.merge({:no_id => true})) unless self.dining_extension.nil?
 
       xml.open(self.open?)
 

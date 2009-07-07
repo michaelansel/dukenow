@@ -138,11 +138,11 @@ def add_scheduling_spec_helpers(place)
       self.times.each do |t|
         t=t.dup
         if acceptable_time(t)
-          t[:override]   ||= false
-          t[:startDate]  ||= at.to_date - 2
-          t[:endDate]    ||= at.to_date + 2
-          t[:daysOfWeek] ||= OperatingTime::ALL_DAYS
-          t[:place_id]   ||= self.id
+          t[:override]     ||= false
+          t[:startDate]    ||= at.to_date - 2
+          t[:endDate]      ||= at.to_date + 2
+          t[:days_of_week] ||= OperatingTime::ALL_DAYS
+          t[:place_id]     ||= self.id
           ot = OperatingTime.new
           t.each{|k,v| ot.send(k.to_s+'=',v)}
 

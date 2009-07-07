@@ -85,7 +85,7 @@ describe "a Place with scheduling capabilities", :shared => true do
     it "should be open on only one day every week" do
       @at = @at - @at.wday.days + 6.days# Set to Saturday after last Sunday
       @place.times.each do |t|
-        t[:daysOfWeek] = OperatingTime::SATURDAY
+        t[:days_of_week] = OperatingTime::SATURDAY
         t[:startDate]  = @at.to_date - 2.days
         t[:endDate]  = @at.to_date + 3.weeks
       end

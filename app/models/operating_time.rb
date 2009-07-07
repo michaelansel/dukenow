@@ -3,7 +3,7 @@ class OperatingTime < ActiveRecord::Base
   acts_as_taggable_on :operating_time_tags
   validates_presence_of :place_id, :endDate, :startDate
   validates_associated :place
-  validate :end_after_start, :daysOfWeek_valid
+  validate :end_after_start, :days_of_week_valid
   validate {|ot| 0 <= ot.length and ot.length <= 1.days }
 
   ## DaysOfWeek Constants ##
@@ -23,8 +23,8 @@ class OperatingTime < ActiveRecord::Base
     end
   end
 
-  def daysOfWeek_valid
-    daysOfWeek == daysOfWeek & (SUNDAY + MONDAY + TUESDAY + WEDNESDAY + THURSDAY + FRIDAY + SATURDAY)
+  def days_of_week_valid
+    days_of_week == days_of_week & (SUNDAY + MONDAY + TUESDAY + WEDNESDAY + THURSDAY + FRIDAY + SATURDAY)
   end
   ## End Validations ##
 
@@ -55,39 +55,39 @@ class OperatingTime < ActiveRecord::Base
     end
   end
 
-  def daysOfWeek=(newDow)
+  def days_of_week=(newDow)
     if not ( newDow & ALL_DAYS == newDow )
       # Invalid input
-      raise ArgumentError, "Not a valid value for daysOfWeek (#{newDow.inspect})"
+      raise ArgumentError, "Not a valid value for days_of_week (#{newDow.inspect})"
     end
 
-    write_attribute(:daysOfWeek, newDow & ALL_DAYS)
-    @daysOfWeekHash = nil
-    @daysOfWeekArray = nil
-    @daysOfWeekString = nil
+    write_attribute(:days_of_week, newDow & ALL_DAYS)
+    @days_of_weekHash = nil
+    @days_of_weekArray = nil
+    @days_of_weekString = nil
   end
 
 
-  ## daysOfWeek Helper/Accessors ##
+  ## days_of_week Helpers ##
 
   # Hash mapping day of week (Symbol) to valid(true)/invalid(false)
-  def daysOfWeekHash
-    @daysOfWeekHash ||= {
-      :sunday    => (daysOfWeek & SUNDAY    ) > 0,
-      :monday    => (daysOfWeek & MONDAY    ) > 0,
-      :tuesday   => (daysOfWeek & TUESDAY   ) > 0,
-      :wednesday => (daysOfWeek & WEDNESDAY ) > 0,
-      :thursday  => (daysOfWeek & THURSDAY  ) > 0,
-      :friday    => (daysOfWeek & FRIDAY    ) > 0,
-      :saturday  => (daysOfWeek & SATURDAY  ) > 0
+  def days_of_week_hash
+    @days_of_week_hash ||= {
+      :sunday    => (days_of_week & SUNDAY    ) > 0,
+      :monday    => (days_of_week & MONDAY    ) > 0,
+      :tuesday   => (days_of_week & TUESDAY   ) > 0,
+      :wednesday => (days_of_week & WEDNESDAY ) > 0,
+      :thursday  => (days_of_week & THURSDAY  ) > 0,
+      :friday    => (days_of_week & FRIDAY    ) > 0,
+      :saturday  => (days_of_week & SATURDAY  ) > 0
     }
   end
 
   # Array beginning with Sunday of valid(true)/inactive(false) values
-  def daysOfWeekArray
-    dow = daysOfWeekHash
+  def days_of_week_array
+    dow = days_of_week_hash
 
-    @daysOfWeekArray ||= [
+    @days_of_week_array ||= [
       dow[:sunday],
       dow[:monday],
       dow[:tuesday],
@@ -99,19 +99,20 @@ class OperatingTime < ActiveRecord::Base
   end
 
   # Human-readable string of applicable days of week
-  def daysOfWeekString
-    dow = daysOfWeekHash
+  def days_of_week_string
+    dow = days_of_week_hash
 
-    @daysOfWeekString ||= (dow[:sunday]    ? "Su" : "") +
-                          (dow[:monday]    ? "M"  : "") +
-                          (dow[:tuesday]   ? "Tu" : "") +
-                          (dow[:wednesday] ? "W"  : "") +
-                          (dow[:thursday]  ? "Th" : "") +
-                          (dow[:friday]    ? "F"  : "") +
-                          (dow[:saturday]  ? "Sa" : "")
+    @days_of_week_string ||=
+                            (dow[:sunday]    ? "Su" : "") +
+                            (dow[:monday]    ? "M"  : "") +
+                            (dow[:tuesday]   ? "Tu" : "") +
+                            (dow[:wednesday] ? "W"  : "") +
+                            (dow[:thursday]  ? "Th" : "") +
+                            (dow[:friday]    ? "F"  : "") +
+                            (dow[:saturday]  ? "Sa" : "")
   end
 
-  ## End daysOfWeek Helper/Accessors ##
+  ## End days_of_week Helpers ##
 
   # Returns the next full occurrence of these operating time rule.
   # If we are currently within a valid time range, it will look forward for the
@@ -125,7 +126,7 @@ class OperatingTime < ActiveRecord::Base
     # Next occurrence is later today
     # This is the only time the "time" actually matters;
     #  after today, all we care about is the date
-    if  daysOfWeekArray[at.wday] and
+    if  days_of_week_array[at.wday] and
         start >= at.offset
       open = at.midnight + start
       close = open + length
@@ -137,8 +138,8 @@ class OperatingTime < ActiveRecord::Base
     # NOTE This also has the added benefit of preventing an infinite loop
     # from occurring if +at+ gets shifted by 0.days further down.
 
-    # Shift daysOfWeekArray so that +at+ is first element
-    dow = daysOfWeekArray[at.wday..-1] + daysOfWeekArray[0..(at.wday-1)]
+    # Shift days_of_weekArray so that +at+ is first element
+    dow = days_of_week_array[at.wday..-1] + days_of_week_array[0..(at.wday-1)]
     # NOTE The above call does something a little quirky:
     # In the event that at.wday = 0, it concatenates the array with itself.
     # Since we are only interested in the first true value, this does not
@@ -167,7 +168,7 @@ class OperatingTime < ActiveRecord::Base
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.tag!("operating-time".to_sym) do
+    xml.tag!(self.class.to_s.underscore.dasherize) do
 
       xml.id(self.id)
       xml.place_id(self.place_id)
@@ -183,16 +184,16 @@ class OperatingTime < ActiveRecord::Base
 
       xml.start(self.start)
       xml.length(self.length)
-      xml.daysOfWeek(self.daysOfWeek)
+      self.days_of_week_hash.to_xml(options.merge(:root => :days_of_week))
       xml.startDate(self.startDate)
       xml.endDate(self.endDate)
       xml.override(self.override)
 
       open,close = self.next_times(Date.today)
       if open.nil? or close.nil?
-        xml.next_times(:for => Date.today)
+        xml.tag!(:next_times.to_s.dasherize, :for => Date.today)
       else
-        xml.next_times(:for => Date.today) do |xml|
+        xml.tag!(:next_times.to_s.dasherize, :for => Date.today) do |xml|
           xml.open(open.xmlschema)
           xml.close(close.xmlschema)
         end
@@ -256,7 +257,7 @@ class OperatingTime < ActiveRecord::Base
   # Backwards compatibility with old database schema
   # TODO GET RID OF THIS!!!
   def flags
-    ( (override ? 1 : 0) << 7) | read_attribute(:daysOfWeek)
+    ( (override ? 1 : 0) << 7) | read_attribute(:days_of_week)
   end
 
   # FIXME Deprecated, use +override+ instead

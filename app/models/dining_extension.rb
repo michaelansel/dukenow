@@ -5,11 +5,12 @@ class DiningExtension < ActiveRecord::Base
     options[:indent] ||= 2
     xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
     xml.instruct! unless options[:skip_instruct]
-    xml.dining_extension do |xml|
-      xml.logo_url(logo_url)
-      xml.more_info_url(more_info_url)
-      xml.owner_operator(owner_operator)
-      xml.payment_methods(payment_methods)
+    xml.tag!(self.class.to_s.underscore.dasherize) do |xml|
+      xml.tag!(:place_id.to_s.dasherize, place_id) unless options[:no_id]
+      xml.tag!(:logo_url.to_s.dasherize, logo_url)
+      xml.tag!(:more_info_url.to_s.dasherize, more_info_url)
+      xml.tag!(:owner_operator.to_s.dasherize, owner_operator)
+      xml.tag!(:payment_methods.to_s.dasherize, payment_methods)
     end
   end
 end

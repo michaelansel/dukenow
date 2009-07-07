@@ -4,13 +4,13 @@ describe OperatingTime do
   before(:each) do
     @place = mock_model(Place)
     @valid_attributes = {
-      :place_id   => @place.id,
-      :start      => (Time.now - 1.hours).to_i,
-      :length     => 2.hours,
-      :daysOfWeek => OperatingTime::ALL_DAYS,
-      :startDate  => Date.yesterday,
-      :endDate    => Date.tomorrow,
-      :override   => false
+      :place_id     => @place.id,
+      :start        => (Time.now - 1.hours).to_i,
+      :length       => 2.hours,
+      :days_of_week => OperatingTime::ALL_DAYS,
+      :startDate    => Date.yesterday,
+      :endDate      => Date.tomorrow,
+      :override     => false
     }
     @operating_time = OperatingTime.create!(@valid_attributes)
   end
@@ -28,9 +28,9 @@ describe OperatingTime do
   end
 
   describe "missing default-able attributes" do
-    it "should default daysOfWeek to 0" do
-      @valid_attributes.delete(:daysOfWeek) if @valid_attributes[:daysOfWeek]
-      OperatingTime.create!(@valid_attributes).daysOfWeek.should == 0
+    it "should default days_of_week to 0" do
+      @valid_attributes.delete(:days_of_week) if @valid_attributes[:days_of_week]
+      OperatingTime.create!(@valid_attributes).days_of_week.should == 0
     end
 
     it "should default override to false" do
@@ -55,10 +55,10 @@ describe OperatingTime do
       @operating_time.override.should == false # where false is the default value
     end
 
-    it "should create a new instance, but ignore an invalid daysOfWeek value" do
-      @valid_attributes[:daysOfWeek] = 1000
+    it "should create a new instance, but ignore an invalid days_of_week value" do
+      @valid_attributes[:days_of_week] = 1000
       create
-      @operating_time.daysOfWeek.should == 0 # where 0 is the default value
+      @operating_time.days_of_week.should == 0 # where 0 is the default value
     end
 =end
 
@@ -98,19 +98,19 @@ describe OperatingTime do
     @operating_time.override.should == false
   end
 
-  it "should complain about invalid daysOfWeek values, but not change the value" do
-    @operating_time.daysOfWeek = OperatingTime::SUNDAY
-    @operating_time.daysOfWeek.should == OperatingTime::SUNDAY
+  it "should complain about invalid days_of_week values, but not change the value" do
+    @operating_time.days_of_week = OperatingTime::SUNDAY
+    @operating_time.days_of_week.should == OperatingTime::SUNDAY
 
     #TODO Should nil be ignored or errored?
-    lambda { @operating_time.daysOfWeek = nil }.should raise_error(ArgumentError)
-    @operating_time.daysOfWeek.should == OperatingTime::SUNDAY
+    lambda { @operating_time.days_of_week = nil }.should raise_error(ArgumentError)
+    @operating_time.days_of_week.should == OperatingTime::SUNDAY
 
-    lambda { @operating_time.daysOfWeek = 200 }.should raise_error(ArgumentError)
-    @operating_time.daysOfWeek.should == OperatingTime::SUNDAY
+    lambda { @operating_time.days_of_week = 200 }.should raise_error(ArgumentError)
+    @operating_time.days_of_week.should == OperatingTime::SUNDAY
 
-    lambda { @operating_time.daysOfWeek= OperatingTime::MONDAY }.should_not raise_error
-    @operating_time.daysOfWeek.should == OperatingTime::MONDAY
+    lambda { @operating_time.days_of_week= OperatingTime::MONDAY }.should_not raise_error
+    @operating_time.days_of_week.should == OperatingTime::MONDAY
   end
 
   describe "with open and close times" do
@@ -159,7 +159,7 @@ describe OperatingTime do
     it "should return valid open/close times if open one day per week" do
       @operating_time.endDate = @now.to_date + 21
       open = @now.midnight
-      pending("Look at next_times daysOfWeek array shifting")
+      pending("Look at next_times days_of_week array shifting")
     end
   end
 end
