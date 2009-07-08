@@ -209,47 +209,6 @@ class OperatingTime < ActiveRecord::Base
 
 ##### TODO DEPRECATED METHODS #####
 
-  def at
-    @at
-  end
-  def at=(time)
-    @opensAt = nil
-    @closesAt = nil
-    @at = time
-  end
-
-  # Returns a Time object representing the beginning of this OperatingTime
-  def opensAt
-    @opensAt ||= relativeTime.openTime(at)
-  end
-  def closesAt
-    @closesAt ||= relativeTime.closeTime(at)
-  end
-
-  # Sets the beginning of this OperatingTime
-  # Input: params = { :hour => 12, :minute => 45 }
-  def opensAt=(time)
-    if time.class == Time
-      @opensAt = relativeTime.openTime = time
-    else
-      super
-    end
-  end
-
-  # Sets the end of this OperatingTime
-  def closesAt=(time)
-    @closesAt = relativeTime.closeTime = time
-  end
-
-
-  def start
-    read_attribute(:opensAt)
-  end
-
-  def start=(offset)
-    write_attribute(:opensAt,offset)
-  end
-
   # Returns a RelativeTime object representing this OperatingTime
   def relativeTime
     @relativeTime ||= RelativeTime.new(self, :opensAt, :length)

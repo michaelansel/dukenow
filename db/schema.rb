@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090707194216) do
+ActiveRecord::Schema.define(:version => 20090708211509) do
 
   create_table "dining_extensions", :force => true do |t|
     t.integer  "place_id"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(:version => 20090707194216) do
 
   create_table "operating_times", :force => true do |t|
     t.integer  "place_id"
-    t.integer  "opensAt"
+    t.integer  "start"
     t.integer  "length"
     t.text     "details"
     t.date     "startDate"
