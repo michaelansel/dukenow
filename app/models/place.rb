@@ -220,11 +220,11 @@ class Place < ActiveRecord::Base
 
       if options[:schedule_from] and options[:schedule_to]
         sched = schedule(options[:schedule_from],options[:schedule_to])
-        sched_opts = {:from => options[:schedule_from],
-                      :to => options[:schedule_to] }
+        sched_opts = {:from => options[:schedule_from].xmlschema,
+                      :to => options[:schedule_to].xmlschema }
       elsif options[:schedule_for_date]
         sched = daySchedule(options[:schedule_for_date])
-        sched_opts = {:on => options[:schedule_for_date]}
+        sched_opts = {:on => options[:schedule_for_date].xmlschema}
       else
         sched = daySchedule(Date.today)
         sched_opts = {:on => Date.today}
