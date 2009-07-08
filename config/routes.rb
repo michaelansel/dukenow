@@ -5,7 +5,7 @@ ActionController::Routing::Routes.draw do |map|
     api.resources :places, :has_many => :operating_times
     api.resources :dining_extensions
     api.resources :operating_times
-    api.root :controller => "places"
+    api.root :controller => "places", :format => :xml
   end
 
   map.resources :places, :has_many => :operating_times

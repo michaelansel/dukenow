@@ -4,8 +4,7 @@ class PlacesController < ApplicationController
   before_filter :map_params, :parse_dates_and_times, :filter_xml_params, :get_at_date
 
   def get_at_date
-    params[:schedule_for_date] = Date.today.to_s if params[:schedule_for_date].nil?
-    @at = Date.parse(params[:schedule_for_date])
+    @at = params[:schedule_for_date] || Date.today
   end
 
   def map_params
