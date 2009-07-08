@@ -87,9 +87,20 @@ class Place < ActiveRecord::Base
 
       # Start a day early if possible
       earlyStart = startAt-1.day < ot.startDate.midnight ? startAt : startAt - 1.day
+      puts "EarlyStart: #{earlyStart.inspect}" if DEBUG
+
       # Calculate the next set up open/close times
       open,close = ot.next_times(earlyStart)
-      next if open.nil? # No valid occurrences in the future
+      if DEBUG
+        puts ""
+        puts "Open: #{open}"
+        puts "Close: #{close}"
+      end
+
+      if open.nil? # No valid occurrences in the future
+        puts "Skipping: No valid occurrences in the future." if DEBUG
+        next
+      end
 
       while not open.nil? and open <= endAt do
         if DEBUG

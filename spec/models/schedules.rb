@@ -11,7 +11,7 @@ describe "a Place with scheduling capabilities", :shared => true do
 
   validate_setup do
     before(:each) do
-      @place.build
+      @place.build(@at || Time.now)
     end
   end
 
@@ -53,7 +53,7 @@ describe "a Place with scheduling capabilities", :shared => true do
 
     it "should be open on Sunday" do
       @at = @at - @at.wday.days # Set to previous Sunday
-      @place.rebuild
+      @place.rebuild(@at)
 
       @place.open(@at).should == true
     end
@@ -203,7 +203,7 @@ describe "a Place with scheduling capabilities", :shared => true do
       ])
       @at = @at || (Time.now.midnight + 12.hours)
 
-      @place.build
+      @place.build(@at)
     end
 
     it "should be closed" do
@@ -366,7 +366,7 @@ describe "a Place with valid times", :shared => true do
           {:start => 0, :length => 0, :override => true, :startDate => @at.to_date, :endDate => @at.to_date}
         ])
 
-        @place.build
+        @place.build(@at)
       end
       it_can "be closed now"
       it_can "be closed all day"
