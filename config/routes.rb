@@ -1,9 +1,16 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :dining_extensions
 
-  map.resources :places
+  map.with_options( :name_prefix => "api_v#{APPLICATION_API_VERSION}_",
+                    :path_prefix => "/api/v#{APPLICATION_API_VERSION}") do |api|
+    api.resources :places, :has_many => :operating_times
+    api.resources :dining_extensions
+    api.resources :operating_times
+    api.root :controller => "places"
+  end
+
+  map.resources :places, :has_many => :operating_times
+  map.resources :dining_extensions
   map.resources :operating_times
-  map.connect 'operating_times/place/:place_id', :controller => 'operating_times', :action => 'index'
 
   map.root :controller => "places"
 
@@ -46,6 +53,6 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   # Note: These default routes make all actions in every controller accessible via GET requests. You should
   # consider removing the them or commenting them out if you're using named routes and resources.
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
+  #map.connect ':controller/:action/:id'
+  #map.connect ':controller/:action/:id.:format'
 end
