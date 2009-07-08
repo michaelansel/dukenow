@@ -55,11 +55,11 @@
     <% 7.times do |i| %>
       <div class="dayColumn">
         <%= now_indicator if i == 0 %>
-      <% @place.daySchedule(@at + i.days).each do |schedule| %>
-        <div class="timeblock" style="<%= time_block_style(schedule, :day => (@at+i.days), :direction => :vertical) %>">
-          <div class="opensat"><%=h short_time_string(schedule.opensAt) %></div>
-          <div class="details"><%=h schedule.details if schedule.length >= 2.hours %></div>
-          <div class="closesat"><%=h short_time_string(schedule.closesAt) %></div>
+      <% @place.daySchedule(@at + i.days).each do |open,close| %>
+        <div class="timeblock" style="<%= time_block_style(open.offset, close.offset, :day => (@at+i.days), :direction => :vertical) %>">
+          <div class="opensat"><%=h short_time_string(open) %></div>
+          <div class="details"><%#=h schedule.details if (close-open) >= 2.hours %></div>
+          <div class="closesat"><%=h short_time_string(close) %></div>
           <%#= link_to "#{short_time_string(schedule.opensAt)} - #{short_time_string(schedule.closesAt)}", schedule %>
         </div>
       <% end %>

@@ -70,7 +70,9 @@ module PlacesHelper
   def time_label_style(at)
     settimes
     case at
-      when Time
+      when Date
+        time = at.midnight
+      when Time,DateTime
         time = at.hour.hours + at.min.minutes
       when Integer,Fixnum,Float
         time = at.to_i.hours
@@ -124,18 +126,17 @@ module PlacesHelper
 
   # Returns [words,time] -- both are strings
   def next_time(place, at=Time.now)
-    place.daySchedule(at).each do |schedule|
+    place.daySchedule(at).each do |open,close|
       # If the whole time period has already passed
-      next if schedule.opensAt < at and
-              schedule.closesAt < at
+      next if close < at
 
-      if schedule.opensAt <= at # Open now
+      if open <= at # Open now
         # TODO: Handle late-night rollovers
-        return ["Open until", short_time_string(schedule.closesAt)]
+        return ["Open until", short_time_string(close)]
       end
 
-      if schedule.closesAt >= at # Closed now
-        return ["Opens at", short_time_string(schedule.opensAt)]
+      if close >= at # Closed now
+        return ["Opens at", short_time_string(open)]
       end
 
       return "ERROR in next_time" # TODO: How could we possibly get here?

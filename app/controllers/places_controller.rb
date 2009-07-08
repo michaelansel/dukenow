@@ -1,11 +1,11 @@
 class PlacesController < ApplicationController
   ActionView::Base.send :include, TagsHelper
 
-  before_filter :map_params, :parse_dates_and_times, :filter_xml_params
+  before_filter :map_params, :parse_dates_and_times, :filter_xml_params, :get_at_date
 
   def get_at_date
-    params[:at] = Date.today.to_s if params[:at].nil?
-    @at = Date.parse(params[:at])
+    params[:schedule_for_date] = Date.today.to_s if params[:schedule_for_date].nil?
+    @at = Date.parse(params[:schedule_for_date])
   end
 
   def map_params
