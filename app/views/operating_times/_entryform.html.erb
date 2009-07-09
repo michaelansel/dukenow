@@ -9,13 +9,13 @@
   </p>
 
   <p>
-    <%= f.label :opensAt %><br />
-    <%= select_time f.object.opensAt, :prefix => "#{f.object_name}[opensAt]" %>
+    <%= f.label :start %><br />
+    <%= f.text_field :start %><br />
   </p>
 
   <p>
-    <%= f.label :closesAt %><br />
-    <%= select_time f.object.closesAt, :prefix => "#{f.object_name}[closesAt]" %>
+    <%= f.label :length %><br />
+    <%= f.text_field :length %><br />
   </p>
 
   <p>
@@ -23,10 +23,10 @@
     <table style="height:+3em;"><tr>
     <% Date::DAYNAMES.each_index do |i| %>
       <td onclick="toggleCheckbox('daysOfWeek_<%=h Date::DAYNAMES[i].to_s.capitalize %>')">
-      <label id="daysOfWeek_<%=h Date::DAYNAMES[i].to_s.capitalize%>" style="font-weight:<%= f.object.daysOfWeekArray[i] ? "bold" : "normal" %>;font-size:<%= f.object.daysOfWeekArray[i] ? "+2em" : "+1em" %>;">
+      <label id="daysOfWeek_<%=h Date::DAYNAMES[i].to_s.capitalize%>" style="font-weight:<%= f.object.days_of_week_array[i] ? "bold" : "normal" %>;font-size:<%= f.object.days_of_week_array[i] ? "+2em" : "+1em" %>;">
       <%=h Date::DAYNAMES[i].to_s.capitalize %>
       <%= check_box_tag "#{f.object_name}[daysOfWeekHash][]", 
-            Date::DAYNAMES[i].downcase.to_sym, f.object.daysOfWeekArray[i], :style => 'display:none;'  %>
+            Date::DAYNAMES[i].downcase.to_sym, f.object.days_of_week_array[i], :style => 'display:none;'  %>
       </label>
       </span>
     <% end %>
