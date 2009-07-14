@@ -57,9 +57,10 @@ class TwilioHandler < Sinatra::Base
     session[:menu] = {}
 
     # Find all open places
-    @places = Place.find(:all, :limit => 8).select{|p| p.open?}
+    @places = Place.find(:all).select{|p| p.open?}
 
-    #@r.say "There are #{@places.length} open now."
+    @r.say "There are #{@places.length} open now."
+    @places = @places[0..7] if @places.length > 8
     uri = URI.parse(request.url); uri.path = '/twilio/details'; uri.query = nil
     @r.gather(:action => uri.to_s) do |g|
       g.say "Press 1 at any time to search by name."
@@ -86,12 +87,11 @@ class TwilioHandler < Sinatra::Base
       @r.say "I'm sorry, there was an internal error. Please call back and try again. Goodbye!"
       @r.hangup
       puts "session[:menu].nil? == true"
-      debugger
 
       return nil
     end
 
-    if not session[:menu].has_key?( params[:Digits] )
+    if not session[:menu].has_key?( params[:Digits].to_s )
       @r.say "Sorry, I'm afraid I don't understand that."
       @r.say "Please try again."
       @r.redirect menu_uri.to_s
@@ -114,7 +114,18 @@ class TwilioHandler < Sinatra::Base
       return nil
     end
 
-    @r.say "#{place.name} is open until #{short_time_string(place.currentSchedule[1])}"
+    if place.open?
+      @r.say "#{place.name} is open until #{short_time_string(place.currentSchedule[1])}"
+    elsif place.daySchedule.nil?
+      @r.say "#{place.name} is not open at all today."
+    elsif (sched = place.schedule(Time.now,Time.now.midnight+24.hours))
+      @r.say "#{place.name} opens at #{short_time_string(sched[0][0])}"# [0][0] = first opening time (after now)
+    else
+      @r.say "#{place.name} is closed for the day."
+      if (sched= place.daySchedule(Date.tomorrow) )
+        @r.say "It opens tomorrow at #{short_time_string(sched[0][0])}" # [0][0] = first opening time
+      end
+    end
 
     #also = ""
     #place.schedule(Time.now,Time.now.midnight + 24.hours).each do |open,close|
@@ -123,7 +134,7 @@ class TwilioHandler < Sinatra::Base
     #end
 
     campus = place.tags.collect{|tag| tag.name.match(/campus/i) ? tag.name.sub(/campus/,'') : nil }.first
-    @r.say "It is located on #{campus} " unless campus.nil?
+    @r.say "It is located on #{campus} campus" unless campus.nil?
 
     @r.say "I hope that was helpful. Enjoy your meal!"
     @r.hangup
