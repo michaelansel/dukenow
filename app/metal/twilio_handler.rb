@@ -114,16 +114,24 @@ class TwilioHandler < Sinatra::Base
       return nil
     end
 
+    # TODO Refactor
     if place.open?
       @r.say "#{place.name} is open until #{short_time_string(place.currentSchedule[1])}"
-    elsif place.daySchedule.nil?
+    elsif place.daySchedule[0].nil?
       @r.say "#{place.name} is not open at all today."
-    elsif (sched = place.schedule(Time.now,Time.now.midnight+24.hours))
-      @r.say "#{place.name} opens at #{short_time_string(sched[0][0])}"# [0][0] = first opening time (after now)
+      if (sched= place.daySchedule(Date.tomorrow)[0] )
+        @r.say "It opens tomorrow at #{short_time_string(sched[0])}"
+      else
+        @r.say " or tomorrow."
+      end
+    elsif (sched = place.schedule(Time.now,Time.now.midnight+24.hours)[0])
+      @r.say "#{place.name} opens at #{short_time_string(sched[0])}"
     else
       @r.say "#{place.name} is closed for the day."
-      if (sched= place.daySchedule(Date.tomorrow) )
-        @r.say "It opens tomorrow at #{short_time_string(sched[0][0])}" # [0][0] = first opening time
+      if (sched= place.daySchedule(Date.tomorrow)[0] )
+        @r.say "It opens tomorrow at #{short_time_string(sched[0])}"
+      else
+        @r.say " and is not open tomorrow."
       end
     end
 
