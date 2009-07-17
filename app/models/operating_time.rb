@@ -6,6 +6,12 @@ class OperatingTime < ActiveRecord::Base
   validate :end_after_start, :days_of_week_valid
   validate {|ot| 0 <= ot.length and ot.length <= 1.days }
 
+  named_scope :by_place_id, lambda {|place_id|{:conditions => {:place_id => place_id}}}
+  named_scope :by_place, lambda {|place|{:conditions => {:place_id => place.id}}}
+  named_scope :regular, :conditions => {:override => 0}
+  named_scope :special, :conditions => {:override => 1}
+  named_scope :in_range, lambda {|range|{:conditions => ["startDate <= ? AND ? <= endDate",range.last.to_date+1,range.first.to_date-1]}}
+
   ## DaysOfWeek Constants ##
   SUNDAY    = 0b00000001
   MONDAY    = 0b00000010

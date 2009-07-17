@@ -7,11 +7,11 @@ class Place < ActiveRecord::Base
   validates_presence_of :name
 
   def special_operating_times
-    OperatingTime.find( :all, :conditions => {:place_id => id, :override => 1})
+    OperatingTime.special.by_place(self).find(:all)
   end
 
   def regular_operating_times
-    OperatingTime.find( :all, :conditions => {:place_id => id, :override => 0})
+    OperatingTime.regular.by_place(self).find(:all)
   end
 
   # Returns an array of Times representing the opening and closing times
@@ -28,10 +28,13 @@ class Place < ActiveRecord::Base
     # TODO Handle events starting within the range but ending outside of it?
 
     # TODO Offload this selection to the database; okay for testing though
+    # NOTE This is actually faster thanks to the query cache for small numbers of operating times, but not very scalable
+    #all_regular_operating_times = OperatingTime.find(:all, :conditions => {:place_id => self.id, :override => 0}).select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
+    #all_special_operating_times = OperatingTime.find(:all, :conditions => {:place_id => self.id, :override => 1}).select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
     # Select all relevant times (1 day buffer on each end)
     # NOTE Make sure to use generous date comparisons to allow for midnight rollovers
-    all_regular_operating_times = regular_operating_times().select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
-    all_special_operating_times = special_operating_times().select{|t| (t.startDate - 1) <= endAt.to_date and startAt.to_date <= (t.endDate + 1)}
+    all_regular_operating_times = OperatingTime.regular.by_place_id(self.id).in_range(startAt..endAt).find(:all)
+    all_special_operating_times = OperatingTime.special.by_place_id(self.id).in_range(startAt..endAt).find(:all)
 
     puts "\nRegular OperatingTimes: #{all_regular_operating_times.inspect}" if DEBUG
     puts "\nSpecial OperatingTimes: #{all_special_operating_times.inspect}" if DEBUG

@@ -56,12 +56,6 @@ def add_scheduling_spec_helpers(place)
       regular_operating_times + special_operating_times
     end
 
-    def regular_operating_times
-      @regular_operating_times ||= []
-    end
-    def special_operating_times
-      @special_operating_times ||= []
-    end
     def constraints
       @constraints ||= []
     end
@@ -131,9 +125,8 @@ def add_scheduling_spec_helpers(place)
           end
       end
 
-      regular_operating_times.clear
-      special_operating_times.clear
-      operating_times.clear
+      OperatingTime.by_place(self).destroy_all
+      @schedule = nil
 
       self.times.each do |t|
         t=t.dup
@@ -145,14 +138,10 @@ def add_scheduling_spec_helpers(place)
           t[:place_id]     ||= self.id
           ot = OperatingTime.new
           t.each{|k,v| ot.send(k.to_s+'=',v)}
+          ot.save!
 
           puts "Added time: #{ot.inspect}" if ConstraintDebugging
 
-          if t[:override]
-            self.special_operating_times << ot
-          else
-            self.regular_operating_times << ot
-          end
 
         end
       end
