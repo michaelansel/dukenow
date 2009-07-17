@@ -42,8 +42,8 @@
             <div class="bubble-right"></div>
           </div>
           -->
-        <% place.daySchedule.each do |open,close| %>
-          <div class="timeblock" id="timeblock_<%=h place.id %>_<%=h rand %>" style="<%=h time_block_style(open.offset,close.offset) %>">
+        <% place.daySchedule(:truncate => true).each do |open,close| %>
+          <div class="timeblock" id="timeblock_<%=h place.id %>_<%=h rand %>" style="<%=h time_block_style(open,close) %>">
             <div class="bubble-left"></div>
             <div class="bubble-middle"></div>
             <div class="bubble-right"></div>

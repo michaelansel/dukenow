@@ -13,50 +13,22 @@ module PlacesHelper
     @length ||= endTime - startTime
   end
 
-  def time_block_style(time_block_or_start_offset,end_offset = nil, opts = {})
-    # Accept "time_block_style(time_block,:direction => :vertical)"
-    if end_offset.class == Hash and opts == {}
-      opts = end_offset 
-      end_offset = nil
-    end
-
-    direction = :vertical   if opts[:direction] == :vertical
-    direction = :horizontal if opts[:direction] == :horizontal
-    direction ||= :horizontal
-
-    if opts[:day] != nil
-      @startTime = opts[:day].midnight
-      @endTime = startTime + 1.days
-    end
-    settimes
-
-    if end_offset.nil?
-
-      if time_block_or_start_offset.class == OperatingTime
-        # Generate style for OperatingTime object
-        open = time_block_or_start_offset.opensAt
-        close = time_block_or_start_offset.closesAt
-
-      else
-        return time_label_style(time_block_or_start_offset)
-      end
-
+  def time_block_style(begin_time, end_time, opts = {})
+    if opts[:date]
+      opts[:time_range] ||= (opts[:date].midnight)..(opts[:date].midnight+24.hours)
     else
-      # Generate style for block spanning given time range
-      open = startTime.midnight + time_block_or_start_offset
-      close = startTime.midnight + end_offset
+      opts[:time_range] ||= (begin_time.midnight)..(begin_time.midnight+24.hours)
     end
+    opts[:direction]  ||= :horizontal
 
-    if open >= startTime and close <= endTime
-      offset = (open - startTime) * 100.0 / length
-      size = (close - open) * 100.0 / length
+    min_time = opts[:time_range].first
+    max_time = opts[:time_range].last
+    length = max_time - min_time
 
-    elsif open >= startTime and close >= endTime
-      offset = (open - startTime) * 100.0 / length
-      size = (endTime - open) * 100.0 / length
-    end
+    offset = (begin_time - min_time) * 100.0 / length
+    size = (end_time - begin_time) * 100.0 / length
 
-    case direction
+    case opts[:direction]
       when :horizontal
         "left: #{offset.to_s}%; width: #{size.to_s}%;"
       when :vertical

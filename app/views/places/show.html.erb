@@ -1,4 +1,3 @@
-  <%= stylesheet_link_tag 'places' %>
 <p>
   <b>Name:</b>
   <%=h @place.name %>
@@ -21,54 +20,218 @@
 
 <p>
   <b>Open Now?</b>
-  <%=h (@place.open?(@at) ? "Yes" : "No") %>
+  <%=h (@place.open ? "Yes" : "No") %>
 </p>
 
 <p>
-  <b><%= link_to 'All Operating Times', '/operating_times/place/'+@place.id.to_s %></b>
+  <b><%= link_to "All Operating Times", place_operating_times_path(@place) %></b>
 </p>
 
 <p>
   <b>Schedule for this week:</b><br/>
-  <div class="weekSchedule">
+<%# Begin static graphic_schedule data %>
+  <style type="text/css">
+    .graphic_schedule { margin: 0 auto;  margin-top: 10px; }
+    .graphic_schedule {
+      position: relative;
+      width: 960px;
+      max-height: 800px;
 
-    <div class="header">
-      <div class="labelColumn"></div>
+      padding: 10px 0 10px 10px;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+    }
 
+    .day-column {
+      width: 128px; /* 130px - 2px border */
+      border-left: 2px solid;
+      position: relative;
+      float: left; overflow: hidden;
+    }
+
+    .top-row {
+      position: relative;
+      height: 1.33em;
+      padding-top: 10px;
+      padding-left: 40px; /* Pad over for time_labels */
+
+    }
+    .top-row .day-column div {
+      line-height: 1.33em;
+    }
+
+    .bottom-row {
+      position: relative;
+      height: 1.33em;
+      padding-left: 40px; /* Pad over for time_labels */
+    }
+
+    .schedule_container {
+      clear: both; width: 100%;
+      border-top: 1px solid;
+      border-bottom: 1px solid;
+      overflow: hidden;
+    }
+
+    .schedules {
+      position: relative;
+      max-height: 720px;
+
+      overflow-x: hidden;
+      overflow-y: scroll;
+
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+    }
+    .schedules .time_labels {
+      float: left;
+      position: relative;
+      overflow: hidden;
+      width: 40px;
+
+      margin-bottom: -15px;
+    }
+    .schedules .time_labels .hour {
+      /* total height == 30px */
+      padding-bottom: 14px;
+      border-bottom: 1px solid;
+      line-height: 15px;
+    }
+    .schedules .day-column {
+      height: 720px; /* (.hour line-height + .hour padding-top/bottom + .hour border) * 24 hours */
+    }
+
+    .day-column .time-block {
+      position: absolute;
+      width: 100px; margin: 0 15px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+    }
+    .time-block .ui-resizable-s,
+    .time-block .drag-point {
+      position: absolute;
+      width: 80px; margin: 0 10px;
+      height: 10px; bottom: 0;
+      cursor: s-resize;
+    }
+
+    .bottom-row .wday-select {
+      display: table-row;
+    }
+    .wday-select .wday {
+      display: table-cell;
+      padding: 0 1px;
+      text-align: center;
+    }
+
+    .day-column .overlay-mask {
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      width: auto; height; auto;
+      background-color: gray;
+      opacity: 0.75;
+    }
+  </style>
+  <style type="text/css">
+    /** Cosmetics **/
+    .graphic_schedule {
+      background-color: #B2DAFF;
+    }
+
+    .top-row .day-column div {
+      text-align: center;
+    }
+    .top-row .closed-button {
+      background-color: red;
+    }
+    .top-row .allday-button {
+      background-color: green;
+    }
+
+    .schedules {
+      border-color: gray;
+      background-color: #F1F7F2;
+    }
+
+    .schedules .time_labels .hour {
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .schedules .time-block {
+      background-color: #4EFE4E;
+    }
+    .time-block .ui-resizable-s,
+    .time-block .drag-point {
+      background: transparent url('drag_point.png') no-repeat center;
+      z-index: 1;
+    }
+
+    .wday-select .wday.selected {
+      background-color: #389FFF;
+    }
+  </style>
+  <style type="text/css" id="calculated_styles">
+    /* Sane defaults in event of no JavaScript */
+    .graphic_schedule { width: 980px; }
+    .schedules { height: 500px; }
+  </style>
+  <div class="graphic_schedule">
+    <div class="top-row">
     <% 7.times do |i| %>
-      <div class="dayColumn">
-        <%= Date::DAYNAMES[(@at + i.days).wday] %>
-      </div>
-    <% end %>
-
-    </div>
-
-
-    <div class="data">
-      <div class="labelColumn">
-        <% 24.times do |hour| -%>
-        <div class="color<%= hour % 2 + 1 %>" class="timeblock" style="<%= time_block_style(hour.hours,(hour+1).hours, :direction => :vertical) %> z-index: 2;"><%= hour.to_s %></div>
-        <% end -%>
-        <%= now_indicator %>
-      </div>
-
-    <% 7.times do |i| %>
-      <div class="dayColumn">
-        <%= now_indicator if i == 0 %>
-      <% @place.daySchedule(@at + i.days).each do |open,close| %>
-        <div class="timeblock" style="<%= time_block_style(open.offset, close.offset, :day => (@at+i.days), :direction => :vertical) %>">
-          <div class="opensat"><%=h short_time_string(open) %></div>
-          <div class="details"><%#=h schedule.details if (close-open) >= 2.hours %></div>
-          <div class="closesat"><%=h short_time_string(close) %></div>
-          <%#= link_to "#{short_time_string(schedule.opensAt)} - #{short_time_string(schedule.closesAt)}", schedule %>
+      <div class="day-column">
+        <div class="day-label"><%= Date::DAYNAMES[i] %></div>
+        <div class="menu" style="display: none;">
+          <a class="closed-button">Closed All Day</a>
+          <a class="allday-button">Open 24 Hours</a>
         </div>
-      <% end %>
+      </div>
+    <% end # 7.times do %>
+    </div>
+    <div class="schedule_container">
+      <div class="schedules">
+        <div class="time_labels">
+          <div class="hour">12am</div>
+        <% (1..11).each do |hr| %>
+          <div class="hour"><%= hr %>am</div>
+        <% end %>
+          <div class="hour">12pm</div>
+        <% (1..11).each do |hr| %>
+          <div class="hour"><%= hr %>pm</div>
+        <% end %>
+        </div>
+<%# End static graphic_schedule data %>
+
+      <% 7.times do |i| %>
+        <div class="day-column">
+
+        <% @place.daySchedule(@at + i.days, :truncate => true).each do |open,close| %>
+<%# yield(open,close) %><%# puts "building time_block from #{open} to #{close}" %>
+          <div class="time-block" style="<%= time_block_style(open, close, :direction => :vertical) %>">
+            <!--<div class="drag-point ui-resizable-s ui-resizable-handle"></div>-->
+          </div>
+<%# end yield(open,close) %>
+        <% end #daySchedule.each %>
+
+        </div>
+      <% end # 7.times do %>
+
+<%# Begin static graphic_schedule data %>
+      </div>
+    </div>
+    <div class="bottom-row">
+    <% 7.times do |i| %>
+      <div class="day-column">
+        <div class="wday-select">
+        <% (wdays = %w{Su M T W Th F Sa}).each_index do |j| %>
+          <a class="wday color<%=(j%2)+1%><%=(i==j)?" select-locked selected":""%>" href="#wday"><%= wdays[j] %></a>
+        <% end # %w{}.each do |wda| %>
+        </div>
       </div>
     <% end %>
-
     </div>
-
   </div>
+<%# End static graphic_schedule data %>
 </p>
 
 
