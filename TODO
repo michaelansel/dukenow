@@ -2,17 +2,17 @@ vim:set syntax=todo:
 
 Database
   Places
-    -- has_one :dining_extension
+    \- has_one :dining_extension
     \- name (string)
     -- location (lat/long) -- ?GeoKit Plugin?
     \- phone_number (string)
   DiningExtensions
-    -- acts_as_taggable_on :dining_tags ## needs work
+    \- acts_as_taggable_on :dining_tags ## needs work
     -- **delivery/eat-in** ## operating_time details/tag
-    -- more_info_url
-    -- owner_operator
-    -- payment_methods
-    -- logo_url
+    \- more_info_url
+    \- owner_operator
+    \- payment_methods
+    \- logo_url
   OperatingTimes
     \- place_id
     \- start (midnight offset in seconds)
@@ -35,6 +35,7 @@ Database
 
 API
   Versioning
+    \- Route namespacing
     -- Subdirectories
     -- rake task for adding new versions and deprecating old versions
   Places

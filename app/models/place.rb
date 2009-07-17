@@ -16,12 +16,11 @@ class Place < ActiveRecord::Base
 
   # Returns an array of Times representing the opening and closing times
   # of this Place between +startAt+ and +endAt+
-  def schedule(startAt,endAt)
+  def schedule(startAt,endAt,opts={})
     ## Caching ##
     @schedules ||= {}
-    if @schedules[startAt.xmlschema] and
-       @schedules[startAt.xmlschema][endAt.xmlschema]
-      return @schedules[startAt.xmlschema][endAt.xmlschema]
+    if @schedules[(startAt.xmlschema+endAt.xmlschema+opts.to_s).hash]
+      return @schedules[(startAt.xmlschema+endAt.xmlschema+opts.to_s).hash]
     end
     ## End Caching ##
 
@@ -145,19 +144,33 @@ class Place < ActiveRecord::Base
 
     final_schedule = (regular_times+special_times).sort{|a,b|a[0] <=> b[0]}
 
+    ## Truncate times larger than range ##
+    if opts[:truncate]
+      final_schedule.each_index do |i|
+        final_schedule[i][0] = startAt.dup if final_schedule[i][0] < startAt
+        final_schedule[i][1] = endAt.dup   if final_schedule[i][1] > endAt
+      end
+    end
+    ## End truncating ##
+
     ## Caching ##
     @schedules ||= {}
-    @schedules[startAt.xmlschema] ||= {}
-    @schedules[startAt.xmlschema][endAt.xmlschema] = final_schedule
-    ## End Caching ##
+    @schedules[(startAt.xmlschema+endAt.xmlschema+opts.to_s).hash] = final_schedule
+    ## End caching ##
 
     final_schedule
   end
 
-  def daySchedule(at = Date.today)
+  def daySchedule(at = Date.today, opts={})
     at = at.to_date if at.class == Time or at.class == DateTime
+    # Allow daySchedule(:truncate => true)
+    if at.class == Hash
+      opts = at
+      at = Date.today
+    end
+    opts[:truncate] ||= false
 
-    day_schedule = schedule(at.midnight,(at+1).midnight)
+    day_schedule = schedule(at.midnight,(at+1).midnight, :truncate => opts[:truncate])
     #schedule = schedule.select {|ot| (ot.flags & 1<<at.wday) > 0 }
     #schedule.each {|t| t.at = at }
 
