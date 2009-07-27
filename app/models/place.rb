@@ -240,7 +240,7 @@ class Place < ActiveRecord::Base
                       :to => options[:schedule_to].xmlschema }
       elsif options[:schedule_for_date]
         sched = daySchedule(options[:schedule_for_date])
-        sched_opts = {:on => options[:schedule_for_date].xmlschema}
+        sched_opts = {:on => options[:schedule_for_date].to_date}
       else
         sched = daySchedule(Date.today)
         sched_opts = {:on => Date.today}
