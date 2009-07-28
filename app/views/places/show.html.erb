@@ -180,7 +180,7 @@
     <div class="top-row">
     <% 7.times do |i| %>
       <div class="day-column">
-        <div class="day-label"><%= Date::DAYNAMES[i] %></div>
+        <div class="day-label"><%= Date::DAYNAMES[(@at.wday+i)%7] %></div>
         <div class="menu" style="display: none;">
           <a class="closed-button">Closed All Day</a>
           <a class="allday-button">Open 24 Hours</a>
