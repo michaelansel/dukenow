@@ -33,23 +33,27 @@
           </div>
         </div>
         <!-- TODO: Load schedule info to generate timeblocks -->
-        <div class="schedule"><div class="inner-schedule">
-          <div class="nowindicator"></div>
-          <!--  // Test timeblock
-          <div class="timeblock" id="timeblock_<%=h place.id %>_0" style="left: 0%; width: 100%;">
-            <div class="bubble-left"></div>
-            <div class="bubble-middle"></div>
-            <div class="bubble-right"></div>
+        <div class="schedule">
+          <div class="labels">
+          <% 13.times do |i| %>
+            <div class="label divider" style="left:<%=h 100.0*2*i/24 %>%;"></div>
+            <div class="label text" style="left:<%=h 100.0*(2*i-1)/24 %>%;"><%=h (Time.now.midnight + 2*i.hours).strftime('%I%p').sub(/^0+/,'').downcase %></div>
+              <% unless i == 12 %>
+            <div class="label divider" style="left:<%=h 100.0*(2*i+1)/24 %>%;"></div>
+              <% end %>
+          <% end # 13.times do |i| %>
           </div>
-          -->
-        <% place.daySchedule(:truncate => true).each do |open,close| %>
-          <div class="timeblock" id="timeblock_<%=h place.id %>_<%=h rand %>" style="<%=h time_block_style(open,close) %>">
-            <div class="bubble-left"></div>
-            <div class="bubble-middle"></div>
-            <div class="bubble-right"></div>
-          </div>
-        <% end # place.daySchedule.each %>
-        </div></div> <!-- div.schedule, div.inner-schedule -->
+          <div class="inner-schedule">
+            <div class="nowindicator"></div>
+          <% place.daySchedule(:truncate => true).each do |open,close| %>
+            <div class="timeblock" id="timeblock_<%=h place.id %>_<%=h rand %>" style="<%=h time_block_style(open,close) %>">
+              <div class="bubble-left"></div>
+              <div class="bubble-middle"></div>
+              <div class="bubble-right"></div>
+            </div>
+          <% end # place.daySchedule.each %>
+          </div> <!-- div.inner-schedule -->
+        </div> <!-- div.schedule -->
       </div>
     </div>
 <% end # @places.each %>

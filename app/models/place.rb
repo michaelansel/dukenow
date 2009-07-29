@@ -203,8 +203,7 @@ class Place < ActiveRecord::Base
   end
 
   def open?(at = Time.now)
-    a = currentSchedule(at)
-    return a ? true : false
+    !currentSchedule(at).nil?
   end
   alias :open :open?
 
