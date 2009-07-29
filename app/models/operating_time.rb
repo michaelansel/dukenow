@@ -10,7 +10,9 @@ class OperatingTime < ActiveRecord::Base
   named_scope :by_place, lambda {|place|{:conditions => {:place_id => place.id}}}
   named_scope :regular, :conditions => {:override => 0}
   named_scope :special, :conditions => {:override => 1}
-  named_scope :in_range, lambda {|range|{:conditions => ["startDate <= ? AND ? <= endDate",range.last.to_date+1,range.first.to_date-1]}}
+  named_scope :in_range, lambda {|range|{:conditions =>
+              ['"operating_times"."startDate" <= ? AND ? <= "operating_times"."endDate"',
+                                range.last.to_date+1,range.first.to_date-1] }}
 
   ## DaysOfWeek Constants ##
   SUNDAY    = 0b00000001
